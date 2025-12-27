@@ -1,5 +1,11 @@
 import React from "react";
-import { TouchableOpacity, Text, View, ActivityIndicator, Platform } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 
 interface ButtonProps {
   title: string;
@@ -21,9 +27,24 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
 }) => {
   const sizeStyles = {
-    small: { paddingVertical: 10, paddingHorizontal: 18, fontSize: 14, iconSize: 16 },
-    medium: { paddingVertical: 14, paddingHorizontal: 28, fontSize: 16, iconSize: 18 },
-    large: { paddingVertical: 18, paddingHorizontal: 36, fontSize: 17, iconSize: 20 },
+    small: {
+      paddingVertical: 10,
+      paddingHorizontal: 18,
+      fontSize: 14,
+      iconSize: 16,
+    },
+    medium: {
+      paddingVertical: 14,
+      paddingHorizontal: 28,
+      fontSize: 16,
+      iconSize: 18,
+    },
+    large: {
+      paddingVertical: 18,
+      paddingHorizontal: 36,
+      fontSize: 17,
+      iconSize: 20,
+    },
   };
 
   const variantStyles = {
@@ -108,11 +129,7 @@ export const Button: React.FC<ButtonProps> = ({
         <ActivityIndicator color={currentVariant.textColor} />
       ) : (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {icon && (
-            <View style={{ marginRight: 10 }}>
-              {icon}
-            </View>
-          )}
+          {icon && <View style={{ marginRight: 10 }}>{icon}</View>}
           <Text
             style={{
               color: currentVariant.textColor,

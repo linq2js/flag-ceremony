@@ -7,3 +7,4 @@ export * from "./BaDinhSquare";
 export * from "./FlagTower";
 export * from "./ScreenBackground";
 export * from "./Icons";
+export * from "./Screen";

@@ -9,7 +9,9 @@ interface ScreenBackgroundProps {
   children: React.ReactNode;
 }
 
-export const ScreenBackground: React.FC<ScreenBackgroundProps> = ({ children }) => {
+export const ScreenBackground: React.FC<ScreenBackgroundProps> = ({
+  children,
+}) => {
   return (
     <View style={styles.container}>
       {/* Base dark gradient */}
@@ -21,9 +23,9 @@ export const ScreenBackground: React.FC<ScreenBackgroundProps> = ({ children }) 
 
       {/* Ba Dinh Square illustration */}
       <View style={styles.illustrationContainer}>
-        <BaDinhSquare 
-          width={SCREEN_WIDTH * 1.2} 
-          height={SCREEN_HEIGHT * 0.5} 
+        <BaDinhSquare
+          width={SCREEN_WIDTH * 1.2}
+          height={SCREEN_HEIGHT * 0.5}
           opacity={0.25}
         />
       </View>

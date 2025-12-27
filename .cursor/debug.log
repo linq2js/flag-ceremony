@@ -1,0 +1,8 @@
+{"location":"metro.config.js:17","message":"Config loaded","data":{"hasResolver":true},"hypothesisId":"A","timestamp":1766811346760,"sessionId":"debug-session"}
+{"location":"metro.config.js:22","message":"util path resolved","data":{"utilPath":"/Users/ginguyen/Desktop/Projects/my/flag-ceremony/node_modules/util","exists":true},"hypothesisId":"B","timestamp":1766811346760,"sessionId":"debug-session"}
+{"location":"metro.config.js:30","message":"extraNodeModules set","data":{"keys":["util/"]},"hypothesisId":"C","timestamp":1766811346760,"sessionId":"debug-session"}
+{"location":"metro.config.js:16","message":"Config loaded with shamefully-hoist","data":{"hasResolver":true},"hypothesisId":"F","timestamp":1766811468506,"sessionId":"debug-session","runId":"post-fix"}
+{"location":"metro.config.js:16","message":"Config loaded with shamefully-hoist","data":{"hasResolver":true},"hypothesisId":"F","timestamp":1766811510461,"sessionId":"debug-session","runId":"post-fix"}
+{"location":"metro.config.js:28","message":"Config loaded with pnpm support","data":{"hasResolver":true,"symlinks":true,"watchFolders":1},"hypothesisId":"G","timestamp":1766811571527,"sessionId":"debug-session","runId":"post-fix-2"}
+{"location":"metro.config.js:16","message":"Config loaded (npm)","data":{"hasResolver":true},"hypothesisId":"H","timestamp":1766815764524,"sessionId":"debug-session","runId":"npm-switch"}
+{"location":"metro.config.js:16","message":"Config loaded (npm)","data":{"hasResolver":true},"hypothesisId":"H","timestamp":1766815844092,"sessionId":"debug-session","runId":"npm-switch"}

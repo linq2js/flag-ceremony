@@ -29,7 +29,7 @@ interface ParticleProps {
   totalParticles: number;
 }
 
-const Particle: React.FC<ParticleProps> = ({ index, totalParticles }) => {
+const Particle: React.FC<ParticleProps> = ({ index }) => {
   const progress = useSharedValue(0);
   const rotation = useSharedValue(0);
 
@@ -84,16 +84,18 @@ const Particle: React.FC<ParticleProps> = ({ index, totalParticles }) => {
 
     return {
       position: "absolute",
-      left: interpolate(
-        progress.value,
-        [0, 1],
-        [config.startX, config.endX]
-      ) + wobble,
+      left:
+        interpolate(progress.value, [0, 1], [config.startX, config.endX]) +
+        wobble,
       top: interpolate(progress.value, [0, 1], [config.startY, config.endY]),
       width: config.size,
-      height: config.shape === 2 ? config.size : config.size * (config.shape === 1 ? 1 : 0.6),
+      height:
+        config.shape === 2
+          ? config.size
+          : config.size * (config.shape === 1 ? 1 : 0.6),
       backgroundColor: config.shape === 2 ? "transparent" : config.color,
-      borderRadius: config.shape === 0 ? config.size / 2 : config.shape === 1 ? 2 : 0,
+      borderRadius:
+        config.shape === 0 ? config.size / 2 : config.shape === 1 ? 2 : 0,
       transform: [{ rotate: `${rotation.value}deg` }],
       opacity: interpolate(progress.value, [0, 0.1, 0.8, 1], [0, 1, 1, 0]),
     };
@@ -167,8 +169,10 @@ const BurstParticle: React.FC<BurstParticleProps> = ({
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => {
-    const x = centerX + Math.cos(config.angle) * config.distance * progress.value;
-    const y = centerY + Math.sin(config.angle) * config.distance * progress.value;
+    const x =
+      centerX + Math.cos(config.angle) * config.distance * progress.value;
+    const y =
+      centerY + Math.sin(config.angle) * config.distance * progress.value;
 
     return {
       position: "absolute",
@@ -179,7 +183,9 @@ const BurstParticle: React.FC<BurstParticleProps> = ({
       borderRadius: config.size / 2,
       backgroundColor: config.color,
       opacity: interpolate(progress.value, [0, 0.3, 1], [1, 1, 0]),
-      transform: [{ scale: interpolate(progress.value, [0, 0.5, 1], [0.5, 1.2, 0.3]) }],
+      transform: [
+        { scale: interpolate(progress.value, [0, 0.5, 1], [0.5, 1.2, 0.3]) },
+      ],
     };
   });
 
@@ -226,4 +232,3 @@ export const Confetti: React.FC<ConfettiProps> = ({ active }) => {
     </View>
   );
 };
-

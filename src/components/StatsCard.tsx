@@ -62,7 +62,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
           opacity: 0.08,
         }}
       />
-      
+
       <Text style={{ fontSize: 28, marginBottom: 10 }}>{icon}</Text>
       <Text
         style={{

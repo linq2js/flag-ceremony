@@ -1,6 +1,8 @@
-import { translations, Language, TranslationKey } from "./translations";
+import { translations } from "./translations";
+import type { Language, TranslationKey } from "./translations";
 
-export { translations, type Language, type TranslationKey };
+export { translations };
+export type { Language, TranslationKey };
 
 export const getTranslation = (lang: Language, key: TranslationKey): string => {
   return translations[lang][key] || translations.en[key] || key;

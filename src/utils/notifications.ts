@@ -1,18 +1,31 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-import { appStore } from "../store";
+import { app, notificationService } from "../store";
 import type { ReminderSettings } from "../store/types";
 
-// Configure notification handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// Check if we're on a native platform (notifications fully supported)
+const isNative = Platform.OS === "ios" || Platform.OS === "android";
+
+// Configure notification handler (only on native)
+if (isNative) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+}
 
 export const requestNotificationPermissions = async (): Promise<boolean> => {
+  // Notifications not fully supported on web
+  if (!isNative) {
+    console.warn("Notifications are not fully supported on web");
+    return false;
+  }
+
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
 
@@ -24,7 +37,15 @@ export const requestNotificationPermissions = async (): Promise<boolean> => {
   return finalStatus === "granted";
 };
 
-export const scheduleReminder = async (settings: ReminderSettings): Promise<string | null> => {
+export const scheduleReminder = async (
+  settings: ReminderSettings
+): Promise<string | null> => {
+  // Notifications not fully supported on web
+  if (!isNative) {
+    console.warn("Scheduled notifications are not supported on web");
+    return null;
+  }
+
   if (!settings.enabled) {
     await cancelReminder();
     return null;
@@ -52,30 +73,36 @@ export const scheduleReminder = async (settings: ReminderSettings): Promise<stri
         sound: true,
         priority: Notifications.AndroidNotificationPriority.HIGH,
       },
-      trigger: Platform.OS === 'web' ? null : {
+      trigger: {
         weekday: day + 1, // Expo uses 1-7 for weekdays
         hour: hours,
         minute: minutes,
-        repeats: true,
         type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
       },
     });
     identifiers.push(identifier);
   }
 
-  // Store the first identifier (we could store all, but for simplicity)
+  // Store the first identifier via DI service
   const mainId = identifiers[0] || null;
-  appStore.actions.setNotificationId(mainId);
+  const notifications = app.get(notificationService);
+  notifications.setNotificationId(mainId);
 
   return mainId;
 };
 
 export const cancelReminder = async (): Promise<void> => {
-  const state = appStore.state;
+  // Notifications not fully supported on web
+  if (!isNative) {
+    return;
+  }
 
-  if (state.notificationId) {
-    await Notifications.cancelScheduledNotificationAsync(state.notificationId);
-    appStore.actions.setNotificationId(null);
+  const notifications = app.get(notificationService);
+  const notificationId = notifications.getNotificationId();
+
+  if (notificationId) {
+    await Notifications.cancelScheduledNotificationAsync(notificationId);
+    notifications.setNotificationId(null);
   }
 
   // Also cancel all scheduled notifications to be safe
@@ -88,6 +115,14 @@ export const getDayName = (dayIndex: number): string => {
 };
 
 export const getFullDayName = (dayIndex: number): string => {
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   return days[dayIndex];
 };

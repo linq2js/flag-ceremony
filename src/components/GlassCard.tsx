@@ -1,6 +1,12 @@
 import React from "react";
-import { View, StyleSheet, Platform, ViewStyle } from "react-native";
+import { View, StyleSheet, Platform, ViewStyle, StyleProp } from "react-native";
 import { BlurView } from "expo-blur";
+
+// Web-only glass effect styles (not in ViewStyle types)
+const webGlassStyle = {
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+} as StyleProp<ViewStyle>;
 
 interface GlassCardProps {
   children: React.ReactNode;
@@ -31,10 +37,8 @@ export const GlassCard: React.FC<GlassCardProps> = ({
             backgroundColor: "rgba(255, 255, 255, 0.05)",
             borderWidth: 1,
             borderColor: "rgba(255, 255, 255, 0.1)",
-            // @ts-ignore - web only
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
           },
+          webGlassStyle,
           style,
         ]}
       >
@@ -83,10 +87,8 @@ export const GlassCardGold: React.FC<GlassCardProps> = (props) => {
             backgroundColor: "rgba(251, 191, 36, 0.08)",
             borderWidth: 1,
             borderColor: "rgba(251, 191, 36, 0.2)",
-            // @ts-ignore
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
           },
+          webGlassStyle,
           props.style,
         ]}
       >
@@ -96,11 +98,19 @@ export const GlassCardGold: React.FC<GlassCardProps> = (props) => {
   }
 
   return (
-    <View style={[{ borderRadius: props.borderRadius || 24, overflow: "hidden" }, props.style]}>
+    <View
+      style={[
+        { borderRadius: props.borderRadius || 24, overflow: "hidden" },
+        props.style,
+      ]}
+    >
       <BlurView
         intensity={props.intensity || 40}
         tint="dark"
-        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(251, 191, 36, 0.08)" }]}
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: "rgba(251, 191, 36, 0.08)" },
+        ]}
       />
       <View
         style={{
@@ -128,10 +138,8 @@ export const GlassCardGreen: React.FC<GlassCardProps> = (props) => {
             backgroundColor: "rgba(34, 197, 94, 0.08)",
             borderWidth: 1,
             borderColor: "rgba(34, 197, 94, 0.2)",
-            // @ts-ignore
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
           },
+          webGlassStyle,
           props.style,
         ]}
       >
@@ -141,11 +149,19 @@ export const GlassCardGreen: React.FC<GlassCardProps> = (props) => {
   }
 
   return (
-    <View style={[{ borderRadius: props.borderRadius || 24, overflow: "hidden" }, props.style]}>
+    <View
+      style={[
+        { borderRadius: props.borderRadius || 24, overflow: "hidden" },
+        props.style,
+      ]}
+    >
       <BlurView
         intensity={props.intensity || 40}
         tint="dark"
-        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(34, 197, 94, 0.08)" }]}
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: "rgba(34, 197, 94, 0.08)" },
+        ]}
       />
       <View
         style={{
@@ -173,10 +189,8 @@ export const GlassCardRed: React.FC<GlassCardProps> = (props) => {
             backgroundColor: "rgba(220, 38, 38, 0.08)",
             borderWidth: 1,
             borderColor: "rgba(220, 38, 38, 0.2)",
-            // @ts-ignore
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
           },
+          webGlassStyle,
           props.style,
         ]}
       >
@@ -186,11 +200,19 @@ export const GlassCardRed: React.FC<GlassCardProps> = (props) => {
   }
 
   return (
-    <View style={[{ borderRadius: props.borderRadius || 24, overflow: "hidden" }, props.style]}>
+    <View
+      style={[
+        { borderRadius: props.borderRadius || 24, overflow: "hidden" },
+        props.style,
+      ]}
+    >
       <BlurView
         intensity={props.intensity || 40}
         tint="dark"
-        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(220, 38, 38, 0.08)" }]}
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: "rgba(220, 38, 38, 0.08)" },
+        ]}
       />
       <View
         style={{
@@ -205,4 +227,3 @@ export const GlassCardRed: React.FC<GlassCardProps> = (props) => {
     </View>
   );
 };
-

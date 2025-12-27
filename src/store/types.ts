@@ -31,6 +31,10 @@ export interface AppState {
   // Stats
   totalCeremonies: number; // All ceremonies (completed + incomplete)
   completedCeremonies: number; // Only fully completed ceremonies (for achievements)
+
+  // Ceremony in progress (for navigation blocking)
+  ceremonyActive: boolean;
+  ceremonyStartTime: number | null; // timestamp when ceremony started
 }
 
 export interface HistoricalEvent {

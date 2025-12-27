@@ -8,7 +8,11 @@ interface HistoryCardProps {
   title: string;
 }
 
-export const HistoryCard: React.FC<HistoryCardProps> = ({ events, date, title }) => {
+export const HistoryCard: React.FC<HistoryCardProps> = ({
+  events,
+  date,
+  title,
+}) => {
   const glassStyle = Platform.select({
     web: {
       backdropFilter: "blur(24px)",
@@ -27,7 +31,6 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ events, date, title })
           padding: 24,
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.08)",
-          overflow: "hidden",
         },
         // @ts-ignore
         glassStyle,
@@ -48,7 +51,9 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ events, date, title })
       />
 
       {/* Header */}
-      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}
+      >
         <View
           style={{
             width: 48,
@@ -76,7 +81,13 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ events, date, title })
           >
             {title}
           </Text>
-          <Text style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>
+          <Text
+            style={{
+              fontSize: 13,
+              color: "rgba(255,255,255,0.4)",
+              marginTop: 4,
+            }}
+          >
             {date}
           </Text>
         </View>
@@ -124,6 +135,7 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ events, date, title })
               color: "rgba(255,255,255,0.8)",
               lineHeight: 24,
               fontWeight: "500",
+              flexShrink: 1,
             }}
           >
             {event.event}
