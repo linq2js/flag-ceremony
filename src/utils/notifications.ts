@@ -1,28 +1,65 @@
-import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
+import Constants from "expo-constants";
 import { app, notificationService } from "../store";
 import type { ReminderSettings } from "../store/types";
 
 // Check if we're on a native platform (notifications fully supported)
 const isNative = Platform.OS === "ios" || Platform.OS === "android";
 
-// Configure notification handler (only on native)
-if (isNative) {
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
-  });
+const isExpoGo =
+  // Expo SDK 54+ (preferred)
+  (Constants as any).executionEnvironment === "storeClient" ||
+  // Older SDKs
+  (Constants as any).appOwnership === "expo";
+
+let notificationsPromise: Promise<
+  typeof import("expo-notifications") | null
+> | null = null;
+let handlerInitialized = false;
+
+async function getNotifications() {
+  // Expo Go on Android crashes at import-time for expo-notifications (remote notifications removed).
+  // We keep notifications behind a lazy import so SettingsScreen can still render in Expo Go.
+  if (!isNative) return null;
+  if (isExpoGo) return null;
+
+  if (!notificationsPromise) {
+    notificationsPromise = import("expo-notifications")
+      .then((mod) => mod)
+      .catch(() => null);
+  }
+  const Notifications = await notificationsPromise;
+  if (!Notifications) return null;
+
+  // Configure notification handler once
+  if (!handlerInitialized) {
+    handlerInitialized = true;
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  }
+
+  return Notifications;
 }
 
 export const requestNotificationPermissions = async (): Promise<boolean> => {
   // Notifications not fully supported on web
   if (!isNative) {
     console.warn("Notifications are not fully supported on web");
+    return false;
+  }
+
+  const Notifications = await getNotifications();
+  if (!Notifications) {
+    console.warn(
+      "Notifications are not supported in this environment (Expo Go / unsupported runtime)."
+    );
     return false;
   }
 
@@ -43,6 +80,14 @@ export const scheduleReminder = async (
   // Notifications not fully supported on web
   if (!isNative) {
     console.warn("Scheduled notifications are not supported on web");
+    return null;
+  }
+
+  const Notifications = await getNotifications();
+  if (!Notifications) {
+    console.warn(
+      "Scheduled notifications are not supported in this environment (Expo Go / unsupported runtime)."
+    );
     return null;
   }
 
@@ -94,6 +139,11 @@ export const scheduleReminder = async (
 export const cancelReminder = async (): Promise<void> => {
   // Notifications not fully supported on web
   if (!isNative) {
+    return;
+  }
+
+  const Notifications = await getNotifications();
+  if (!Notifications) {
     return;
   }
 

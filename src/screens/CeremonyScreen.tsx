@@ -259,9 +259,11 @@ export const CeremonyScreen: React.FC = () => {
 
   return (
     <ScreenBackground>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView testID="ceremony-screen" accessibilityLabel="ceremony-screen" style={{ flex: 1 }}>
         {ceremonyState === "ready" && (
           <ScrollView
+            testID="ceremony-ready-view"
+            accessibilityLabel="ceremony-ready-view"
             style={{ flex: 1 }}
             contentContainerStyle={{ paddingBottom: 40 }}
             showsVerticalScrollIndicator={false}
@@ -341,6 +343,7 @@ export const CeremonyScreen: React.FC = () => {
 
             <View style={{ paddingHorizontal: 16, marginBottom: 32 }}>
               <Button
+                testID="start-ceremony-action"
                 title={t("start_ceremony")}
                 icon={<PlayIcon size={20} color="#ffffff" />}
                 onPress={startCountdown}
@@ -545,21 +548,6 @@ export const CeremonyScreen: React.FC = () => {
               ))}
             </View>
 
-            <TouchableOpacity
-              onPress={goHome}
-              style={{
-                alignItems: "center",
-                paddingVertical: 16,
-                marginBottom: 80,
-              }}
-            >
-              <Text
-                style={{ fontSize: 15, color: "rgba(255,255,255,0.4)" }}
-                numberOfLines={1}
-              >
-                {t("cancel")}
-              </Text>
-            </TouchableOpacity>
           </ScrollView>
         )}
 

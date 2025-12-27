@@ -1,0 +1,55 @@
+# Navigation Flow
+# Tests bottom tab navigation between screens
+appId: host.exp.Exponent
+tags:
+  - smoke
+  - navigation
+
+---
+
+# Launch/connect to Expo Go (app content is loaded by Expo dev server)
+- launchApp:
+    clearState: false
+    clearKeychain: false
+    stopApp: false
+
+# Navigate to home tab (in case we're on another screen from previous test)
+- tapOn:
+    id: "tab-home"
+    optional: true
+
+# Wait for home screen to load
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 30000
+
+# Verify we're on home screen
+- assertVisible:
+    id: "home-screen"
+
+# Navigate to Settings
+- tapOn:
+    id: "tab-settings"
+
+- assertVisible:
+    id: "settings-screen"
+
+- takeScreenshot: settings_screen
+
+# Navigate to Stats
+- tapOn:
+    id: "tab-stats"
+
+- assertVisible:
+    id: "stats-screen"
+
+- takeScreenshot: stats_screen
+
+# Navigate back to Home
+- tapOn:
+    id: "tab-home"
+
+- assertVisible:
+    id: "home-screen"
+

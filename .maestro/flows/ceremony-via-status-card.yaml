@@ -1,0 +1,40 @@
+# Ceremony via Status Card Flow
+# Tests starting a ceremony by tapping the status card
+appId: host.exp.Exponent
+tags:
+  - regression
+  - ceremony
+
+---
+
+# Launch/connect to Expo Go (app content is loaded by Expo dev server)
+- launchApp:
+    clearState: false
+    clearKeychain: false
+    stopApp: false
+
+# Navigate to home tab (in case we're on another screen from previous test)
+- tapOn:
+    id: "tab-home"
+    optional: true
+
+# Wait for home screen to load
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 30000
+
+# Verify home screen is loaded
+- assertVisible:
+    id: "home-screen"
+
+# Tap status card to navigate to ceremony
+- tapOn:
+    id: "status-card"
+
+# Verify ceremony screen is loaded
+- assertVisible:
+    id: "ceremony-screen"
+
+- takeScreenshot: ceremony_from_status_card
+

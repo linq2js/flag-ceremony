@@ -1,0 +1,63 @@
+# Ceremony Start Flow
+# Tests starting a flag ceremony from home screen
+appId: host.exp.Exponent
+tags:
+  - smoke
+  - ceremony
+
+---
+
+# Launch/connect to Expo Go (app content is loaded by Expo dev server)
+- launchApp:
+    clearState: false
+    clearKeychain: false
+    stopApp: false
+
+# Navigate to home tab (in case we're on another screen from previous test)
+- tapOn:
+    id: "tab-home"
+    optional: true
+
+# Wait for home screen to load
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 30000
+
+# Verify home screen is loaded
+- assertVisible:
+    id: "home-screen"
+
+# Scroll down to find the CTA button (it's at the bottom of the scroll view)
+- scrollUntilVisible:
+    element:
+      id: "start-ceremony-btn"
+    direction: DOWN
+    timeout: 10000
+
+# Tap the main CTA button
+- tapOn:
+    id: "start-ceremony-btn"
+
+# Verify ceremony screen is loaded
+- assertVisible:
+    id: "ceremony-screen"
+
+- assertVisible:
+    id: "ceremony-ready-view"
+
+- assertVisible:
+    id: "start-ceremony-action"
+
+- takeScreenshot: ceremony_ready
+
+# Start the ceremony countdown
+- tapOn:
+    id: "start-ceremony-action"
+
+# Wait for countdown to appear
+- assertVisible:
+    id: "countdown-view"
+    
+- takeScreenshot: ceremony_countdown
+

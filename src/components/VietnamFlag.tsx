@@ -337,9 +337,20 @@ export const VietnamFlag: React.FC<VietnamFlagProps> = ({
 };
 
 // Small icon version for tab bar, buttons, etc.
-export const VietnamFlagIcon: React.FC<{ size?: number }> = ({ size = 24 }) => {
-  const width = size;
-  const height = size * 0.67;
+export const VietnamFlagIcon: React.FC<{
+  /** Convenience sizing (maps to width). Prefer `height` for tab bar alignment. */
+  size?: number;
+  /** Explicit width in px (overrides `size` if provided). */
+  width?: number;
+  /** Explicit height in px (recommended). If set, width is derived to keep aspect. */
+  height?: number;
+}> = ({ size = 24, width: widthProp, height: heightProp }) => {
+  // Keep the same aspect ratio as before (height = width * 0.67)
+  const heightFromWidth = (w: number) => w * 0.67;
+  const widthFromHeight = (h: number) => h / 0.67;
+
+  const height = heightProp ?? (widthProp ? heightFromWidth(widthProp) : heightFromWidth(size));
+  const width = widthProp ?? (heightProp ? widthFromHeight(heightProp) : size);
 
   return (
     <View style={{ borderRadius: 2, overflow: "hidden" }}>

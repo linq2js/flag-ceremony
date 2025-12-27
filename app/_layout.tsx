@@ -1,6 +1,16 @@
 import { Tabs } from "expo-router";
-import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Platform,
+  Animated,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BlurView } from "expo-blur";
 import { StoreProvider, useStore } from "storion/react";
 import {
   app,
@@ -11,6 +21,7 @@ import {
 import { showAlert } from "../src/utils/alert";
 import { VietnamFlagIcon } from "../src/components/VietnamFlag";
 import { HomeIcon, StatsIcon, SettingsIcon } from "../src/components/Icons";
+import { palette } from "../src/design/colors";
 import "../global.css";
 
 // Type for custom tab bar props
@@ -40,23 +51,55 @@ const TAB_CONFIG = [
 ];
 
 function CustomTabBar({ state, navigation }: TabBarProps) {
+  const insets = useSafeAreaInsets();
   const { t, ceremonyActive, stopCeremonyAndLogIncomplete } = useStore({
     t: tMixin,
     ceremonyActive: ceremonyActiveMixin,
     stopCeremonyAndLogIncomplete: stopCeremonyAndLogIncompleteMixin,
   });
 
+  const tabBarHeight = 74;
+  const iconSize = 22;
+
+  const activeColor = palette.orange[500];
+  const inactiveColor = palette.white[55];
+
+  // Local layout state (avoid Storion for this component-local UI value)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [layoutWidth, setLayoutWidth] = require("react").useState(0);
+
+  // Active indicator animation
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const indicatorX = require("react").useRef(new Animated.Value(0)).current;
+
   const renderIcon = (icon: string, focused: boolean) => {
-    const color = focused ? "#1a1a1a" : "rgba(255,255,255,0.5)";
+    const color = focused ? activeColor : inactiveColor;
     switch (icon) {
       case "home":
-        return <HomeIcon size={18} color={color} />;
+        return (
+          <View style={styles.iconBox}>
+            <HomeIcon size={iconSize} color={color} />
+          </View>
+        );
       case "flag":
-        return <VietnamFlagIcon size={16} />;
+        // Keep the flag icon as-is (it has its own colors)
+        return (
+          <View style={styles.iconBox}>
+            <VietnamFlagIcon height={iconSize} />
+          </View>
+        );
       case "stats":
-        return <StatsIcon size={18} color={color} />;
+        return (
+          <View style={styles.iconBox}>
+            <StatsIcon size={iconSize} color={color} />
+          </View>
+        );
       case "settings":
-        return <SettingsIcon size={18} color={color} />;
+        return (
+          <View style={styles.iconBox}>
+            <SettingsIcon size={iconSize} color={color} />
+          </View>
+        );
       default:
         return null;
     }
@@ -84,26 +127,78 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
     }
   };
 
+  const tabCount = state.routes.length;
+  const segmentWidth = layoutWidth > 0 ? layoutWidth / tabCount : 0;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  require("react").useEffect(() => {
+    if (segmentWidth <= 0) return;
+    Animated.spring(indicatorX, {
+      toValue: segmentWidth * state.index,
+      useNativeDriver: true,
+      damping: 18,
+      stiffness: 220,
+      mass: 0.7,
+    }).start();
+  }, [segmentWidth, state.index, indicatorX]);
+
   return (
-    <View style={styles.tabBar}>
-      {state.routes.map((route, index) => {
-        const config = TAB_CONFIG.find((c) => c.name === route.name);
-        if (!config) return null;
-
-        const focused = state.index === index;
-        const label = t(config.labelKey);
-
-        return (
-          <Pressable
-            key={route.key}
-            onPress={() => handleTabPress(route.name, state.index)}
-            style={[styles.tabItem, focused && styles.tabItemFocused]}
+    <View
+      style={[styles.tabBarShell, { bottom: insets.bottom + 12 }]}
+      pointerEvents="box-none"
+    >
+      <BlurView
+        tint="dark"
+        intensity={45}
+        style={[styles.tabBar, { height: tabBarHeight }]}
+        onLayout={(e) => setLayoutWidth(e.nativeEvent.layout.width)}
+      >
+        {/* Active top indicator */}
+        {segmentWidth > 0 && (
+          <Animated.View
+            style={[
+              styles.activeIndicator,
+              {
+                width: segmentWidth,
+                transform: [{ translateX: indicatorX }],
+              },
+            ]}
           >
-            {renderIcon(config.icon, focused)}
-            {focused && <Text style={styles.label}>{label}</Text>}
-          </Pressable>
-        );
-      })}
+            <LinearGradient
+              colors={[palette.crimson[500], palette.orange[500]]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
+        )}
+
+        {state.routes.map((route, index) => {
+          const config = TAB_CONFIG.find((c) => c.name === route.name);
+          if (!config) return null;
+
+          const focused = state.index === index;
+          const label = t(config.labelKey);
+
+          const testID = `tab-${
+            config.name === "index" ? "home" : config.name
+          }`;
+          return (
+            <Pressable
+              key={route.key}
+              testID={testID}
+              accessibilityLabel={testID}
+              onPress={() => handleTabPress(route.name, state.index)}
+              style={styles.tabItem}
+            >
+              {renderIcon(config.icon, focused)}
+              <Text style={[styles.label, focused && styles.labelFocused]}>
+                {label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </BlurView>
     </View>
   );
 }
@@ -130,18 +225,25 @@ const styles = StyleSheet.create({
   sceneContainer: {
     backgroundColor: "#0a0a0a",
   },
-  tabBar: {
+  tabBarShell: {
     position: "absolute",
-    bottom: 24,
-    left: 16,
-    right: 16,
-    height: 56,
-    backgroundColor: "#1a1a1a",
-    borderRadius: 28,
+    left: 12,
+    right: 12,
+    alignItems: "center",
+  },
+  tabBar: {
+    width: "100%",
+    maxWidth: 420,
+    height: 74,
+    borderRadius: 18,
+    overflow: "hidden",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 8,
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(18,18,18,0.55)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
     ...Platform.select({
       web: {
         boxShadow: "0 8px 16px rgba(0, 0, 0, 0.3)",
@@ -155,22 +257,34 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  activeIndicator: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: 4,
+    opacity: 0.9,
+  },
   tabItem: {
-    flexDirection: "row",
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    height: 44,
-    paddingHorizontal: 16,
-    borderRadius: 22,
+    height: "100%",
+    paddingTop: 12,
+    paddingBottom: 10,
+    gap: 7,
   },
-  tabItemFocused: {
-    backgroundColor: "#ffffff",
-    gap: 8,
+  iconBox: {
+    height: 22,
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
     fontSize: 12,
-    fontWeight: "700",
-    color: "#1a1a1a",
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.6)",
+  },
+  labelFocused: {
+    color: palette.orange[500],
   },
 });
 

@@ -15,6 +15,7 @@ interface ButtonProps {
   icon?: React.ReactNode;
   loading?: boolean;
   disabled?: boolean;
+  testID?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -25,6 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   loading = false,
   disabled = false,
+  testID,
 }) => {
   const sizeStyles = {
     small: {
@@ -81,6 +83,8 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <TouchableOpacity
+      testID={testID}
+      accessibilityLabel={testID}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.85}

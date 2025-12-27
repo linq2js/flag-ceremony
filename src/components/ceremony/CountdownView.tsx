@@ -40,7 +40,7 @@ export const CountdownView: React.FC<CountdownViewProps> = ({
   }));
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View testID="countdown-view" accessibilityLabel="countdown-view" style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Animated.View style={animatedStyle}>
         <Text
           style={{

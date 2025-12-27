@@ -108,7 +108,7 @@ export const StatsScreen: React.FC = () => {
 
   return (
     <ScreenBackground>
-      <SafeAreaView style={layout.screenContent} edges={["top"]}>
+      <SafeAreaView testID="stats-screen" accessibilityLabel="stats-screen" style={layout.screenContent} edges={["top"]}>
         <ScrollView
           style={layout.screenContent}
           contentContainerStyle={layout.scrollContent}

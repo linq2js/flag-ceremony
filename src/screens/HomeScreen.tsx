@@ -114,7 +114,12 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <ScreenBackground>
-      <SafeAreaView style={layout.screenContent} edges={["top"]}>
+      <SafeAreaView
+        testID="home-screen"
+        accessibilityLabel="home-screen"
+        style={layout.screenContent}
+        edges={["top"]}
+      >
         <ScrollView
           style={layout.screenContent}
           contentContainerStyle={layout.scrollContentLarge}
@@ -132,6 +137,8 @@ export const HomeScreen: React.FC = () => {
               {greeting}
             </Text>
             <Text
+              testID="app-title"
+              accessibilityLabel="app-title"
               style={[textStyles.screenTitle, { marginTop: spacing[2] }]}
               numberOfLines={1}
             >
@@ -146,7 +153,11 @@ export const HomeScreen: React.FC = () => {
           </View>
 
           {/* Hero Vietnam Flag */}
-          <View style={[layout.centered, { paddingVertical: spacing[10] }]}>
+          <View
+            testID="vietnam-flag"
+            accessibilityLabel="vietnam-flag"
+            style={[layout.centered, { paddingVertical: spacing[10] }]}
+          >
             <View style={getShadow(shadows.crimson)}>
               <VietnamFlag
                 width={Math.min(screenWidth - 64, 280)}
@@ -158,6 +169,8 @@ export const HomeScreen: React.FC = () => {
 
           {/* Status Card - Always tappable */}
           <TouchableOpacity
+            testID="status-card"
+            accessibilityLabel="status-card"
             onPress={() => router.push("/ceremony")}
             activeOpacity={0.9}
             style={[layout.container, { marginBottom: spacing[9] }]}
@@ -234,6 +247,7 @@ export const HomeScreen: React.FC = () => {
             ]}
           >
             <StatsCard
+              testID="streak-stat"
               icon="🔥"
               label={t("current_streak")}
               value={currentStreak}
@@ -241,6 +255,7 @@ export const HomeScreen: React.FC = () => {
               color="gold"
             />
             <StatsCard
+              testID="week-stat"
               icon="📅"
               label={t("this_week")}
               value={thisWeekCount}
@@ -250,7 +265,7 @@ export const HomeScreen: React.FC = () => {
           </View>
 
           {/* History */}
-          <View style={{ marginBottom: spacing[10] }}>
+          <View testID="history-card" accessibilityLabel="history-card" style={{ marginBottom: spacing[10] }}>
             <HistoryCard
               events={historicalEvents}
               date={todayFormatted}
@@ -292,6 +307,7 @@ export const HomeScreen: React.FC = () => {
           {/* CTA Button */}
           <View style={[layout.container, { marginTop: spacing[11] }]}>
             <Button
+              testID="start-ceremony-btn"
               title={t("start_flag_ceremony")}
               icon={<VietnamFlagIcon size={22} />}
               onPress={() => router.push("/ceremony")}

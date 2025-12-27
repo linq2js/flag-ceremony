@@ -1,0 +1,61 @@
+# Home Screen Flow
+# Tests the main home screen functionality
+appId: host.exp.Exponent
+tags:
+  - smoke
+  - home
+
+---
+
+# Launch/connect to Expo Go (app content is loaded by Expo dev server)
+- launchApp:
+    clearState: false
+    clearKeychain: false
+    stopApp: false
+
+# Navigate to home tab (in case we're on another screen from previous test)
+- tapOn:
+    id: "tab-home"
+    optional: true
+
+# Wait for home screen to load
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 30000
+
+# Verify home screen elements are visible
+- assertVisible:
+    id: "home-screen"
+    
+- assertVisible:
+    id: "app-title"
+    
+- assertVisible:
+    id: "vietnam-flag"
+
+- assertVisible:
+    id: "status-card"
+    
+- assertVisible:
+    id: "streak-stat"
+    
+- assertVisible:
+    id: "week-stat"
+
+- assertVisible:
+    id: "history-card"
+
+# Scroll down to find the CTA button
+- scrollUntilVisible:
+    element:
+      id: "start-ceremony-btn"
+    direction: DOWN
+    timeout: 10000
+
+- assertVisible:
+    id: "start-ceremony-btn"
+
+# Take a screenshot for visual verification
+- takeScreenshot: home_screen
+

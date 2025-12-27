@@ -1,0 +1,287 @@
+---
+alwaysApply: true
+---
+
+# Flag Ceremony - AI Coding Rules
+
+A Vietnamese flag ceremony app built with Expo, React Native, and Storion.
+
+## Project Overview
+
+- **Framework**: Expo SDK 54 with New Architecture
+- **Navigation**: expo-router (file-based routing)
+- **State Management**: Storion
+- **Styling**: NativeWind (TailwindCSS for React Native)
+- **E2E Testing**: Maestro
+
+## Directory Structure
+
+```
+app/                    # expo-router screens (file-based routing)
+  _layout.tsx           # Root layout with tab navigation
+  index.tsx             # Home screen route
+  ceremony.tsx          # Ceremony screen route
+  stats.tsx             # Stats screen route
+  settings.tsx          # Settings screen route
+
+src/
+  components/           # Reusable UI components
+    ceremony/           # Ceremony-specific components
+  screens/              # Screen implementations (imported by app/ routes)
+  store/                # Storion stores and mixins
+  design/               # Design system (colors, typography, spacing)
+  utils/                # Utility functions
+  i18n/                 # Internationalization
+  data/                 # Static data (JSON files)
+
+.maestro/               # E2E test flows
+  config.yaml           # Maestro configuration
+  flows/                # Test flow YAML files
+```
+
+## Package Management
+
+**Use npm or yarn for this project, NOT pnpm.**
+
+pnpm has issues with Expo's module resolution, especially for packages with subpath exports like `storion/react`.
+
+```bash
+# ✅ CORRECT
+npm install <package>
+
+# ❌ WRONG
+pnpm add <package>
+```
+
+## Storion Usage
+
+This project uses Storion for state management. Follow these conventions:
+
+### Imports
+
+```ts
+import { useStore } from "storion/react";
+import { myMixin } from "../store";
+```
+
+### Using Mixins
+
+```tsx
+const { value, action } = useStore({
+  value: valueMixin,
+  action: actionMixin,
+});
+```
+
+### Store Files
+
+Store definitions are in `src/store/`:
+
+- `container.ts` - App container
+- `ceremony.ts` - Ceremony state and actions
+- `settings.ts` - User settings
+- `i18n.ts` - Internationalization
+- `mixins.ts` - Reusable mixins
+
+## Component Guidelines
+
+### Screen Components
+
+Screens are in `src/screens/` and wrapped by routes in `app/`:
+
+```tsx
+// src/screens/MyScreen.tsx
+export const MyScreen: React.FC = () => {
+  return (
+    <ScreenBackground>
+      <SafeAreaView testID="my-screen">{/* Content */}</SafeAreaView>
+    </ScreenBackground>
+  );
+};
+```
+
+### TestID Convention
+
+Always add `testID` and `accessibilityLabel` to interactive elements for E2E testing:
+
+```tsx
+<TouchableOpacity
+  testID="my-button"
+  accessibilityLabel="my-button"
+  onPress={handlePress}
+>
+  <Text>Click Me</Text>
+</TouchableOpacity>
+```
+
+For custom components, support `testID` as a prop:
+
+```tsx
+interface ButtonProps {
+  testID?: string;
+  // ... other props
+}
+
+export const Button: React.FC<ButtonProps> = ({ testID, ...props }) => (
+  <TouchableOpacity testID={testID} accessibilityLabel={testID} {...props} />
+);
+```
+
+### TestID Naming Convention
+
+| Element Type | Pattern           | Example                          |
+| ------------ | ----------------- | -------------------------------- |
+| Screen       | `{screen}-screen` | `home-screen`, `settings-screen` |
+| Tab          | `tab-{name}`      | `tab-home`, `tab-settings`       |
+| Button       | `{action}-btn`    | `start-ceremony-btn`             |
+| Card         | `{name}-card`     | `status-card`, `history-card`    |
+| Input        | `{field}-input`   | `email-input`                    |
+| Section      | `{name}-section`  | `language-section`               |
+| List item    | `{name}-item`     | `language-vi`, `language-en`     |
+
+## E2E Testing with Maestro
+
+### Test File Location
+
+E2E tests are in `.maestro/flows/` as YAML files.
+
+### Running Tests
+
+```bash
+# Run all tests
+npm run e2e
+
+# Run smoke tests only
+npm run e2e:smoke
+
+# Run single test
+maestro test .maestro/flows/home.yaml
+```
+
+### Writing Tests
+
+```yaml
+appId: com.flagceremony.app
+tags:
+  - smoke
+  - my-feature
+
+---
+- launchApp
+
+- assertVisible:
+    id: "home-screen"
+
+- tapOn:
+    id: "my-button"
+
+- takeScreenshot: result_screenshot
+```
+
+### Test Tags
+
+- `smoke` - Quick validation tests (run on every PR)
+- `regression` - Full test suite
+- `home`, `ceremony`, `settings`, `stats`, `navigation` - Feature-specific
+
+### When Adding New Features
+
+1. Add `testID` to new interactive elements
+2. Update `E2E_TESTING.md` with new test IDs
+3. Write Maestro test flow for the feature
+4. Add appropriate tags
+
+## Design System
+
+Use values from `src/design/`:
+
+```tsx
+import {
+  colors,
+  palette,
+  textStyles,
+  spacing,
+  layout,
+  cardStyles,
+  glassEffect,
+} from "../design";
+```
+
+### Colors
+
+- `palette.crimson` - Red theme colors
+- `palette.gold` - Gold/yellow accent colors
+- `palette.white` - White with opacity variants
+- `palette.dark` - Dark backgrounds
+
+### Typography
+
+Use `textStyles` for consistent text:
+
+```tsx
+<Text style={textStyles.screenTitle}>Title</Text>
+<Text style={textStyles.body}>Body text</Text>
+<Text style={textStyles.label}>Label</Text>
+```
+
+### Spacing
+
+Use `spacing` for consistent margins/padding:
+
+```tsx
+style={{ padding: spacing[7], marginBottom: spacing[9] }}
+```
+
+## Internationalization
+
+### Translation Keys
+
+Translations are in `src/i18n/translations.ts`.
+
+### Using Translations
+
+```tsx
+const { t } = useStore({ t: tMixin });
+
+<Text>{t("app_name")}</Text>
+<Text>{t("streak_low", { count: 5 })}</Text>
+```
+
+### Adding New Translations
+
+Add to both `en` and `vi` in `translations.ts`:
+
+```ts
+export const translations = {
+  en: {
+    my_key: "English text",
+  },
+  vi: {
+    my_key: "Vietnamese text",
+  },
+};
+```
+
+## Commit Messages
+
+Use conventional commit format:
+
+```
+type(scope): subject
+
+# Examples
+feat(ceremony): add countdown animation
+fix(settings): language switch not persisting
+test(e2e): add ceremony flow tests
+```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+## Code Style
+
+- Use TypeScript strict mode
+- Prefer functional components with hooks
+- Use `React.FC<Props>` for component typing
+- Destructure props at component level
+- Keep components focused and small
+- Extract reusable logic into custom hooks or mixins

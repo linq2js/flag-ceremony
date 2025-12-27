@@ -1,0 +1,15 @@
+# Maestro Configuration
+# https://maestro.mobile.dev/cli/configuration
+
+# App settings - Expo Go bundle ID
+appId: host.exp.Exponent
+
+# Default values
+tags:
+  - smoke
+  - regression
+
+# Environment variables available in all flows
+env:
+  APP_NAME: "Flag Ceremony"
+

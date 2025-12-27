@@ -178,7 +178,7 @@ export const SettingsScreen: React.FC = () => {
 
   return (
     <ScreenBackground>
-      <SafeAreaView style={layout.screenContent} edges={["top"]}>
+      <SafeAreaView testID="settings-screen" accessibilityLabel="settings-screen" style={layout.screenContent} edges={["top"]}>
         <ScrollView
           style={layout.screenContent}
           contentContainerStyle={layout.scrollContent}
@@ -199,7 +199,7 @@ export const SettingsScreen: React.FC = () => {
           </View>
 
           {/* Language Section */}
-          <View style={[layout.container, { marginBottom: spacing[10] }]}>
+          <View testID="language-section" accessibilityLabel="language-section" style={[layout.container, { marginBottom: spacing[10] }]}>
             <SectionHeader icon="🌐" title={t("language")} />
 
             <View
@@ -207,6 +207,8 @@ export const SettingsScreen: React.FC = () => {
               style={[cardStyles.list, glassEffect]}
             >
               <TouchableOpacity
+                testID="language-vi"
+                accessibilityLabel="language-vi"
                 onPress={() => setLanguage("vi")}
                 style={[
                   listItem,
@@ -226,6 +228,8 @@ export const SettingsScreen: React.FC = () => {
                 </Text>
                 {language === "vi" && (
                   <View
+                    testID="language-vi-selected"
+                    accessibilityLabel="language-vi-selected"
                     style={{
                       width: 26,
                       height: 26,
@@ -243,6 +247,8 @@ export const SettingsScreen: React.FC = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
+                testID="language-en"
+                accessibilityLabel="language-en"
                 onPress={() => setLanguage("en")}
                 style={[
                   listItem,
@@ -260,6 +266,8 @@ export const SettingsScreen: React.FC = () => {
                 </Text>
                 {language === "en" && (
                   <View
+                    testID="language-en-selected"
+                    accessibilityLabel="language-en-selected"
                     style={{
                       width: 26,
                       height: 26,

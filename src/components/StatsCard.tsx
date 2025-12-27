@@ -7,6 +7,7 @@ interface StatsCardProps {
   value: number | string;
   sublabel?: string;
   color?: "gold" | "crimson" | "white" | "green";
+  testID?: string;
 }
 
 export const StatsCard: React.FC<StatsCardProps> = ({
@@ -15,6 +16,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   value,
   sublabel,
   color = "gold",
+  testID,
 }) => {
   const colors = {
     gold: { accent: "#fbbf24", bg: "rgba(251, 191, 36, 0.08)" },
@@ -35,6 +37,8 @@ export const StatsCard: React.FC<StatsCardProps> = ({
 
   return (
     <View
+      testID={testID}
+      accessibilityLabel={testID}
       style={[
         {
           flex: 1,

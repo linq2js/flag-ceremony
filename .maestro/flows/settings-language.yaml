@@ -1,0 +1,57 @@
+# Settings - Language Change Flow
+# Tests changing the app language
+appId: host.exp.Exponent
+tags:
+  - regression
+  - settings
+
+---
+
+# Launch/connect to Expo Go (app content is loaded by Expo dev server)
+- launchApp:
+    clearState: false
+    clearKeychain: false
+    stopApp: false
+
+# Navigate to home tab (in case we're on another screen from previous test)
+- tapOn:
+    id: "tab-home"
+    optional: true
+
+# Wait for home screen to load
+- extendedWaitUntil:
+    visible:
+      id: "home-screen"
+    timeout: 30000
+
+# Navigate to Settings
+- tapOn:
+    id: "tab-settings"
+
+- assertVisible:
+    id: "settings-screen"
+
+# Verify language section exists
+- assertVisible:
+    id: "language-section"
+
+# Select Vietnamese language
+- tapOn:
+    id: "language-vi"
+
+# Verify Vietnamese is selected
+- assertVisible:
+    id: "language-vi-selected"
+
+- takeScreenshot: language_vietnamese
+
+# Select English language
+- tapOn:
+    id: "language-en"
+
+# Verify English is selected
+- assertVisible:
+    id: "language-en-selected"
+
+- takeScreenshot: language_english
+
