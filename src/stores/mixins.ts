@@ -1,7 +1,8 @@
-import type { SelectorContext } from "storion/react";
+import { trigger, type SelectorContext } from "storion/react";
 import { settingsStore } from "./settings";
 import { ceremonyStore } from "./ceremony";
 import { i18nStore } from "./i18n";
+import { leaderboardStore } from "./leaderboard";
 
 // === i18n mixins ===
 
@@ -89,11 +90,6 @@ export const getMonthlyCountMixin = ({ get }: SelectorContext) => {
   return getMonthlyCount;
 };
 
-export const getRankingMixin = ({ get }: SelectorContext) => {
-  const [, { getRanking }] = get(ceremonyStore);
-  return getRanking;
-};
-
 export const getRecentLogsMixin = ({ get }: SelectorContext) => {
   const [, { getRecentLogs }] = get(ceremonyStore);
   return getRecentLogs;
@@ -112,4 +108,10 @@ export const setCeremonyActiveMixin = ({ get }: SelectorContext) => {
 export const stopCeremonyAndLogIncompleteMixin = ({ get }: SelectorContext) => {
   const [, { stopCeremonyAndLogIncomplete }] = get(ceremonyStore);
   return stopCeremonyAndLogIncomplete;
+};
+
+export const rankingMixin = ({ get }: SelectorContext) => {
+  const [state, { fetchRanking }] = get(leaderboardStore);
+  trigger(fetchRanking);
+  return state.ranking;
 };

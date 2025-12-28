@@ -11,7 +11,7 @@ import {
   reminderSettingsMixin,
   updateReminderSettingsMixin,
   calendarService,
-} from "../store";
+} from "../stores";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { textStyles, spacing, layout } from "../design";
 import {

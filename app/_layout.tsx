@@ -17,7 +17,7 @@ import {
   tMixin,
   ceremonyActiveMixin,
   stopCeremonyAndLogIncompleteMixin,
-} from "../src/store";
+} from "../src/stores";
 import { showAlert } from "../src/utils/alert";
 import { VietnamFlagIcon } from "../src/components/VietnamFlag";
 import { HomeIcon, StatsIcon, SettingsIcon } from "../src/components/Icons";

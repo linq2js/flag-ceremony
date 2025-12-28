@@ -1,26 +1,27 @@
 import { map, store } from "storion";
 import { notPersisted } from "storion/persist";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { abortable, AbortableResult } from "storion/async";
+import { storageService } from "@/services/storage";
 
 export const persistStore = store({
   state: {
     tasks: {} as Record<string, PromiseLike<any>>,
   },
-  setup({ focus }) {
-    let lastResult: AbortableResult<void>;
+  setup({ focus, get }) {
+    const storage = get(storageService);
+    const lastResults = new Map<string, AbortableResult<void>>();
     const tasks = focus("tasks").as(map());
 
     const loadData = (key: string) => {
       return tasks.ensure(key, async () => {
-        const res = await AsyncStorage.getItem(key);
+        const res = await storage.getItem(key);
         return JSON.parse(res ?? "{}");
       });
     };
 
     const saveData = abortable(async ({ safe }, key: string, data: any) => {
-      const prev = JSON.parse((await safe(AsyncStorage.getItem(key))) ?? "{}");
-      await AsyncStorage.setItem(
+      const prev = JSON.parse((await safe(storage.getItem(key))) ?? "{}");
+      await storage.setItem(
         key,
         JSON.stringify({ ...((prev as unknown as object) ?? {}), ...data })
       );
@@ -29,8 +30,8 @@ export const persistStore = store({
     return {
       loadData,
       saveData(key: string, data: any) {
-        lastResult?.abort();
-        lastResult = saveData(key, data);
+        lastResults.get(key)?.abort();
+        lastResults.set(key, saveData(key, data));
       },
     };
   },

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Platform } from "react-native";
-import type { HistoricalEvent } from "../store/types";
+import type { HistoricalEvent } from "../stores/types";
 
 interface HistoryCardProps {
   events: HistoricalEvent[];

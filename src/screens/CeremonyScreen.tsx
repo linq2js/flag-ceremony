@@ -34,7 +34,7 @@ import {
   PlayIcon,
 } from "../components/Icons";
 import { useStore, mixins } from "storion/react";
-import { tMixin, addCeremonyLogMixin, setCeremonyActiveMixin } from "../store";
+import { tMixin, addCeremonyLogMixin, setCeremonyActiveMixin } from "../stores";
 
 type CeremonyState = "ready" | "countdown" | "playing" | "completed";
 
@@ -561,14 +561,44 @@ export const CeremonyScreen: React.FC = () => {
         )}
 
         {ceremonyState === "playing" && (
-          <PlayingView
-            title={t("ceremony_in_progress")}
-            subtitle={t("stand_at_attention")}
-            playingLabel={t("playing_anthem")}
-            towerWidth={towerWidth}
-            towerHeight={towerHeight}
-            flagProgress={flagProgress}
-          />
+          <>
+            <PlayingView
+              title={t("ceremony_in_progress")}
+              subtitle={t("stand_at_attention")}
+              playingLabel={t("playing_anthem")}
+              towerWidth={towerWidth}
+              towerHeight={towerHeight}
+              flagProgress={flagProgress}
+            />
+            {__DEV__ && (
+              <TouchableOpacity
+                onPress={async () => {
+                  if (sound) {
+                    await sound.stopAsync();
+                    await sound.unloadAsync();
+                    setSound(null);
+                  }
+                  flagProgress.value = withTiming(1, { duration: 300 });
+                  completeCeremony();
+                }}
+                style={{
+                  position: "absolute",
+                  top: 16,
+                  right: 16,
+                  backgroundColor: "rgba(239, 68, 68, 0.9)",
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 16,
+                }}
+              >
+                <Text
+                  style={{ color: "#fff", fontWeight: "600", fontSize: 12 }}
+                >
+                  ⏭️ Skip
+                </Text>
+              </TouchableOpacity>
+            )}
+          </>
         )}
 
         {ceremonyState === "completed" && (

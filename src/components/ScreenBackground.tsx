@@ -30,11 +30,16 @@ export const ScreenBackground: React.FC<ScreenBackgroundProps> = ({
         />
       </View>
 
-      {/* Gradient overlay to blend */}
+      {/* Gradient overlay to blend - covers illustration during scroll */}
       <LinearGradient
-        colors={["transparent", "rgba(10,5,5,0.7)", "rgba(10,5,5,0.95)"]}
-        locations={[0, 0.4, 0.8]}
-        style={[StyleSheet.absoluteFill, { top: SCREEN_HEIGHT * 0.2 }]}
+        colors={[
+          "rgba(10,5,5,0.3)",
+          "rgba(10,5,5,0.7)",
+          "rgba(10,5,5,0.95)",
+          "#0a0505",
+        ]}
+        locations={[0, 0.15, 0.35, 0.5]}
+        style={StyleSheet.absoluteFill}
       />
 
       {/* Content */}

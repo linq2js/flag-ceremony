@@ -17,7 +17,7 @@ import {
   getThisWeekCountMixin,
   getTodayCompletedCountMixin,
   getTodayIncompleteCountMixin,
-} from "../store";
+} from "../stores";
 import { VietnamFlag, VietnamFlagIcon } from "../components/VietnamFlag";
 import { HistoryCard } from "../components/HistoryCard";
 import { StatsCard } from "../components/StatsCard";
@@ -266,8 +266,8 @@ export const HomeScreen: React.FC = () => {
             />
           </View>
 
-          {/* History */}
-          <View
+          {/* History - temporarily hidden */}
+          {/* <View
             testID="history-card"
             accessibilityLabel="history-card"
             style={{ marginBottom: spacing[10] }}
@@ -277,7 +277,7 @@ export const HomeScreen: React.FC = () => {
               date={todayFormatted}
               title={t("this_day_in_history")}
             />
-          </View>
+          </View> */}
 
           {/* Motivation */}
           <View

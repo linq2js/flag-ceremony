@@ -12,9 +12,8 @@ import {
   completedCeremoniesMixin,
   logsMixin,
   getMonthlyCountMixin,
-  getRankingMixin,
   getRecentLogsMixin,
-} from "../store";
+} from "../stores";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { getMonthName } from "../utils/history";
 import { textStyles, spacing, layout } from "../design";
@@ -25,6 +24,7 @@ import {
   RecentActivity,
   AchievementsSection,
 } from "../components/stats";
+import { rankingMixin } from "@/stores/mixins";
 
 export const StatsScreen: React.FC = () => {
   const {
@@ -37,8 +37,8 @@ export const StatsScreen: React.FC = () => {
     completedCeremonies,
     logs,
     getMonthlyCount,
-    getRanking,
     getRecentLogs,
+    ranking: { data: ranking },
   } = useStore(
     mixins({
       t: tMixin,
@@ -50,13 +50,12 @@ export const StatsScreen: React.FC = () => {
       completedCeremonies: completedCeremoniesMixin,
       logs: logsMixin,
       getMonthlyCount: getMonthlyCountMixin,
-      getRanking: getRankingMixin,
       getRecentLogs: getRecentLogsMixin,
+      ranking: rankingMixin,
     })
   );
 
   const monthlyCount = useMemo(() => getMonthlyCount(), [logs]);
-  const ranking = useMemo(() => getRanking(), [completedCeremonies]);
   const recentLogs = useMemo(() => getRecentLogs(10), [logs]);
   const currentMonth = useMemo(
     () => getMonthName(new Date().getMonth(), language),
@@ -93,10 +92,10 @@ export const StatsScreen: React.FC = () => {
       {
         icon: "👑",
         name: t("top_one_percent"),
-        unlocked: ranking.percentile >= 99,
+        unlocked: ranking ? ranking.percentile >= 99 : false,
       },
     ],
-    [completedCeremonies, longestStreak, ranking.percentile, t]
+    [completedCeremonies, longestStreak, ranking?.percentile, t]
   );
 
   return (
@@ -126,7 +125,7 @@ export const StatsScreen: React.FC = () => {
             </Text>
           </View>
 
-          <RankingCard t={t as any} ranking={ranking} />
+          {ranking && <RankingCard t={t as any} ranking={ranking} />}
 
           <StatsGrid
             t={t as any}

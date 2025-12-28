@@ -1,6 +1,7 @@
-import { persistStore } from "@/store/persist";
+import { persistStore } from "@/stores/persist";
 import { useStore } from "storion/react";
 import { async } from "storion/async";
+import { syncStore } from "@/stores/sync";
 
 /**
  * ServiceLoader - Blocks rendering until all persist tasks are loaded.
@@ -11,7 +12,8 @@ import { async } from "storion/async";
 export function ServiceLoader() {
   useStore(({ get }) => {
     const [state] = get(persistStore);
-
+    // Trigger syncStore to start background sync
+    get(syncStore);
     // This should suspend when tasks are pending
     async.all(state.tasks);
   });
