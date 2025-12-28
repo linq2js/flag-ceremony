@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { View, Text, ScrollView, Switch, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { showAlert } from "../utils/alert";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useStore } from "storion/react";
@@ -10,26 +10,16 @@ import {
   setLanguageMixin,
   reminderSettingsMixin,
   updateReminderSettingsMixin,
+  calendarService,
 } from "../store";
 import { ScreenBackground } from "../components/ScreenBackground";
+import { textStyles, spacing, layout } from "../design";
 import {
-  scheduleReminder,
-  requestNotificationPermissions,
-} from "../utils/notifications";
-import {
-  colors,
-  palette,
-  textStyles,
-  spacing,
-  radius,
-  layout,
-  cardStyles,
-  listItem,
-  iconContainer,
-  glassEffect,
-  decorativeOrb,
-  calendarDay,
-} from "../design";
+  LanguageSection,
+  ReminderSection,
+  AboutSection,
+  QuickActionsSection,
+} from "../components/settings";
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -39,38 +29,18 @@ export const SettingsScreen: React.FC = () => {
     setLanguage,
     reminderSettings,
     updateReminderSettings,
-  } = useStore({
-    t: tMixin,
-    language: languageMixin,
-    dayNames: dayNamesMixin,
-    setLanguage: setLanguageMixin,
-    reminderSettings: reminderSettingsMixin,
-    updateReminderSettings: updateReminderSettingsMixin,
-  });
-  const [isScheduling, setIsScheduling] = useState(false);
-  const handleReminderToggle = useCallback(
-    async (enabled: boolean) => {
-      if (enabled) {
-        const hasPermission = await requestNotificationPermissions();
-        if (!hasPermission) {
-          showAlert(
-            language === "vi" ? "Cần cấp quyền" : "Permission Required",
-            language === "vi"
-              ? "Vui lòng bật thông báo trong cài đặt thiết bị để nhận nhắc nhở chào cờ."
-              : "Please enable notifications in your device settings to receive ceremony reminders."
-          );
-          return;
-        }
-      }
-      updateReminderSettings({ enabled });
-      if (enabled) {
-        setIsScheduling(true);
-        await scheduleReminder({ ...reminderSettings, enabled: true });
-        setIsScheduling(false);
-      }
-    },
-    [reminderSettings, updateReminderSettings, language]
-  );
+    calendar,
+  } = useStore((ctx) => ({
+    t: tMixin(ctx),
+    language: languageMixin(ctx),
+    dayNames: dayNamesMixin(ctx),
+    setLanguage: setLanguageMixin(ctx),
+    reminderSettings: reminderSettingsMixin(ctx),
+    updateReminderSettings: updateReminderSettingsMixin(ctx),
+    calendar: ctx.get(calendarService),
+  }));
+
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleTimeChange = useCallback(
     (hours: number, minutes: number) => {
@@ -78,11 +48,8 @@ export const SettingsScreen: React.FC = () => {
         minutes
       ).padStart(2, "0")}`;
       updateReminderSettings({ time });
-      if (reminderSettings.enabled) {
-        scheduleReminder({ ...reminderSettings, time });
-      }
     },
-    [reminderSettings, updateReminderSettings]
+    [updateReminderSettings]
   );
 
   const handleDayToggle = useCallback(
@@ -92,93 +59,58 @@ export const SettingsScreen: React.FC = () => {
         ? currentDays.filter((d) => d !== dayIndex)
         : [...currentDays, dayIndex].sort();
       updateReminderSettings({ days: newDays });
-      if (reminderSettings.enabled) {
-        scheduleReminder({ ...reminderSettings, days: newDays });
-      }
     },
     [reminderSettings, updateReminderSettings]
   );
 
-  const [hours, minutes] = reminderSettings.time.split(":").map(Number);
+  const handleExportCalendar = useCallback(async () => {
+    if (reminderSettings.days.length === 0) {
+      showAlert(
+        language === "vi" ? "Chưa chọn ngày" : "No Days Selected",
+        language === "vi"
+          ? "Vui lòng chọn ít nhất một ngày để nhắc nhở."
+          : "Please select at least one day for reminders."
+      );
+      return;
+    }
 
-  // Section header component
-  const SectionHeader = ({ icon, title }: { icon: string; title: string }) => (
-    <View style={[layout.row, { marginBottom: spacing[7] }]}>
-      <Text style={{ fontSize: 22, marginRight: spacing[4] }}>{icon}</Text>
-      <Text style={textStyles.sectionTitle}>{title}</Text>
-    </View>
-  );
-
-  // Time button component
-  const TimeButton = ({
-    value,
-    selected,
-    onPress,
-  }: {
-    value: number;
-    selected: boolean;
-    onPress: () => void;
-  }) => (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        paddingHorizontal: spacing[6],
-        paddingVertical: spacing[4],
-        marginRight: spacing[3],
-        borderRadius: radius.md,
-        backgroundColor: selected ? palette.gold[500] : palette.white[6],
-        borderWidth: 1,
-        borderColor: selected ? palette.gold[400] : palette.white[4],
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 16,
-          fontWeight: "700",
-          color: selected ? palette.dark.base : palette.white[50],
-        }}
-      >
-        {String(value).padStart(2, "0")}
-      </Text>
-    </TouchableOpacity>
-  );
-
-  // Day button component - matches Stats screen calendar style
-  const DayButton = ({
-    dayIndex,
-    selected,
-  }: {
-    dayIndex: number;
-    selected: boolean;
-  }) => (
-    <View style={{ alignItems: "center" }}>
-      <Text
-        style={[textStyles.statLabel, { marginBottom: spacing[4] }]}
-      >
-        {dayNames[dayIndex]}
-      </Text>
-      <TouchableOpacity
-        onPress={() => handleDayToggle(dayIndex)}
-        style={[
-          calendarDay.cell,
-          selected
-            ? {
-                backgroundColor: palette.gold[500],
-                borderColor: palette.gold[400],
-              }
-            : calendarDay.default,
-        ]}
-      >
-        {selected && (
-          <Text style={{ fontSize: 18, color: palette.dark.base }}>✓</Text>
-        )}
-      </TouchableOpacity>
-    </View>
-  );
+    setIsExporting(true);
+    try {
+      const success = await calendar.exportCalendar(
+        {
+          time: reminderSettings.time,
+          days: reminderSettings.days,
+        },
+        language
+      );
+      if (success) {
+        showAlert(
+          language === "vi" ? "Thành công!" : "Success!",
+          language === "vi"
+            ? "Đã xuất file lịch. Mở file để thêm nhắc nhở vào ứng dụng lịch của bạn."
+            : "Calendar file exported. Open the file to add reminders to your calendar app."
+        );
+      }
+    } catch (error) {
+      showAlert(
+        language === "vi" ? "Lỗi" : "Error",
+        language === "vi"
+          ? "Không thể xuất file lịch. Vui lòng thử lại."
+          : "Failed to export calendar file. Please try again."
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  }, [reminderSettings, language, calendar]);
 
   return (
     <ScreenBackground>
-      <SafeAreaView testID="settings-screen" accessibilityLabel="settings-screen" style={layout.screenContent} edges={["top"]}>
+      <SafeAreaView
+        testID="settings-screen"
+        accessibilityLabel="settings-screen"
+        style={layout.screenContent}
+        edges={["top"]}
+      >
         <ScrollView
           style={layout.screenContent}
           contentContainerStyle={layout.scrollContent}
@@ -198,337 +130,25 @@ export const SettingsScreen: React.FC = () => {
             </Text>
           </View>
 
-          {/* Language Section */}
-          <View testID="language-section" accessibilityLabel="language-section" style={[layout.container, { marginBottom: spacing[10] }]}>
-            <SectionHeader icon="🌐" title={t("language")} />
+          <LanguageSection
+            t={t as any}
+            language={language}
+            setLanguage={setLanguage}
+          />
 
-            <View
-              // @ts-ignore
-              style={[cardStyles.list, glassEffect]}
-            >
-              <TouchableOpacity
-                testID="language-vi"
-                accessibilityLabel="language-vi"
-                onPress={() => setLanguage("vi")}
-                style={[
-                  listItem,
-                  {
-                    backgroundColor:
-                      language === "vi" ? palette.gold[100] : "transparent",
-                    borderBottomWidth: 1,
-                    borderBottomColor: palette.white[4],
-                  },
-                ]}
-              >
-                <Text style={{ fontSize: 32, marginRight: spacing[7] }}>
-                  🇻🇳
-                </Text>
-                <Text style={[textStyles.inputLabel, { flex: 1 }]}>
-                  {t("vietnamese")}
-                </Text>
-                {language === "vi" && (
-                  <View
-                    testID="language-vi-selected"
-                    accessibilityLabel="language-vi-selected"
-                    style={{
-                      width: 26,
-                      height: 26,
-                      borderRadius: 13,
-                      backgroundColor: palette.gold[500],
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text style={{ fontSize: 14, color: palette.dark.base }}>
-                      ✓
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
+          <ReminderSection
+            t={t as any}
+            dayNames={dayNames}
+            reminderSettings={reminderSettings}
+            isExporting={isExporting}
+            onTimeChange={handleTimeChange}
+            onDayToggle={handleDayToggle}
+            onExportCalendar={handleExportCalendar}
+          />
 
-              <TouchableOpacity
-                testID="language-en"
-                accessibilityLabel="language-en"
-                onPress={() => setLanguage("en")}
-                style={[
-                  listItem,
-                  {
-                    backgroundColor:
-                      language === "en" ? palette.gold[100] : "transparent",
-                  },
-                ]}
-              >
-                <Text style={{ fontSize: 32, marginRight: spacing[7] }}>
-                  🇬🇧
-                </Text>
-                <Text style={[textStyles.inputLabel, { flex: 1 }]}>
-                  {t("english")}
-                </Text>
-                {language === "en" && (
-                  <View
-                    testID="language-en-selected"
-                    accessibilityLabel="language-en-selected"
-                    style={{
-                      width: 26,
-                      height: 26,
-                      borderRadius: 13,
-                      backgroundColor: palette.gold[500],
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text style={{ fontSize: 14, color: palette.dark.base }}>
-                      ✓
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
+          <AboutSection t={t as any} />
 
-          {/* Reminder Section */}
-          <View style={[layout.container, { marginBottom: spacing[10] }]}>
-            <SectionHeader icon="🔔" title={t("daily_reminder")} />
-
-            <View
-              // @ts-ignore
-              style={[cardStyles.list, glassEffect]}
-            >
-              {/* Enable toggle */}
-              <View
-                style={[
-                  listItem,
-                  reminderSettings.enabled && {
-                    borderBottomWidth: 1,
-                    borderBottomColor: palette.white[4],
-                  },
-                ]}
-              >
-                <View style={{ flex: 1 }}>
-                  <Text style={textStyles.inputLabel}>
-                    {t("enable_reminders")}
-                  </Text>
-                  <Text
-                    style={[textStyles.inputHint, { marginTop: spacing[1] }]}
-                  >
-                    {t("reminder_desc")}
-                  </Text>
-                </View>
-                <Switch
-                  value={reminderSettings.enabled}
-                  onValueChange={handleReminderToggle}
-                  trackColor={{
-                    false: palette.white[8],
-                    true: palette.gold[400],
-                  }}
-                  thumbColor={
-                    reminderSettings.enabled ? palette.gold[500] : "#555"
-                  }
-                  disabled={isScheduling}
-                />
-              </View>
-
-              {reminderSettings.enabled && (
-                <>
-                  {/* Time picker */}
-                  <View
-                    style={{
-                      padding: spacing[8],
-                      borderBottomWidth: 1,
-                      borderBottomColor: palette.white[4],
-                    }}
-                  >
-                    <Text
-                      style={[
-                        textStyles.inputHint,
-                        { marginBottom: spacing[6] },
-                      ]}
-                    >
-                      {t("reminder_time")}
-                    </Text>
-                    <View style={layout.row}>
-                      <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={{ marginRight: spacing[4] }}
-                      >
-                        {Array.from({ length: 24 }, (_, i) => i).map((h) => (
-                          <TimeButton
-                            key={h}
-                            value={h}
-                            selected={h === hours}
-                            onPress={() => handleTimeChange(h, minutes)}
-                          />
-                        ))}
-                      </ScrollView>
-                      <Text
-                        style={{
-                          fontSize: 26,
-                          fontWeight: "700",
-                          color: palette.white[50],
-                          marginHorizontal: spacing[2],
-                        }}
-                      >
-                        :
-                      </Text>
-                      <View style={{ flexDirection: "row" }}>
-                        {[0, 15, 30, 45].map((m) => (
-                          <TimeButton
-                            key={m}
-                            value={m}
-                            selected={m === minutes}
-                            onPress={() => handleTimeChange(hours, m)}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                  </View>
-
-                  {/* Day picker */}
-                  <View style={{ padding: spacing[8] }}>
-                    <Text
-                      style={[
-                        textStyles.inputHint,
-                        { marginBottom: spacing[6] },
-                      ]}
-                    >
-                      {t("repeat_on_days")}
-                    </Text>
-                    <View style={layout.rowBetween}>
-                      {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => (
-                        <DayButton
-                          key={dayIndex}
-                          dayIndex={dayIndex}
-                          selected={reminderSettings.days.includes(dayIndex)}
-                        />
-                      ))}
-                    </View>
-                  </View>
-                </>
-              )}
-            </View>
-          </View>
-
-          {/* About Section */}
-          <View style={[layout.container, { marginBottom: spacing[10] }]}>
-            <SectionHeader icon="ℹ️" title={t("about")} />
-
-            <View
-              // @ts-ignore
-              style={[
-                cardStyles.default,
-                { padding: spacing[11], alignItems: "center" },
-                glassEffect,
-              ]}
-            >
-              <View
-                style={decorativeOrb(palette.crimson[500], 120, {
-                  top: -40,
-                  right: -40,
-                })}
-              />
-              <Text style={{ fontSize: 72, marginBottom: spacing[9] }}>🇻🇳</Text>
-              <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: "800",
-                  color: colors.text.primary,
-                }}
-              >
-                {t("app_name")}
-              </Text>
-              <Text style={[textStyles.sublabel, { marginTop: spacing[2] }]}>
-                {t("version")} 1.0.0
-              </Text>
-              <Text
-                style={[
-                  textStyles.body,
-                  { textAlign: "center", marginTop: spacing[9] },
-                ]}
-              >
-                {t("about_desc")}
-              </Text>
-            </View>
-          </View>
-
-          {/* Quick Actions Section */}
-          <View style={layout.container}>
-            <SectionHeader icon="⚡" title={t("quick_actions")} />
-
-            <View
-              // @ts-ignore
-              style={[cardStyles.list, glassEffect]}
-            >
-              <TouchableOpacity
-                style={[
-                  listItem,
-                  { borderBottomWidth: 1, borderBottomColor: palette.white[4] },
-                ]}
-                activeOpacity={0.7}
-                onPress={() =>
-                  showAlert(t("coming_soon"), t("coming_soon_message"))
-                }
-              >
-                <View
-                  style={[
-                    iconContainer.xlarge,
-                    {
-                      backgroundColor: palette.white[6],
-                      borderWidth: 1,
-                      borderColor: palette.white[8],
-                      marginRight: spacing[7],
-                    },
-                  ]}
-                >
-                  <Text style={{ fontSize: 24 }}>📤</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={textStyles.inputLabel}>{t("share_app")}</Text>
-                  <Text
-                    style={[textStyles.inputHint, { marginTop: spacing[1] }]}
-                  >
-                    {t("invite_friends")}
-                  </Text>
-                </View>
-                <Text style={{ fontSize: 20, color: palette.white[25] }}>
-                  →
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={listItem}
-                activeOpacity={0.7}
-                onPress={() =>
-                  showAlert(t("coming_soon"), t("coming_soon_message"))
-                }
-              >
-                <View
-                  style={[
-                    iconContainer.xlarge,
-                    {
-                      backgroundColor: palette.white[6],
-                      borderWidth: 1,
-                      borderColor: palette.white[8],
-                      marginRight: spacing[7],
-                    },
-                  ]}
-                >
-                  <Text style={{ fontSize: 24 }}>⭐</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={textStyles.inputLabel}>{t("rate_app")}</Text>
-                  <Text
-                    style={[textStyles.inputHint, { marginTop: spacing[1] }]}
-                  >
-                    {t("leave_review")}
-                  </Text>
-                </View>
-                <Text style={{ fontSize: 20, color: palette.white[25] }}>
-                  →
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <QuickActionsSection t={t as any} />
         </ScrollView>
       </SafeAreaView>
     </ScreenBackground>

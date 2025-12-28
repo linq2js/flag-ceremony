@@ -349,7 +349,9 @@ export const VietnamFlagIcon: React.FC<{
   const heightFromWidth = (w: number) => w * 0.67;
   const widthFromHeight = (h: number) => h / 0.67;
 
-  const height = heightProp ?? (widthProp ? heightFromWidth(widthProp) : heightFromWidth(size));
+  const height =
+    heightProp ??
+    (widthProp ? heightFromWidth(widthProp) : heightFromWidth(size));
   const width = widthProp ?? (heightProp ? widthFromHeight(heightProp) : size);
 
   return (

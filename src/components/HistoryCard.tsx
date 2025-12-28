@@ -104,7 +104,7 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({
             borderTopColor: "rgba(255,255,255,0.06)",
           }}
         >
-          {event.year && (
+          {event.year ? (
             <View
               style={{
                 backgroundColor: "rgba(251, 191, 36, 0.12)",
@@ -128,7 +128,7 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({
                 {event.year}
               </Text>
             </View>
-          )}
+          ) : null}
           <Text
             style={{
               fontSize: 15,

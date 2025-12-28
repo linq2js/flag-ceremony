@@ -1,6 +1,6 @@
 /**
  * Design System - Colors
- * 
+ *
  * Color palette for the Flag Ceremony app.
  * Uses semantic naming for easy theming and consistency.
  */
@@ -173,4 +173,3 @@ export const getStatusColors = (variant: StatusVariant) => {
       };
   }
 };
-

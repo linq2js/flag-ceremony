@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useStore } from "storion/react";
+import { useStore, mixins } from "storion/react";
 import {
   tMixin,
   languageMixin,
@@ -52,15 +52,17 @@ export const HomeScreen: React.FC = () => {
     getThisWeekCount,
     getTodayCompletedCount,
     getTodayIncompleteCount,
-  } = useStore({
-    t: tMixin,
-    language: languageMixin,
-    currentStreak: currentStreakMixin,
-    logs: logsMixin,
-    getThisWeekCount: getThisWeekCountMixin,
-    getTodayCompletedCount: getTodayCompletedCountMixin,
-    getTodayIncompleteCount: getTodayIncompleteCountMixin,
-  });
+  } = useStore(
+    mixins({
+      t: tMixin,
+      language: languageMixin,
+      currentStreak: currentStreakMixin,
+      logs: logsMixin,
+      getThisWeekCount: getThisWeekCountMixin,
+      getTodayCompletedCount: getTodayCompletedCountMixin,
+      getTodayIncompleteCount: getTodayIncompleteCountMixin,
+    })
+  );
 
   const historicalEvents = useMemo(
     () => getHistoricalEvents(language),
@@ -265,7 +267,11 @@ export const HomeScreen: React.FC = () => {
           </View>
 
           {/* History */}
-          <View testID="history-card" accessibilityLabel="history-card" style={{ marginBottom: spacing[10] }}>
+          <View
+            testID="history-card"
+            accessibilityLabel="history-card"
+            style={{ marginBottom: spacing[10] }}
+          >
             <HistoryCard
               events={historicalEvents}
               date={todayFormatted}

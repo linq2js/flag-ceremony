@@ -5,16 +5,13 @@ import { persisted } from "storion/persist";
 
 export interface SettingsState {
   reminderSettings: ReminderSettings;
-  notificationId: string | null;
 }
 
 const initialState: SettingsState = {
   reminderSettings: {
-    enabled: false,
     time: "07:00",
     days: [1, 2, 3, 4, 5], // Weekdays by default
   },
-  notificationId: null,
 };
 
 export const settingsStore = store({
@@ -28,13 +25,8 @@ export const settingsStore = store({
       };
     };
 
-    const setNotificationId = (id: string | null) => {
-      state.notificationId = id;
-    };
-
     return {
       updateReminderSettings,
-      setNotificationId,
     };
   },
   meta: persisted(),
@@ -42,6 +34,5 @@ export const settingsStore = store({
 
 export type SettingsActions = {
   updateReminderSettings: (settings: Partial<ReminderSettings>) => void;
-  setNotificationId: (id: string | null) => void;
   loadSettings: () => Promise<void>;
 };

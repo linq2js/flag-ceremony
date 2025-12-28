@@ -7,7 +7,8 @@ export { ceremonyStore } from "./ceremony";
 export { i18nStore } from "./i18n";
 
 // Services
-export { notificationService } from "./services";
+export { calendarService } from "./services";
+export type { CalendarSettings, CalendarService } from "./services";
 
 // Mixins - i18n
 export {
@@ -21,7 +22,6 @@ export {
 export {
   reminderSettingsMixin,
   updateReminderSettingsMixin,
-  notificationIdMixin,
 } from "./mixins";
 
 // Mixins - ceremony

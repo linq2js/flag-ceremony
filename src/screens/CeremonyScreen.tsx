@@ -33,7 +33,7 @@ import {
   StrengthIcon,
   PlayIcon,
 } from "../components/Icons";
-import { useStore } from "storion/react";
+import { useStore, mixins } from "storion/react";
 import { tMixin, addCeremonyLogMixin, setCeremonyActiveMixin } from "../store";
 
 type CeremonyState = "ready" | "countdown" | "playing" | "completed";
@@ -43,11 +43,13 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 export const CeremonyScreen: React.FC = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const { t, addCeremonyLog, setCeremonyActive } = useStore({
-    t: tMixin,
-    addCeremonyLog: addCeremonyLogMixin,
-    setCeremonyActive: setCeremonyActiveMixin,
-  });
+  const { t, addCeremonyLog, setCeremonyActive } = useStore(
+    mixins({
+      t: tMixin,
+      addCeremonyLog: addCeremonyLogMixin,
+      setCeremonyActive: setCeremonyActiveMixin,
+    })
+  );
 
   const isActiveRef = useRef(false);
   const soundRef = useRef<Audio.Sound | null>(null);
@@ -259,7 +261,11 @@ export const CeremonyScreen: React.FC = () => {
 
   return (
     <ScreenBackground>
-      <SafeAreaView testID="ceremony-screen" accessibilityLabel="ceremony-screen" style={{ flex: 1 }}>
+      <SafeAreaView
+        testID="ceremony-screen"
+        accessibilityLabel="ceremony-screen"
+        style={{ flex: 1 }}
+      >
         {ceremonyState === "ready" && (
           <ScrollView
             testID="ceremony-ready-view"
@@ -547,7 +553,6 @@ export const CeremonyScreen: React.FC = () => {
                 </View>
               ))}
             </View>
-
           </ScrollView>
         )}
 

@@ -8,3 +8,5 @@ export * from "./FlagTower";
 export * from "./ScreenBackground";
 export * from "./Icons";
 export * from "./Screen";
+export * from "./settings";
+export * from "./stats";

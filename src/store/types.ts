@@ -9,7 +9,6 @@ export interface CeremonyLog {
 }
 
 export interface ReminderSettings {
-  enabled: boolean;
   time: string; // HH:mm format
   days: number[]; // 0-6, Sunday = 0
 }
@@ -25,7 +24,6 @@ export interface AppState {
 
   // Settings
   reminderSettings: ReminderSettings;
-  notificationId: string | null;
   language: Language;
 
   // Stats

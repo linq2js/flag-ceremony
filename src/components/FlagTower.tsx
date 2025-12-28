@@ -151,9 +151,15 @@ export const FlagTower: React.FC<FlagTowerProps> = ({
 
     return `
       M 0,0
-      C ${cp1x},${getWaveY(cp1x, -amp1)} ${cp2x},${getWaveY(cp2x, amp1)} ${w},${rightTopY}
+      C ${cp1x},${getWaveY(cp1x, -amp1)} ${cp2x},${getWaveY(
+      cp2x,
+      amp1
+    )} ${w},${rightTopY}
       L ${w},${rightBottomY}
-      C ${cp2x},${getWaveY(cp2x, h - amp1)} ${cp1x},${getWaveY(cp1x, h + amp1)} 0,${h}
+      C ${cp2x},${getWaveY(cp2x, h - amp1)} ${cp1x},${getWaveY(
+      cp1x,
+      h + amp1
+    )} 0,${h}
       Z
     `;
   });
@@ -263,7 +269,9 @@ export const FlagTower: React.FC<FlagTowerProps> = ({
           <Svg
             width={flagWidth + svgPadding}
             height={flagHeight + svgPadding * 2}
-            viewBox={`0 ${-svgPadding} ${flagWidth} ${flagHeight + svgPadding * 2}`}
+            viewBox={`0 ${-svgPadding} ${flagWidth} ${
+              flagHeight + svgPadding * 2
+            }`}
           >
             <Defs>
               {/* Clip path for the waving flag shape */}
@@ -272,7 +280,13 @@ export const FlagTower: React.FC<FlagTowerProps> = ({
               </ClipPath>
 
               {/* Gradient for fabric shadow (left to right, depth effect) */}
-              <LinearGradient id="towerFabricShadow" x1="0" y1="0" x2="1" y2="0">
+              <LinearGradient
+                id="towerFabricShadow"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="0"
+              >
                 <Stop offset="0" stopColor="#000000" stopOpacity="0" />
                 <Stop offset="0.3" stopColor="#000000" stopOpacity="0.1" />
                 <Stop offset="0.6" stopColor="#000000" stopOpacity="0.05" />
@@ -280,7 +294,13 @@ export const FlagTower: React.FC<FlagTowerProps> = ({
               </LinearGradient>
 
               {/* Gradient for wave highlights */}
-              <LinearGradient id="towerWaveHighlight" x1="0" y1="0" x2="1" y2="0">
+              <LinearGradient
+                id="towerWaveHighlight"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="0"
+              >
                 <Stop offset="0" stopColor="#ffffff" stopOpacity="0" />
                 <Stop offset="0.35" stopColor="#ffffff" stopOpacity="0.12" />
                 <Stop offset="0.65" stopColor="#ffffff" stopOpacity="0.05" />
@@ -288,7 +308,13 @@ export const FlagTower: React.FC<FlagTowerProps> = ({
               </LinearGradient>
 
               {/* Vertical gradient for top/bottom shading */}
-              <LinearGradient id="towerVerticalShade" x1="0" y1="0" x2="0" y2="1">
+              <LinearGradient
+                id="towerVerticalShade"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
                 <Stop offset="0" stopColor="#ffffff" stopOpacity="0.1" />
                 <Stop offset="0.5" stopColor="#000000" stopOpacity="0" />
                 <Stop offset="1" stopColor="#000000" stopOpacity="0.12" />
@@ -298,7 +324,13 @@ export const FlagTower: React.FC<FlagTowerProps> = ({
             {/* Flag content clipped to wavy shape */}
             <G clipPath="url(#towerFlagClip)">
               {/* Red background */}
-              <Rect x="0" y="0" width={flagWidth} height={flagHeight} fill="#DA251D" />
+              <Rect
+                x="0"
+                y="0"
+                width={flagWidth}
+                height={flagHeight}
+                fill="#DA251D"
+              />
 
               {/* Fabric shadow overlay */}
               <AnimatedRect
@@ -348,7 +380,9 @@ export const FlagTower: React.FC<FlagTowerProps> = ({
           <Svg
             width={starSize * 2}
             height={starSize * 2}
-            viewBox={`${-starSize} ${-starSize} ${starSize * 2} ${starSize * 2}`}
+            viewBox={`${-starSize} ${-starSize} ${starSize * 2} ${
+              starSize * 2
+            }`}
           >
             <Polygon
               points={getStarPoints(0, 0, starSize, starInnerR)}

@@ -37,11 +37,6 @@ export const updateReminderSettingsMixin = ({ get }: SelectorContext) => {
   return updateReminderSettings;
 };
 
-export const notificationIdMixin = ({ get }: SelectorContext) => {
-  const [state] = get(settingsStore);
-  return state.notificationId;
-};
-
 // === Ceremony mixins ===
 
 export const currentStreakMixin = ({ get }: SelectorContext) => {

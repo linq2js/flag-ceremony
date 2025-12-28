@@ -5,7 +5,7 @@ import { glassEffect } from "./effects";
 
 /**
  * Design System - Card & Container Styles
- * 
+ *
  * Reusable card and container styles.
  */
 
@@ -213,4 +213,3 @@ export const withGlass = (cardStyle: ViewStyle): ViewStyle[] => [
   cardStyle,
   glassEffect,
 ];
-

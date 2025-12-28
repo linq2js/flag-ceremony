@@ -11,7 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
-import { StoreProvider, useStore } from "storion/react";
+import { StoreProvider, useStore, mixins } from "storion/react";
 import {
   app,
   tMixin,
@@ -52,11 +52,13 @@ const TAB_CONFIG = [
 
 function CustomTabBar({ state, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
-  const { t, ceremonyActive, stopCeremonyAndLogIncomplete } = useStore({
-    t: tMixin,
-    ceremonyActive: ceremonyActiveMixin,
-    stopCeremonyAndLogIncomplete: stopCeremonyAndLogIncompleteMixin,
-  });
+  const { t, ceremonyActive, stopCeremonyAndLogIncomplete } = useStore(
+    mixins({
+      t: tMixin,
+      ceremonyActive: ceremonyActiveMixin,
+      stopCeremonyAndLogIncomplete: stopCeremonyAndLogIncompleteMixin,
+    })
+  );
 
   const tabBarHeight = 74;
   const iconSize = 22;
