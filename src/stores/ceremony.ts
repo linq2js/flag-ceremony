@@ -21,9 +21,15 @@
  *
  * Persistence: All state is persisted via `persisted()` meta.
  */
-import { batch, store } from "storion/react";
+import {
+  batch,
+  effect,
+  meta,
+  store,
+  type SelectorContext,
+} from "storion/react";
 import type { CeremonyLog } from "./types";
-import { persisted } from "storion/persist";
+import { notPersisted, persisted } from "storion/persist";
 import { syncStore } from "./sync";
 
 // =============================================================================
@@ -153,8 +159,28 @@ export const ceremonyStore = store({
   name: "ceremony",
   state: initialState,
   setup: ({ state, get }) => {
-    // Get sync action to trigger background sync on completion
-    const [, { addPendingStats }] = get(syncStore);
+    // Get sync state and actions
+    const [syncState, { addPendingStats }] = get(syncStore);
+
+    // -------------------------------------------------------------------------
+    // RECONCILIATION EFFECT
+    // -------------------------------------------------------------------------
+    // Listen to verifiedStats changes from syncStore and reconcile local state.
+    // This ensures local stats match server-verified values after sync.
+    // Server is the source of truth for leaderboard stats.
+    effect(() => {
+      const verifiedStats = syncState.verifiedStats;
+      if (!verifiedStats) return;
+
+      // Overwrite local stats with server-verified values
+      state.completedCeremonies = verifiedStats.completed;
+      state.currentStreak = verifiedStats.currentStreak;
+      // Keep the higher value for longestStreak (local might be ahead of server)
+      state.longestStreak = Math.max(
+        state.longestStreak,
+        verifiedStats.longestStreak
+      );
+    });
 
     // -------------------------------------------------------------------------
     // ACTIONS
@@ -355,8 +381,11 @@ export const ceremonyStore = store({
       getCompletedCeremonies,
     };
   },
-  // Persist all state to AsyncStorage
-  meta: persisted(),
+  // Persist state except runtime props (ceremonyActive, ceremonyStartTime)
+  meta: meta.of(
+    persisted(),
+    notPersisted.for(["ceremonyActive", "ceremonyStartTime"])
+  ),
 });
 
 // =============================================================================
@@ -381,4 +410,78 @@ export type CeremonyActions = {
   getRanking: () => { rank: number; percentile: number };
   getRecentLogs: (limit?: number) => CeremonyLog[];
   getCompletedCeremonies: () => number;
+};
+
+// =============================================================================
+// MIXINS
+// =============================================================================
+
+export const currentStreakMixin = ({ get }: SelectorContext) => {
+  const [state] = get(ceremonyStore);
+  return state.currentStreak;
+};
+
+export const longestStreakMixin = ({ get }: SelectorContext) => {
+  const [state] = get(ceremonyStore);
+  return state.longestStreak;
+};
+
+export const totalCeremoniesMixin = ({ get }: SelectorContext) => {
+  const [state] = get(ceremonyStore);
+  return state.totalCeremonies;
+};
+
+export const completedCeremoniesMixin = ({ get }: SelectorContext) => {
+  const [state] = get(ceremonyStore);
+  return state.completedCeremonies;
+};
+
+export const logsMixin = ({ get }: SelectorContext) => {
+  const [state] = get(ceremonyStore);
+  return state.logs;
+};
+
+export const ceremonyActiveMixin = ({ get }: SelectorContext) => {
+  const [state] = get(ceremonyStore);
+  return state.ceremonyActive;
+};
+
+export const getThisWeekCountMixin = ({ get }: SelectorContext) => {
+  const [, { getThisWeekCount }] = get(ceremonyStore);
+  return getThisWeekCount;
+};
+
+export const getTodayCompletedCountMixin = ({ get }: SelectorContext) => {
+  const [, { getTodayCompletedCount }] = get(ceremonyStore);
+  return getTodayCompletedCount;
+};
+
+export const getTodayIncompleteCountMixin = ({ get }: SelectorContext) => {
+  const [, { getTodayIncompleteCount }] = get(ceremonyStore);
+  return getTodayIncompleteCount;
+};
+
+export const getMonthlyCountMixin = ({ get }: SelectorContext) => {
+  const [, { getMonthlyCount }] = get(ceremonyStore);
+  return getMonthlyCount;
+};
+
+export const getRecentLogsMixin = ({ get }: SelectorContext) => {
+  const [, { getRecentLogs }] = get(ceremonyStore);
+  return getRecentLogs;
+};
+
+export const addCeremonyLogMixin = ({ get }: SelectorContext) => {
+  const [, { addCeremonyLog }] = get(ceremonyStore);
+  return addCeremonyLog;
+};
+
+export const setCeremonyActiveMixin = ({ get }: SelectorContext) => {
+  const [, { setCeremonyActive }] = get(ceremonyStore);
+  return setCeremonyActive;
+};
+
+export const stopCeremonyAndLogIncompleteMixin = ({ get }: SelectorContext) => {
+  const [, { stopCeremonyAndLogIncomplete }] = get(ceremonyStore);
+  return stopCeremonyAndLogIncomplete;
 };

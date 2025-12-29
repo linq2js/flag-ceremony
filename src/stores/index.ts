@@ -36,12 +36,14 @@ export {
   getTodayCompletedCountMixin,
   getTodayIncompleteCountMixin,
   getMonthlyCountMixin,
-  getRankingMixin,
   getRecentLogsMixin,
   addCeremonyLogMixin,
   setCeremonyActiveMixin,
   stopCeremonyAndLogIncompleteMixin,
 } from "./mixins";
+
+// Mixins - leaderboard
+export { rankingMixin } from "./mixins";
 
 // Types
 export type { SettingsState, SettingsActions } from "./settings";

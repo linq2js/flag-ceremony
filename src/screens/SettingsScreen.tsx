@@ -42,14 +42,23 @@ export const SettingsScreen: React.FC = () => {
 
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleTimeChange = useCallback(
-    (hours: number, minutes: number) => {
-      const time = `${String(hours).padStart(2, "0")}:${String(
-        minutes
-      ).padStart(2, "0")}`;
-      updateReminderSettings({ time });
+  const handleAddTime = useCallback(
+    (time: string) => {
+      const currentTimes = reminderSettings.times || [];
+      if (!currentTimes.includes(time)) {
+        updateReminderSettings({ times: [...currentTimes, time].sort() });
+      }
     },
-    [updateReminderSettings]
+    [reminderSettings, updateReminderSettings]
+  );
+
+  const handleRemoveTime = useCallback(
+    (index: number) => {
+      const currentTimes = reminderSettings.times || [];
+      const newTimes = currentTimes.filter((_, i) => i !== index);
+      updateReminderSettings({ times: newTimes });
+    },
+    [reminderSettings, updateReminderSettings]
   );
 
   const handleDayToggle = useCallback(
@@ -64,21 +73,12 @@ export const SettingsScreen: React.FC = () => {
   );
 
   const handleExportCalendar = useCallback(async () => {
-    if (reminderSettings.days.length === 0) {
-      showAlert(
-        language === "vi" ? "Chưa chọn ngày" : "No Days Selected",
-        language === "vi"
-          ? "Vui lòng chọn ít nhất một ngày để nhắc nhở."
-          : "Please select at least one day for reminders."
-      );
-      return;
-    }
-
+    const times = reminderSettings.times || [];
     setIsExporting(true);
     try {
       const success = await calendar.exportCalendar(
         {
-          time: reminderSettings.time,
+          times,
           days: reminderSettings.days,
         },
         language
@@ -102,6 +102,10 @@ export const SettingsScreen: React.FC = () => {
       setIsExporting(false);
     }
   }, [reminderSettings, language, calendar]);
+
+  const handleShowAlert = useCallback((title: string, message: string) => {
+    showAlert(title, message);
+  }, []);
 
   return (
     <ScreenBackground>
@@ -139,11 +143,16 @@ export const SettingsScreen: React.FC = () => {
           <ReminderSection
             t={t as any}
             dayNames={dayNames}
-            reminderSettings={reminderSettings}
+            reminderSettings={{
+              ...reminderSettings,
+              times: reminderSettings.times || [], // Migration fallback
+            }}
             isExporting={isExporting}
-            onTimeChange={handleTimeChange}
+            onAddTime={handleAddTime}
+            onRemoveTime={handleRemoveTime}
             onDayToggle={handleDayToggle}
             onExportCalendar={handleExportCalendar}
+            onShowAlert={handleShowAlert}
           />
 
           <AboutSection t={t as any} />

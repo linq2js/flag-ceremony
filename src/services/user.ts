@@ -20,14 +20,14 @@ export interface RankingData {
   rank: number;
   /** Percentile (0-100, higher is better) */
   percentile: number;
-  /** Total number of patriots on the leaderboard */
-  total_patriots: number;
-  /** User's completed ceremony count */
-  completed: number;
-  /** User's current streak */
-  current_streak: number;
-  /** User's longest streak */
-  longest_streak: number;
+  /** Total number of users on the leaderboard */
+  totalUsers: number;
+  /** Server-verified completed ceremony count */
+  verifiedCompleted: number;
+  /** Server-verified current streak */
+  verifiedStreak: number;
+  /** Server-verified longest streak */
+  longestStreak: number;
 }
 
 export interface GlobalStats {
@@ -43,6 +43,19 @@ export interface SyncResult {
   success: boolean;
   ranking: RankingData | null;
   error?: string;
+}
+
+/**
+ * Server-verified stats extracted from RankingData.
+ * Used to reconcile local ceremonyStore state after sync.
+ */
+export interface VerifiedStats {
+  /** Server-verified completed ceremonies count */
+  completed: number;
+  /** Server-verified current streak */
+  currentStreak: number;
+  /** Server-verified longest streak */
+  longestStreak: number;
 }
 
 /**
@@ -90,7 +103,7 @@ export function userService(
     }
 
     return data?.[0] ?? null;
-  }).use(logging("getGlobalStats"));
+  }).use(logging("userService.getGlobalStats"));
 
   // ---------------------------------------------------------------------------
   // Sync Stats
@@ -121,7 +134,7 @@ export function userService(
     }
   )
     .use(offlineRetry())
-    .use(logging("syncStats"));
+    .use(logging("userService.syncStats"));
 
   // ---------------------------------------------------------------------------
   // Leaderboard
@@ -135,14 +148,14 @@ export function userService(
     ): Promise<
       Array<{
         rank: number;
-        completed_ceremonies: number;
+        verified_completed: number;
         longest_streak: number;
       }>
     > => {
       const { data, error } = await supabase
         .from("patriots")
-        .select("completed_ceremonies, longest_streak")
-        .order("completed_ceremonies", { ascending: false })
+        .select("verified_completed, longest_streak")
+        .order("verified_completed", { ascending: false })
         .limit(limit);
 
       if (error) {
@@ -152,16 +165,16 @@ export function userService(
       // Add rank numbers
       return (data ?? []).map((p, index) => ({
         rank: index + 1,
-        completed_ceremonies: p.completed_ceremonies,
+        verified_completed: p.verified_completed,
         longest_streak: p.longest_streak,
       }));
     }
   )
     .use(offlineRetry())
-    .use(logging("getTopPatriots"));
+    .use(logging("userService.getTopPatriots"));
 
   /** Get current user's ranking and percentile (uses cached userId) */
-  const getRanking = abortable(async () => {
+  const getRanking = abortable(async (): Promise<RankingData | null> => {
     const { data, error } = await supabase.rpc("get_ranking", {
       user_id: userId,
     });
@@ -171,7 +184,7 @@ export function userService(
     }
 
     return data?.[0] ?? null;
-  });
+  }).use(logging("userService.getRanking"));
 
   return { getRanking, getTopPatriots, getGlobalStats, syncStats };
 }

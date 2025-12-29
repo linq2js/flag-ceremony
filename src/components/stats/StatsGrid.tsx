@@ -22,20 +22,27 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
   completedCeremonies,
   totalCeremonies,
 }) => {
+  // Guard against NaN/undefined values from potentially corrupted persisted data
+  const safeCurrentStreak = currentStreak || 0;
+  const safeLongestStreak = longestStreak || 0;
+  const safeCompleted = completedCeremonies || 0;
+  const safeTotal = totalCeremonies || 0;
+  const safeIncomplete = Math.max(0, safeTotal - safeCompleted);
+
   return (
     <View style={[layout.container, { marginBottom: spacing[10] }]}>
       <View style={[layout.cardRow, { marginBottom: spacing[5] }]}>
         <StatsCard
           icon="🔥"
           label={t("current_streak")}
-          value={currentStreak}
+          value={safeCurrentStreak}
           sublabel={t("consecutive_days")}
           color="gold"
         />
         <StatsCard
           icon="⭐"
           label={t("best_streak")}
-          value={longestStreak}
+          value={safeLongestStreak}
           sublabel={t("your_record")}
           color="crimson"
         />
@@ -51,7 +58,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
         <StatsCard
           icon="✅"
           label={t("completed")}
-          value={completedCeremonies}
+          value={safeCompleted}
           sublabel={t("all_time")}
           color="gold"
         />
@@ -60,14 +67,14 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
         <StatsCard
           icon="📊"
           label={t("total_attempts")}
-          value={totalCeremonies}
+          value={safeTotal}
           sublabel={t("all_time")}
           color="white"
         />
         <StatsCard
           icon="⏹️"
           label={t("incomplete")}
-          value={totalCeremonies - completedCeremonies}
+          value={safeIncomplete}
           sublabel={t("exited_early")}
           color="crimson"
         />

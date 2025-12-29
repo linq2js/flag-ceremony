@@ -1,6 +1,8 @@
 import { persist } from "storion/persist";
 import { container, forStores } from "storion/react";
 import { persistStore } from "./persist";
+import { onlineService } from "storion/network";
+import { customOnlineService } from "@/services/online";
 
 // Create the container (the "brain" of state management)
 export const app = container({
@@ -22,4 +24,4 @@ export const app = container({
       },
     })
   ),
-});
+}).set(onlineService, customOnlineService);

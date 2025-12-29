@@ -11,6 +11,7 @@
 import { RankingData } from "@/services/user";
 import { authService } from "@/services/auth";
 import { effect, store } from "storion";
+import { trigger, type SelectorContext } from "storion/react";
 import { async } from "storion/async";
 import { syncStore } from "./sync";
 
@@ -21,10 +22,10 @@ export const leaderboardStore = store({
      * - `async.stale()`: keeps previous value during loading/error
      * - Shows last known ranking while refreshing
      */
-    ranking: async.stale<RankingData>(),
+    ranking: async.stale<RankingData | null>(),
   },
 
-  setup({ get, focus }) {
+  setup({ state, get, focus }) {
     // Get auth service (lazy - doesn't authenticate until auth() called)
     const { auth } = get(authService);
     const [syncState] = get(syncStore);
@@ -45,12 +46,23 @@ export const leaderboardStore = store({
       return getRanking();
     });
 
-    // When syncState.lastRanking changes, immediately set it as success
+    // When syncState.verifiedStats changes, update ranking with verified data
     // - Avoids unnecessary fetch if we already have recent data
     // - Uses .success() to directly update state without triggering API call
     effect(() => {
-      const lastRanking = syncState.lastRanking;
-      lastRanking && rankingAction.success(lastRanking);
+      const verifiedStats = syncState.verifiedStats;
+      if (verifiedStats) {
+        const currentRanking = state.ranking.data;
+        if (currentRanking) {
+          // Map VerifiedStats props to RankingData props
+          rankingAction.success({
+            ...currentRanking,
+            verifiedCompleted: verifiedStats.completed,
+            verifiedStreak: verifiedStats.currentStreak,
+            longestStreak: verifiedStats.longestStreak,
+          });
+        }
+      }
     });
 
     return {
@@ -59,3 +71,13 @@ export const leaderboardStore = store({
     };
   },
 });
+
+// =============================================================================
+// MIXINS
+// =============================================================================
+
+export const rankingMixin = ({ get }: SelectorContext) => {
+  const [state, { fetchRanking }] = get(leaderboardStore);
+  trigger(fetchRanking);
+  return state.ranking;
+};

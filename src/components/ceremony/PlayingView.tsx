@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Platform } from "react-native";
+import { View, Text } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -57,26 +57,11 @@ export const PlayingView: React.FC<PlayingViewProps> = ({
       </Text>
 
       {/* Flag Tower with rising flag */}
-      <View
-        style={{
-          ...Platform.select({
-            web: { boxShadow: "0 8px 20px rgba(220, 38, 38, 0.4)" },
-            default: {
-              shadowColor: "#dc2626",
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.4,
-              shadowRadius: 20,
-              elevation: 10,
-            },
-          }),
-        }}
-      >
-        <FlagTower
-          width={towerWidth}
-          height={towerHeight}
-          flagProgress={flagProgress}
-        />
-      </View>
+      <FlagTower
+        width={towerWidth}
+        height={towerHeight}
+        flagProgress={flagProgress}
+      />
 
       <Text
         style={{

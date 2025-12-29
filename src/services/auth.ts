@@ -110,7 +110,7 @@ export const authService = ({ create, get }: Resolver) => {
     })
       .use(retry(3))
       .use(offlineRetry())
-      .use(logging("auth"))
+      .use(logging("authService.auth"))
   );
 
   return { auth };

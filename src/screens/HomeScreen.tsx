@@ -18,10 +18,9 @@ import {
   getTodayCompletedCountMixin,
   getTodayIncompleteCountMixin,
 } from "../stores";
-import { VietnamFlag, VietnamFlagIcon } from "../components/VietnamFlag";
+import { VietnamFlag } from "../components/VietnamFlag";
 import { HistoryCard } from "../components/HistoryCard";
 import { StatsCard } from "../components/StatsCard";
-import { Button } from "../components/Button";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { getHistoricalEvents, formatDate } from "../utils/history";
 import {
@@ -308,18 +307,6 @@ export const HomeScreen: React.FC = () => {
               {t("keep_streak_going")}
             </Text>
             <Text style={textStyles.body}>{streakMessage}</Text>
-          </View>
-
-          {/* CTA Button */}
-          <View style={[layout.container, { marginTop: spacing[11] }]}>
-            <Button
-              testID="start-ceremony-btn"
-              title={t("start_flag_ceremony")}
-              icon={<VietnamFlagIcon size={22} />}
-              onPress={() => router.push("/ceremony")}
-              variant="primary"
-              size="large"
-            />
           </View>
         </ScrollView>
       </SafeAreaView>

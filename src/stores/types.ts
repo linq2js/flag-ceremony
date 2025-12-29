@@ -9,7 +9,7 @@ export interface CeremonyLog {
 }
 
 export interface ReminderSettings {
-  time: string; // HH:mm format
+  times: string[]; // Array of HH:mm format times (multiple ceremonies per day)
   days: number[]; // 0-6, Sunday = 0
 }
 

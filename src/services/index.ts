@@ -5,3 +5,5 @@ export {
 } from "./calendarService";
 
 export { authService } from "./auth";
+
+export { customOnlineService, type OnlineService } from "./online";

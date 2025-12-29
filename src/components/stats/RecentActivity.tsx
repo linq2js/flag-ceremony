@@ -100,7 +100,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                     fontSize: 16,
                     fontWeight: "700",
                     color: log.completed
-                      ? palette.green.light
+                      ? palette.gold[500]
                       : palette.white[40],
                   }}
                 >

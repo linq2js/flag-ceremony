@@ -1,4 +1,4 @@
-import { store } from "storion/react";
+import { store, type SelectorContext } from "storion/react";
 
 import type { ReminderSettings } from "./types";
 import { persisted } from "storion/persist";
@@ -9,7 +9,7 @@ export interface SettingsState {
 
 const initialState: SettingsState = {
   reminderSettings: {
-    time: "07:00",
+    times: ["07:00"], // Default: one reminder at 7 AM
     days: [1, 2, 3, 4, 5], // Weekdays by default
   },
 };
@@ -35,4 +35,18 @@ export const settingsStore = store({
 export type SettingsActions = {
   updateReminderSettings: (settings: Partial<ReminderSettings>) => void;
   loadSettings: () => Promise<void>;
+};
+
+// =============================================================================
+// MIXINS
+// =============================================================================
+
+export const reminderSettingsMixin = ({ get }: SelectorContext) => {
+  const [state] = get(settingsStore);
+  return state.reminderSettings;
+};
+
+export const updateReminderSettingsMixin = ({ get }: SelectorContext) => {
+  const [, { updateReminderSettings }] = get(settingsStore);
+  return updateReminderSettings;
 };

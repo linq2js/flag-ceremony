@@ -1,117 +1,35 @@
-import { trigger, type SelectorContext } from "storion/react";
-import { settingsStore } from "./settings";
-import { ceremonyStore } from "./ceremony";
-import { i18nStore } from "./i18n";
-import { leaderboardStore } from "./leaderboard";
+/**
+ * Re-export all mixins from their respective stores.
+ *
+ * Each mixin is defined in the store it belongs to.
+ * This file provides a single import point for convenience.
+ *
+ * For mixins that combine multiple stores, define them directly in this file.
+ */
 
-// === i18n mixins ===
+// i18n mixins
+export { tMixin, languageMixin, dayNamesMixin, setLanguageMixin } from "./i18n";
 
-export const tMixin = ({ get }: SelectorContext) => {
-  const [, { t }] = get(i18nStore);
-  return t;
-};
+// Settings mixins
+export { reminderSettingsMixin, updateReminderSettingsMixin } from "./settings";
 
-export const languageMixin = ({ get }: SelectorContext) => {
-  const [state] = get(i18nStore);
-  return state.language;
-};
+// Ceremony mixins
+export {
+  currentStreakMixin,
+  longestStreakMixin,
+  totalCeremoniesMixin,
+  completedCeremoniesMixin,
+  logsMixin,
+  ceremonyActiveMixin,
+  getThisWeekCountMixin,
+  getTodayCompletedCountMixin,
+  getTodayIncompleteCountMixin,
+  getMonthlyCountMixin,
+  getRecentLogsMixin,
+  addCeremonyLogMixin,
+  setCeremonyActiveMixin,
+  stopCeremonyAndLogIncompleteMixin,
+} from "./ceremony";
 
-export const dayNamesMixin = ({ get }: SelectorContext) => {
-  const [state] = get(i18nStore);
-  return state.dayNames;
-};
-
-export const setLanguageMixin = ({ get }: SelectorContext) => {
-  const [, { setLanguage }] = get(i18nStore);
-  return setLanguage;
-};
-
-// === Settings mixins ===
-
-export const reminderSettingsMixin = ({ get }: SelectorContext) => {
-  const [state] = get(settingsStore);
-  return state.reminderSettings;
-};
-
-export const updateReminderSettingsMixin = ({ get }: SelectorContext) => {
-  const [, { updateReminderSettings }] = get(settingsStore);
-  return updateReminderSettings;
-};
-
-// === Ceremony mixins ===
-
-export const currentStreakMixin = ({ get }: SelectorContext) => {
-  const [state] = get(ceremonyStore);
-  return state.currentStreak;
-};
-
-export const longestStreakMixin = ({ get }: SelectorContext) => {
-  const [state] = get(ceremonyStore);
-  return state.longestStreak;
-};
-
-export const totalCeremoniesMixin = ({ get }: SelectorContext) => {
-  const [state] = get(ceremonyStore);
-  return state.totalCeremonies;
-};
-
-export const completedCeremoniesMixin = ({ get }: SelectorContext) => {
-  const [state] = get(ceremonyStore);
-  return state.completedCeremonies;
-};
-
-export const logsMixin = ({ get }: SelectorContext) => {
-  const [state] = get(ceremonyStore);
-  return state.logs;
-};
-
-export const ceremonyActiveMixin = ({ get }: SelectorContext) => {
-  const [state] = get(ceremonyStore);
-  return state.ceremonyActive;
-};
-
-export const getThisWeekCountMixin = ({ get }: SelectorContext) => {
-  const [, { getThisWeekCount }] = get(ceremonyStore);
-  return getThisWeekCount;
-};
-
-export const getTodayCompletedCountMixin = ({ get }: SelectorContext) => {
-  const [, { getTodayCompletedCount }] = get(ceremonyStore);
-  return getTodayCompletedCount;
-};
-
-export const getTodayIncompleteCountMixin = ({ get }: SelectorContext) => {
-  const [, { getTodayIncompleteCount }] = get(ceremonyStore);
-  return getTodayIncompleteCount;
-};
-
-export const getMonthlyCountMixin = ({ get }: SelectorContext) => {
-  const [, { getMonthlyCount }] = get(ceremonyStore);
-  return getMonthlyCount;
-};
-
-export const getRecentLogsMixin = ({ get }: SelectorContext) => {
-  const [, { getRecentLogs }] = get(ceremonyStore);
-  return getRecentLogs;
-};
-
-export const addCeremonyLogMixin = ({ get }: SelectorContext) => {
-  const [, { addCeremonyLog }] = get(ceremonyStore);
-  return addCeremonyLog;
-};
-
-export const setCeremonyActiveMixin = ({ get }: SelectorContext) => {
-  const [, { setCeremonyActive }] = get(ceremonyStore);
-  return setCeremonyActive;
-};
-
-export const stopCeremonyAndLogIncompleteMixin = ({ get }: SelectorContext) => {
-  const [, { stopCeremonyAndLogIncomplete }] = get(ceremonyStore);
-  return stopCeremonyAndLogIncomplete;
-};
-
-export const rankingMixin = ({ get }: SelectorContext) => {
-  const [state, { fetchRanking }] = get(leaderboardStore);
-  trigger(fetchRanking);
-  return state.ranking;
-};
+// Leaderboard mixins
+export { rankingMixin } from "./leaderboard";

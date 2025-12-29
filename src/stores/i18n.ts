@@ -1,4 +1,5 @@
-import { effect, store } from "storion";
+import { effect, meta, store } from "storion";
+import type { SelectorContext } from "storion/react";
 import type { Language, TranslationKey } from "../i18n/translations";
 import { getTranslation, translations } from "../i18n";
 import { notPersisted, persisted } from "storion/persist";
@@ -37,7 +38,7 @@ export const i18nStore = store({
       },
     };
   },
-  meta: [persisted(), notPersisted.for("dayNames")],
+  meta: meta.of(persisted(), notPersisted.for("dayNames")),
 });
 
 export type I18nState = {
@@ -48,4 +49,28 @@ export type I18nState = {
 export type I18nActions = {
   setLanguage: (lang: Language) => void;
   t: (key: TranslationKey, params?: Record<string, string | number>) => string;
+};
+
+// =============================================================================
+// MIXINS
+// =============================================================================
+
+export const tMixin = ({ get }: SelectorContext) => {
+  const [, { t }] = get(i18nStore);
+  return t;
+};
+
+export const languageMixin = ({ get }: SelectorContext) => {
+  const [state] = get(i18nStore);
+  return state.language;
+};
+
+export const dayNamesMixin = ({ get }: SelectorContext) => {
+  const [state] = get(i18nStore);
+  return state.dayNames;
+};
+
+export const setLanguageMixin = ({ get }: SelectorContext) => {
+  const [, { setLanguage }] = get(i18nStore);
+  return setLanguage;
 };

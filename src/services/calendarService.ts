@@ -5,7 +5,7 @@ import * as Linking from "expo-linking";
 import type { Resolver } from "storion/react";
 
 export interface CalendarSettings {
-  time: string; // "HH:MM" format
+  times: string[]; // Array of "HH:MM" format times
   days: number[]; // 0 = Sunday, 1 = Monday, etc.
 }
 
@@ -34,19 +34,22 @@ export function calendarService(resolver: Resolver) {
     )}00`;
   };
 
+  let uidCounter = 0;
   const generateUid = (): string => {
-    return `flag-ceremony-${Date.now()}@flagceremony.app`;
+    uidCounter++;
+    return `flag-ceremony-${Date.now()}-${uidCounter}@flagceremony.app`;
   };
 
-  /** Generate iCalendar (.ics) file content */
-  const generateIcsContent = (
-    settings: CalendarSettings,
-    language: "vi" | "en" = "en"
+  /** Generate a single VEVENT for a given time */
+  const generateVEvent = (
+    time: string,
+    days: number[],
+    language: "vi" | "en",
+    appLink: string,
+    today: Date
   ): string => {
-    const [hours, minutes] = settings.time.split(":").map(Number);
-    const appLink = getAppLink();
+    const [hours, minutes] = time.split(":").map(Number);
 
-    const today = new Date();
     const startDate = new Date(today);
     startDate.setHours(hours, minutes, 0, 0);
 
@@ -54,14 +57,14 @@ export function calendarService(resolver: Resolver) {
       startDate.setDate(startDate.getDate() + 1);
     }
 
-    while (!settings.days.includes(startDate.getDay())) {
+    while (!days.includes(startDate.getDay())) {
       startDate.setDate(startDate.getDate() + 1);
     }
 
     const endDate = new Date(startDate);
     endDate.setMinutes(endDate.getMinutes() + 5);
 
-    const byDay = settings.days.map((d) => DAY_CODES[d]).join(",");
+    const byDay = days.map((d) => DAY_CODES[d]).join(",");
 
     const title = language === "vi" ? "🇻🇳 Lễ Chào Cờ" : "🇻🇳 Flag Ceremony";
     const description =
@@ -71,13 +74,7 @@ export function calendarService(resolver: Resolver) {
     const location =
       language === "vi" ? "Ứng dụng Lễ Chào Cờ" : "Flag Ceremony App";
 
-    return `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Flag Ceremony//Flag Ceremony App//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-X-WR-CALNAME:${title}
-BEGIN:VEVENT
+    return `BEGIN:VEVENT
 UID:${generateUid()}
 DTSTAMP:${formatIcsDate(today)}T${formatIcsTime(
       today.getHours(),
@@ -89,7 +86,7 @@ DTEND:${formatIcsDate(endDate)}T${formatIcsTime(
       endDate.getMinutes()
     )}
 RRULE:FREQ=WEEKLY;BYDAY=${byDay}
-SUMMARY:${title}
+SUMMARY:${title} (${time})
 DESCRIPTION:${description}
 LOCATION:${location}
 URL:${appLink}
@@ -103,7 +100,30 @@ TRIGGER:-PT5M
 ACTION:DISPLAY
 DESCRIPTION:${title} - 5 min
 END:VALARM
-END:VEVENT
+END:VEVENT`;
+  };
+
+  /** Generate iCalendar (.ics) file content for multiple times */
+  const generateIcsContent = (
+    settings: CalendarSettings,
+    language: "vi" | "en" = "en"
+  ): string => {
+    const appLink = getAppLink();
+    const today = new Date();
+    const title = language === "vi" ? "🇻🇳 Lễ Chào Cờ" : "🇻🇳 Flag Ceremony";
+
+    // Generate VEVENT for each time slot
+    const events = settings.times
+      .map((time) => generateVEvent(time, settings.days, language, appLink, today))
+      .join("\n");
+
+    return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Flag Ceremony//Flag Ceremony App//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:${title}
+${events}
 END:VCALENDAR`;
   };
 

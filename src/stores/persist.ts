@@ -1,6 +1,6 @@
 import { map, store } from "storion";
 import { notPersisted } from "storion/persist";
-import { abortable, AbortableResult } from "storion/async";
+import { abortable, AbortableResult, logging } from "storion/async";
 import { storageService } from "@/services/storage";
 
 export const persistStore = store({
@@ -12,20 +12,16 @@ export const persistStore = store({
     const lastResults = new Map<string, AbortableResult<void>>();
     const tasks = focus("tasks").as(map());
 
-    const loadData = (key: string) => {
+    const loadData = abortable(async (_, key: string) => {
       return tasks.ensure(key, async () => {
         const res = await storage.getItem(key);
         return JSON.parse(res ?? "{}");
       });
-    };
+    }).use(logging("persistStore.loadData"));
 
-    const saveData = abortable(async ({ safe }, key: string, data: any) => {
-      const prev = JSON.parse((await safe(storage.getItem(key))) ?? "{}");
-      await storage.setItem(
-        key,
-        JSON.stringify({ ...((prev as unknown as object) ?? {}), ...data })
-      );
-    });
+    const saveData = abortable(async (_, key: string, data: any) => {
+      await storage.setItem(key, JSON.stringify(data));
+    }).use(logging("persistStore.saveData"));
 
     return {
       loadData,
