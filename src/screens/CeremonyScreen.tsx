@@ -45,6 +45,12 @@ type CeremonyState = "ready" | "countdown" | "playing" | "completed";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
+// Audio sources - defined outside component to ensure stable references
+// and prevent multiple loads when component remounts
+const FLAG_CEREMONY_AUDIO = require("../../assets/audio/flag-ceremony.mp3");
+const CEREMONY_COMPLETE_AUDIO = require("../../assets/audio/ceremony-complete.mp3");
+const COUNTDOWN_BEEP_AUDIO = require("../../assets/audio/countdown-beep.mp3");
+
 export const CeremonyScreen: React.FC = () => {
   const router = useRouter();
   const navigation = useNavigation();
@@ -67,28 +73,37 @@ export const CeremonyScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
 
   // Audio player hook - loads the audio file
-  const player = useAudioPlayer(
-    require("../../assets/audio/flag-ceremony.mp3")
-  );
+  // Using stable references defined outside component to prevent multiple loads
+  const player = useAudioPlayer(FLAG_CEREMONY_AUDIO);
   const audioStatus = useAudioPlayerStatus(player);
 
   // Completion sound player
-  const completionPlayer = useAudioPlayer(
-    require("../../assets/audio/ceremony-complete.mp3")
-  );
+  const completionPlayer = useAudioPlayer(CEREMONY_COMPLETE_AUDIO);
 
   // Countdown beep player
-  const countdownPlayer = useAudioPlayer(
-    require("../../assets/audio/countdown-beep.mp3")
+  const countdownPlayer = useAudioPlayer(COUNTDOWN_BEEP_AUDIO);
+
+  // Helper function to safely play audio
+  const safePlayAudio = useCallback(
+    (audioPlayer: ReturnType<typeof useAudioPlayer>, name: string) => {
+      try {
+        audioPlayer.seekTo(0);
+        audioPlayer.play();
+        return true;
+      } catch (error) {
+        console.warn(`Failed to play audio ${name}:`, error);
+        return false;
+      }
+    },
+    []
   );
 
   // Play beep on countdown number change
   useEffect(() => {
     if (ceremonyState === "countdown" && countdownNumber > 0) {
-      countdownPlayer.seekTo(0);
-      countdownPlayer.play();
+      safePlayAudio(countdownPlayer, "countdown-beep");
     }
-  }, [countdownNumber, ceremonyState, countdownPlayer]);
+  }, [countdownNumber, ceremonyState, countdownPlayer, safePlayAudio]);
 
   useEffect(() => {
     const isActive =
@@ -104,11 +119,19 @@ export const CeremonyScreen: React.FC = () => {
       setDuration(0);
       startTimeRef.current = 0;
       flagProgress.value = 0;
-      player.pause();
-      player.seekTo(0);
+      try {
+        player.pause();
+        player.seekTo(0);
+      } catch (error) {
+        console.warn("Failed to reset audio player:", error);
+      }
 
       return () => {
-        player.pause();
+        try {
+          player.pause();
+        } catch (error) {
+          // Ignore errors during cleanup
+        }
       };
     }, [flagProgress, player])
   );
@@ -116,7 +139,11 @@ export const CeremonyScreen: React.FC = () => {
   const showExitConfirmation = useCallback(
     (onConfirm: () => void) => {
       const handleExit = () => {
-        player.pause();
+        try {
+          player.pause();
+        } catch (error) {
+          console.warn("Failed to pause audio on exit:", error);
+        }
         if (startTimeRef.current > 0) {
           const partialDuration = Math.floor(
             (Date.now() - startTimeRef.current) / 1000
@@ -169,10 +196,9 @@ export const CeremonyScreen: React.FC = () => {
     addCeremonyLog(ceremonyDuration, true);
     setCeremonyState("completed");
 
-    // Play completion sound
-    completionPlayer.seekTo(0);
-    completionPlayer.play();
-  }, [addCeremonyLog, completionPlayer]);
+    // Play completion sound (gracefully handle errors)
+    safePlayAudio(completionPlayer, "ceremony-complete");
+  }, [addCeremonyLog, completionPlayer, safePlayAudio]);
 
   // Handle audio completion
   useEffect(() => {
@@ -180,24 +206,49 @@ export const CeremonyScreen: React.FC = () => {
       flagProgress.value = withTiming(1, { duration: 500 });
       completeCeremony();
     }
-  }, [audioStatus.didJustFinish, ceremonyState, flagProgress, completeCeremony]);
+  }, [
+    audioStatus.didJustFinish,
+    ceremonyState,
+    flagProgress,
+    completeCeremony,
+  ]);
+
+  // Fallback timer ref for when audio fails
+  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const startPlaying = useCallback(() => {
     setCeremonyState("playing");
     startTimeRef.current = Date.now();
     flagProgress.value = 0;
 
-    // Reset and play audio
-    player.seekTo(0);
-    player.play();
+    // Clear any existing fallback timer
+    if (fallbackTimerRef.current) {
+      clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
+
+    // Try to reset and play audio
+    const audioPlayed = safePlayAudio(player, "flag-ceremony");
 
     // Animate flag based on audio duration (or fallback)
-    const audioDuration = player.duration > 0 ? player.duration * 1000 : 30000;
+    let audioDuration = 30000; // Default 30 seconds fallback
+    if (audioPlayed && player.duration > 0) {
+      audioDuration = player.duration * 1000;
+    } else if (!audioPlayed) {
+      // If audio failed to play, set up fallback timer to complete ceremony
+      console.warn("Audio failed to play, using fallback timer");
+      audioDuration = 30000; // 30 seconds fallback
+      fallbackTimerRef.current = setTimeout(() => {
+        flagProgress.value = withTiming(1, { duration: 500 });
+        completeCeremony();
+      }, audioDuration);
+    }
+
     flagProgress.value = withTiming(1, {
       duration: audioDuration,
       easing: Easing.linear,
     });
-  }, [flagProgress, player]);
+  }, [flagProgress, player, safePlayAudio, completeCeremony]);
 
   const startCountdown = useCallback(() => {
     setCeremonyState("countdown");
@@ -211,6 +262,11 @@ export const CeremonyScreen: React.FC = () => {
   const goHome = useCallback(() => router.replace("/"), [router]);
 
   const resetCeremony = useCallback(() => {
+    // Clear fallback timer if exists
+    if (fallbackTimerRef.current) {
+      clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
     setCeremonyState("ready");
     setCountdownNumber(3);
     setDuration(0);
@@ -574,7 +630,16 @@ export const CeremonyScreen: React.FC = () => {
             {__DEV__ && (
               <TouchableOpacity
                 onPress={() => {
-                  player.pause();
+                  // Clear fallback timer if exists
+                  if (fallbackTimerRef.current) {
+                    clearTimeout(fallbackTimerRef.current);
+                    fallbackTimerRef.current = null;
+                  }
+                  try {
+                    player.pause();
+                  } catch (error) {
+                    console.warn("Failed to pause audio on skip:", error);
+                  }
                   flagProgress.value = withTiming(1, { duration: 300 });
                   completeCeremony();
                 }}
