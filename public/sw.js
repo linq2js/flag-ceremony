@@ -4,7 +4,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js');
 
 // Workbox will inject the precache manifest here during build
-// injectManifest will replace self.__WB_MANIFEST with the actual manifest array
+// injectManifest will replace the manifest placeholder with the actual manifest array
 workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
 
 // Skip waiting and claim clients immediately
