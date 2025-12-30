@@ -104,7 +104,7 @@ export const PatriotIDBadge: React.FC<BadgeProps> = ({
 
           {/* Member since */}
           <Text style={[styles.memberSince, { fontSize: 9 * scale }]}>
-            Member since: {formatDate(stats?.memberSince)}
+            {t("member_since")}: {formatDate(stats?.memberSince)}
           </Text>
 
           {/* Stats */}

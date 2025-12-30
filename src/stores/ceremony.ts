@@ -53,6 +53,8 @@ export interface CeremonyState {
   ceremonyActive: boolean;
   /** Timestamp when current ceremony started (for duration calc on exit) */
   ceremonyStartTime: number | null;
+  /** Date when user first completed a ceremony (member since) */
+  memberSince: string | null;
 }
 
 const initialState: CeremonyState = {
@@ -64,6 +66,7 @@ const initialState: CeremonyState = {
   completedCeremonies: 0,
   ceremonyActive: false,
   ceremonyStartTime: null,
+  memberSince: null,
 };
 
 // =============================================================================
@@ -224,6 +227,11 @@ export const ceremonyStore = store({
             state.currentStreak
           );
           state.lastCeremonyDate = today;
+
+          // Set memberSince on first completed ceremony
+          if (!state.memberSince) {
+            state.memberSince = today;
+          }
 
           // Sync completed ceremony to Supabase in background
           // - syncStore will authenticate and call syncStats()
@@ -439,6 +447,11 @@ export const completedCeremoniesMixin = ({ get }: SelectorContext) => {
 export const logsMixin = ({ get }: SelectorContext) => {
   const [state] = get(ceremonyStore);
   return state.logs;
+};
+
+export const memberSinceMixin = ({ get }: SelectorContext) => {
+  const [state] = get(ceremonyStore);
+  return state.memberSince;
 };
 
 export const ceremonyActiveMixin = ({ get }: SelectorContext) => {

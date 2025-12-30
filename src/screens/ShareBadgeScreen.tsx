@@ -19,6 +19,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useStore, mixins } from "storion/react";
+import { safeGoBack } from "../utils/navigation";
 import ViewShot from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
 
@@ -29,6 +30,7 @@ import {
   longestStreakMixin,
   totalCeremoniesMixin,
   completedCeremoniesMixin,
+  memberSinceMixin,
 } from "../stores";
 import { rankingMixin } from "../stores/mixins";
 import { ScreenBackground } from "../components/ScreenBackground";
@@ -63,6 +65,7 @@ const StatsProvider: React.FC<{ children: React.ReactNode }> = React.memo(
         longestStreak: longestStreakMixin,
         totalCeremonies: totalCeremoniesMixin,
         completedCeremonies: completedCeremoniesMixin,
+        memberSince: memberSinceMixin,
         ranking: rankingMixin,
       })
     );
@@ -93,6 +96,7 @@ const BadgeEditorContent: React.FC = React.memo(() => {
     longestStreak,
     totalCeremonies,
     completedCeremonies,
+    memberSince,
     ranking,
   } = useStats();
 
@@ -141,6 +145,7 @@ const BadgeEditorContent: React.FC = React.memo(() => {
     currentStreak,
     longestStreak,
     percentile: ranking.data?.percentile,
+    memberSince: memberSince ? new Date(memberSince) : undefined,
   };
 
   return (
@@ -148,7 +153,7 @@ const BadgeEditorContent: React.FC = React.memo(() => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => router.back()}
+          onPress={() => safeGoBack(router)}
           style={styles.backButton}
         >
           <BackIcon size={24} color={palette.white.full} />
@@ -215,7 +220,7 @@ const BadgeEditorContent: React.FC = React.memo(() => {
         </TouchableOpacity>
 
         {/* Badge Type Selector */}
-        <View style={styles.section}>
+        <View style={[styles.section, styles.badgeTypeSection]}>
           <BadgeTypeSelector
             selected={badge.badgeType}
             onSelect={setBadgeType}
@@ -289,5 +294,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: "600",
+  },
+  badgeTypeSection: {
+    marginTop: spacing[6],
   },
 });

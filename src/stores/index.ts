@@ -34,6 +34,7 @@ export {
   totalCeremoniesMixin,
   completedCeremoniesMixin,
   logsMixin,
+  memberSinceMixin,
   ceremonyActiveMixin,
   getThisWeekCountMixin,
   getTodayCompletedCountMixin,

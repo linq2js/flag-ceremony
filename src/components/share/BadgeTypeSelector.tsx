@@ -31,6 +31,11 @@ const THUMBNAIL_SIZE = 100;
 // Transform scale factor
 const SCALE_FACTOR = THUMBNAIL_SIZE / BADGE_BASE_SIZE;
 
+// Breakpoint for switching between mobile (flexible) and tablet/desktop (fixed)
+const WIDE_SCREEN_BREAKPOINT = 600;
+// Fixed item width for wide screens
+const FIXED_ITEM_WIDTH = 140;
+
 export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
   selected,
   onSelect,
@@ -45,19 +50,29 @@ export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
     (typeof BADGE_TYPES)[BadgeType]
   ][];
 
-  // Calculate grid layout - 3 columns with gaps
-  const horizontalPadding = spacing[6] * 2;
+  const isWideScreen = screenWidth >= WIDE_SCREEN_BREAKPOINT;
   const gap = spacing[3];
+  const horizontalPadding = spacing[6] * 2;
   const availableWidth = screenWidth - horizontalPadding;
-  const columns = 3;
-  const itemWidth = (availableWidth - gap * (columns - 1)) / columns;
+
+  // Mobile: 2 columns with flexible width (~50% each)
+  // Wide screen: fixed width items, as many as fit per row
+  const itemWidth = isWideScreen
+    ? FIXED_ITEM_WIDTH
+    : (availableWidth - gap) / 2; // 2 columns on mobile
 
   return (
     <View style={styles.container}>
       <Text style={[textStyles.inputLabel, { marginBottom: spacing[4] }]}>
         {t("badge_type")}
       </Text>
-      <View style={[styles.grid, { gap }]}>
+      <View
+        style={[
+          styles.grid,
+          { gap },
+          isWideScreen && styles.gridWide,
+        ]}
+      >
         {badges.map(([type, info]) => {
           const isSelected = type === selected;
           // Calculate scaled dimensions for the container
@@ -87,11 +102,13 @@ export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
                 ]}
               >
                 {/* Inner container that renders full size then scales down */}
+                {/* transformOrigin ensures scale happens from top-left */}
                 <View
                   style={{
                     width: BADGE_BASE_SIZE,
                     height: BADGE_BASE_SIZE * (info.height / info.width),
                     transform: [{ scale: SCALE_FACTOR }],
+                    transformOrigin: "top left",
                   }}
                 >
                   <BadgePreview
@@ -126,6 +143,9 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+  gridWide: {
+    justifyContent: "center",
   },
   gridItem: {
     alignItems: "center",

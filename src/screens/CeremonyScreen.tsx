@@ -9,6 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { showAlert } from "../utils/alert";
+import { safeGoBack } from "../utils/navigation";
 import { useRouter, useNavigation, useFocusEffect } from "expo-router";
 import {
   SafeAreaView,
@@ -142,7 +143,7 @@ export const CeremonyScreen: React.FC = () => {
       "hardwareBackPress",
       () => {
         if (ceremonyState === "countdown" || ceremonyState === "playing") {
-          showExitConfirmation(() => router.back());
+          showExitConfirmation(() => safeGoBack(router));
           return true;
         }
         return false;
