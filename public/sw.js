@@ -3,8 +3,9 @@
 
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js');
 
-// Workbox will inject precache manifest here
-// workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+// Workbox will inject the precache manifest here during build
+// injectManifest will replace self.__WB_MANIFEST with the actual manifest array
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
 
 // Skip waiting and claim clients immediately
 self.addEventListener('install', (event) => {
@@ -54,6 +55,16 @@ workbox.routing.registerRoute(
     request.destination === 'font',
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'static-resources-cache',
+  })
+);
+
+// Navigation route - serve index.html for all navigation requests (SPA routing)
+// This enables offline support for the app
+// Note: index.html should be precached by Workbox, so this will serve it from cache when offline
+workbox.routing.registerRoute(
+  ({ request }) => request.mode === 'navigate',
+  new workbox.strategies.NetworkFirst({
+    cacheName: 'navigation-cache',
   })
 );
 
