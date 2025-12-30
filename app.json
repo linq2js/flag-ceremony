@@ -9,8 +9,6 @@
     "newArchEnabled": true,
     "scheme": "flag-ceremony",
     "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
       "backgroundColor": "#DC2626"
     },
     "ios": {

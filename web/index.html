@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
     <title>Flag Ceremony</title>
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
@@ -57,7 +60,7 @@
         bottom: 0;
         overflow: hidden;
       }
-      
+
       /* Splash screen - shown while app loads */
       #splash-screen {
         position: fixed;
@@ -65,7 +68,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #DC2626;
+        background-color: #dc2626;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -73,30 +76,12 @@
         z-index: 99999;
         transition: opacity 0.3s ease-out;
       }
-      
+
       #splash-screen.hidden {
         opacity: 0;
         pointer-events: none;
       }
-      
-      #splash-screen .splash-icon {
-        width: 120px;
-        height: 120px;
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 24px;
-        animation: pulse 2s ease-in-out infinite;
-      }
-      
-      #splash-screen .splash-icon::before {
-        content: "🇻🇳";
-        font-size: 64px;
-        animation: bounce 1.5s ease-in-out infinite;
-      }
-      
+
       #splash-screen .splash-loader {
         width: 40px;
         height: 40px;
@@ -105,27 +90,7 @@
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
-      
-      @keyframes pulse {
-        0%, 100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.8;
-          transform: scale(0.95);
-        }
-      }
-      
-      @keyframes bounce {
-        0%, 100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
-      
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -134,29 +99,37 @@
     </style>
     <script>
       // Force viewport meta tag immediately and continuously
-      (function() {
-        const CORRECT_VIEWPORT = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover';
-        
+      (function () {
+        const CORRECT_VIEWPORT =
+          "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover";
+
         function setViewport() {
           // Remove all existing viewport tags first
-          const existingViewports = document.querySelectorAll('meta[name="viewport"]');
-          existingViewports.forEach(vp => vp.remove());
-          
+          const existingViewports = document.querySelectorAll(
+            'meta[name="viewport"]'
+          );
+          existingViewports.forEach((vp) => vp.remove());
+
           // Create new viewport tag
-          const viewport = document.createElement('meta');
-          viewport.setAttribute('name', 'viewport');
-          viewport.setAttribute('content', CORRECT_VIEWPORT);
-          document.getElementsByTagName('head')[0].insertBefore(viewport, document.getElementsByTagName('head')[0].firstChild);
+          const viewport = document.createElement("meta");
+          viewport.setAttribute("name", "viewport");
+          viewport.setAttribute("content", CORRECT_VIEWPORT);
+          document
+            .getElementsByTagName("head")[0]
+            .insertBefore(
+              viewport,
+              document.getElementsByTagName("head")[0].firstChild
+            );
         }
-        
+
         // Set immediately
         setViewport();
-        
+
         // Set on DOM ready
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', setViewport);
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", setViewport);
         }
-        
+
         // Set multiple times to override Expo
         setTimeout(setViewport, 0);
         setTimeout(setViewport, 50);
@@ -164,118 +137,148 @@
         setTimeout(setViewport, 200);
         setTimeout(setViewport, 500);
         setTimeout(setViewport, 1000);
-        
+
         // Continuous check using requestAnimationFrame
         function checkViewport() {
           const viewport = document.querySelector('meta[name="viewport"]');
-          if (!viewport || viewport.getAttribute('content') !== CORRECT_VIEWPORT) {
+          if (
+            !viewport ||
+            viewport.getAttribute("content") !== CORRECT_VIEWPORT
+          ) {
             setViewport();
           }
           requestAnimationFrame(checkViewport);
         }
-        
+
         // Start continuous checking after a delay
         setTimeout(() => {
           checkViewport();
         }, 100);
       })();
-      
+
       // Prevent zoom gestures
-      document.addEventListener('gesturestart', function (e) {
+      document.addEventListener("gesturestart", function (e) {
         e.preventDefault();
       });
-      document.addEventListener('gesturechange', function (e) {
+      document.addEventListener("gesturechange", function (e) {
         e.preventDefault();
       });
-      document.addEventListener('gestureend', function (e) {
+      document.addEventListener("gestureend", function (e) {
         e.preventDefault();
       });
-      
+
       // Prevent double-tap zoom
       let lastTouchEnd = 0;
-      document.addEventListener('touchend', function (e) {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) {
-          e.preventDefault();
-        }
-        lastTouchEnd = now;
-      }, false);
-      
+      document.addEventListener(
+        "touchend",
+        function (e) {
+          const now = Date.now();
+          if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        false
+      );
+
       // Prevent pinch zoom
-      document.addEventListener('touchmove', function (e) {
-        if (e.touches.length > 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-      
+      document.addEventListener(
+        "touchmove",
+        function (e) {
+          if (e.touches.length > 1) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+
       // Prevent wheel zoom (Ctrl/Cmd + wheel)
-      document.addEventListener('wheel', function (e) {
-        if (e.ctrlKey || e.metaKey) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-      
+      document.addEventListener(
+        "wheel",
+        function (e) {
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+
       // Reset viewport on resize to prevent zoom
-      window.addEventListener('resize', function() {
+      window.addEventListener("resize", function () {
         const viewport = document.querySelector('meta[name="viewport"]');
         if (viewport) {
-          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover');
+          viewport.setAttribute(
+            "content",
+            "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
+          );
         }
       });
-      
+
       // Monitor and fix viewport changes aggressively
-      const CORRECT_VIEWPORT_CONTENT = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover';
-      
+      const CORRECT_VIEWPORT_CONTENT =
+        "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover";
+
       function fixViewport() {
         const viewport = document.querySelector('meta[name="viewport"]');
         if (viewport) {
-          const content = viewport.getAttribute('content');
+          const content = viewport.getAttribute("content");
           if (content !== CORRECT_VIEWPORT_CONTENT) {
             // Remove and recreate to ensure it's correct
             viewport.remove();
-            const newViewport = document.createElement('meta');
-            newViewport.setAttribute('name', 'viewport');
-            newViewport.setAttribute('content', CORRECT_VIEWPORT_CONTENT);
-            document.getElementsByTagName('head')[0].insertBefore(newViewport, document.getElementsByTagName('head')[0].firstChild);
+            const newViewport = document.createElement("meta");
+            newViewport.setAttribute("name", "viewport");
+            newViewport.setAttribute("content", CORRECT_VIEWPORT_CONTENT);
+            document
+              .getElementsByTagName("head")[0]
+              .insertBefore(
+                newViewport,
+                document.getElementsByTagName("head")[0].firstChild
+              );
           }
         }
       }
-      
+
       // Monitor head for any viewport changes
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+      const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
           // Check if viewport was added, removed, or modified
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(function(node) {
-              if (node.nodeName === 'META' && node.getAttribute('name') === 'viewport') {
+          if (mutation.type === "childList") {
+            mutation.addedNodes.forEach(function (node) {
+              if (
+                node.nodeName === "META" &&
+                node.getAttribute("name") === "viewport"
+              ) {
                 fixViewport();
               }
             });
           }
           // Check if viewport content was modified
-          if (mutation.type === 'attributes' && mutation.attributeName === 'content') {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "content"
+          ) {
             fixViewport();
           }
         });
       });
-      
+
       // Start observing the entire head element
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-          observer.observe(document.head, { 
-            childList: true, 
-            subtree: true, 
-            attributes: true, 
-            attributeFilter: ['content'] 
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", function () {
+          observer.observe(document.head, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["content"],
           });
           fixViewport();
         });
       } else {
-        observer.observe(document.head, { 
-          childList: true, 
-          subtree: true, 
-          attributes: true, 
-          attributeFilter: ['content'] 
+        observer.observe(document.head, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["content"],
         });
         fixViewport();
       }
@@ -284,37 +287,33 @@
   <body>
     <!-- Splash screen - shown immediately while app loads -->
     <div id="splash-screen">
-      <div class="splash-icon"></div>
       <div class="splash-loader"></div>
     </div>
-    
+
     <!-- Use static rendering with Expo Router to support running without JavaScript. -->
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-    
+
     <script>
       // Hide splash screen when app is loaded
       // This will be called by the app when it's ready
-      window.hideSplashScreen = function() {
-        const splash = document.getElementById('splash-screen');
+      window.hideSplashScreen = function () {
+        const splash = document.getElementById("splash-screen");
         if (splash) {
-          splash.classList.add('hidden');
+          splash.classList.add("hidden");
           setTimeout(() => {
             splash.remove();
           }, 300);
         }
       };
-      
+
       // Fallback: hide splash after 5 seconds if app doesn't call hideSplashScreen
       setTimeout(() => {
-        if (document.getElementById('splash-screen')) {
+        if (document.getElementById("splash-screen")) {
           window.hideSplashScreen();
         }
       }, 5000);
     </script>
   </body>
 </html>
-
