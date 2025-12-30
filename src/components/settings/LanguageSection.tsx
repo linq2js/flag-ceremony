@@ -10,6 +10,7 @@ import {
   textStyles,
 } from "../../design";
 import { SectionHeader } from "./SectionHeader";
+import { GlobeIcon, CheckIcon } from "../Icons";
 
 type Language = "vi" | "en";
 
@@ -65,7 +66,7 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
               justifyContent: "center",
             }}
           >
-            <Text style={{ fontSize: 14, color: palette.dark.base }}>✓</Text>
+            <CheckIcon size={14} color={palette.dark.base} />
           </View>
         )}
       </TouchableOpacity>
@@ -78,7 +79,10 @@ export const LanguageSection: React.FC<LanguageSectionProps> = ({
       accessibilityLabel="language-section"
       style={[layout.container, { marginBottom: spacing[10] }]}
     >
-      <SectionHeader icon="🌐" title={t("language")} />
+      <SectionHeader
+        icon={<GlobeIcon size={20} color={palette.gold[500]} />}
+        title={t("language")}
+      />
 
       <View
         // @ts-ignore - glassEffect contains web-only props

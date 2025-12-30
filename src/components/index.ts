@@ -10,3 +10,4 @@ export * from "./Icons";
 export * from "./Screen";
 export * from "./settings";
 export * from "./stats";
+export * from "./share";

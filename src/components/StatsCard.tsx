@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Platform } from "react-native";
 
 interface StatsCardProps {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   value: number | string;
   sublabel?: string;
@@ -67,7 +67,13 @@ export const StatsCard: React.FC<StatsCardProps> = ({
         }}
       />
 
-      <Text style={{ fontSize: 28, marginBottom: 10 }}>{icon}</Text>
+      <View style={{ marginBottom: 10 }}>
+        {typeof icon === "string" ? (
+          <Text style={{ fontSize: 28 }}>{icon}</Text>
+        ) : (
+          icon
+        )}
+      </View>
       <Text
         style={{
           fontSize: 10,

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Background circle -->
+  <circle cx="512" cy="512" r="480" fill="#DC2626"/>
+  
+  <!-- Gold star (Vietnam flag) -->
+  <polygon 
+    points="512,180 582,400 812,400 628,540 698,760 512,620 326,760 396,540 212,400 442,400" 
+    fill="#FBBF24"
+  />
+  
+  <!-- Subtle inner shadow -->
+  <circle cx="512" cy="512" r="480" fill="none" stroke="#991B1B" stroke-width="8" opacity="0.3"/>
+</svg>

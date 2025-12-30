@@ -19,7 +19,6 @@ import {
   getTodayIncompleteCountMixin,
 } from "../stores";
 import { VietnamFlag } from "../components/VietnamFlag";
-import { HistoryCard } from "../components/HistoryCard";
 import { StatsCard } from "../components/StatsCard";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { getHistoricalEvents, formatDate } from "../utils/history";

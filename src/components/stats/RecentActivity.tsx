@@ -12,6 +12,7 @@ import {
   textStyles,
 } from "../../design";
 import { formatDate, formatTime } from "../../utils/history";
+import { CheckIcon, TargetIcon } from "../Icons";
 
 interface CeremonyLog {
   id: string;
@@ -80,9 +81,11 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
                   },
                 ]}
               >
-                <Text style={{ fontSize: 24 }}>
-                  {log.completed ? "✅" : "⏹️"}
-                </Text>
+                {log.completed ? (
+                  <CheckIcon size={24} color={palette.green.light} />
+                ) : (
+                  <TargetIcon size={24} color={palette.white[50]} />
+                )}
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={textStyles.inputLabel}>

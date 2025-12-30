@@ -1,7 +1,15 @@
 import React from "react";
 import { View } from "react-native";
-import { layout, spacing } from "../../design";
+import { layout, spacing, palette } from "../../design";
 import { StatsCard } from "../StatsCard";
+import {
+  FireIcon,
+  TrophyIcon,
+  CalendarIcon,
+  CheckIcon,
+  StatsIcon,
+  TargetIcon,
+} from "../Icons";
 
 interface StatsGridProps {
   t: (key: string, params?: Record<string, unknown>) => string;
@@ -33,14 +41,14 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
     <View style={[layout.container, { marginBottom: spacing[10] }]}>
       <View style={[layout.cardRow, { marginBottom: spacing[5] }]}>
         <StatsCard
-          icon="🔥"
+          icon={<FireIcon size={28} color={palette.gold[500]} />}
           label={t("current_streak")}
           value={safeCurrentStreak}
           sublabel={t("consecutive_days")}
           color="gold"
         />
         <StatsCard
-          icon="⭐"
+          icon={<TrophyIcon size={28} color="#f87171" />}
           label={t("best_streak")}
           value={safeLongestStreak}
           sublabel={t("your_record")}
@@ -49,14 +57,14 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
       </View>
       <View style={layout.cardRow}>
         <StatsCard
-          icon="📅"
+          icon={<CalendarIcon size={28} color={palette.white[70]} />}
           label={currentMonth}
           value={monthlyCount}
           sublabel={t("ceremonies")}
           color="white"
         />
         <StatsCard
-          icon="✅"
+          icon={<CheckIcon size={28} color={palette.gold[500]} />}
           label={t("completed")}
           value={safeCompleted}
           sublabel={t("all_time")}
@@ -65,14 +73,14 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
       </View>
       <View style={[layout.cardRow, { marginTop: spacing[5] }]}>
         <StatsCard
-          icon="📊"
+          icon={<StatsIcon size={28} color={palette.white[70]} />}
           label={t("total_attempts")}
           value={safeTotal}
           sublabel={t("all_time")}
           color="white"
         />
         <StatsCard
-          icon="⏹️"
+          icon={<TargetIcon size={28} color="#f87171" />}
           label={t("incomplete")}
           value={safeIncomplete}
           sublabel={t("exited_early")}

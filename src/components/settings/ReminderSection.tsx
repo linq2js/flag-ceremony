@@ -13,6 +13,7 @@ import {
 import { SectionHeader } from "./SectionHeader";
 import { TimeButton } from "./TimeButton";
 import { DayButton } from "./DayButton";
+import { CalendarIcon, DownloadIcon } from "../Icons";
 
 interface ReminderSettings {
   times: string[];
@@ -87,7 +88,10 @@ export const ReminderSection: React.FC<ReminderSectionProps> = ({
 
   return (
     <View style={[layout.container, { marginBottom: spacing[10] }]}>
-      <SectionHeader icon="📅" title={t("daily_reminder")} />
+      <SectionHeader
+        icon={<CalendarIcon size={20} color={palette.gold[500]} />}
+        title={t("daily_reminder")}
+      />
 
       <View
         // @ts-ignore - glassEffect contains web-only props
@@ -118,7 +122,7 @@ export const ReminderSection: React.FC<ReminderSectionProps> = ({
           <Text style={[textStyles.inputHint, { marginBottom: spacing[6] }]}>
             {t("repeat_on_days")}
           </Text>
-          <View style={layout.rowBetween}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing[4] }}>
             {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => (
               <DayButton
                 key={dayIndex}
@@ -260,14 +264,24 @@ export const ReminderSection: React.FC<ReminderSectionProps> = ({
           </View>
 
           {/* Hour picker */}
-          <Text
-            style={[
-              textStyles.inputHint,
-              { fontSize: 11, marginBottom: spacing[3] },
-            ]}
-          >
-            {t("hour")}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: spacing[3] }}>
+            <Text
+              style={[
+                textStyles.inputHint,
+                { fontSize: 11 },
+              ]}
+            >
+              {t("hour")}
+            </Text>
+            <Text
+              style={[
+                textStyles.inputHint,
+                { fontSize: 10, marginLeft: spacing[3], opacity: 0.6 },
+              ]}
+            >
+              {t("hour_swipe_hint")}
+            </Text>
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -315,7 +329,7 @@ export const ReminderSection: React.FC<ReminderSectionProps> = ({
             disabled={isExporting}
             activeOpacity={0.85}
           >
-            <Text style={{ fontSize: 20, marginRight: spacing[3] }}>📥</Text>
+            <DownloadIcon size={20} color={palette.dark.base} />
             <Text style={buttonStyles.primaryText}>
               {isExporting ? "..." : t("download_calendar")}
             </Text>

@@ -4,12 +4,12 @@
  * This service is created after successful authentication with a cached userId.
  * All methods use `abortable()` for automatic cancellation support.
  */
-import { SupabaseClient } from "@supabase/supabase-js";
 import { Platform } from "react-native";
 import { Resolver } from "storion";
-import { abortable, logging } from "storion/async";
+import { abortable, logging, retry } from "storion/async";
 import Constants from "expo-constants";
 import { networkService } from "storion/network";
+import { ApiClient } from "./types";
 
 // =============================================================================
 // TYPES
@@ -75,7 +75,7 @@ export interface SyncPayload {
  * Create user service with authenticated Supabase client and cached userId.
  *
  * @param _ - Storion resolver (unused, for service signature compatibility)
- * @param supabase - Authenticated Supabase client
+ * @param api - Authenticated Supabase client
  * @param userId - Cached user ID from initAuth()
  *
  * @example
@@ -84,23 +84,14 @@ export interface SyncPayload {
  * const ranking = await user.getRanking();
  * ```
  */
-export function userService(
-  { get }: Resolver,
-  supabase: SupabaseClient,
-  userId: string
-) {
+export function userService({ get }: Resolver, api: ApiClient, userId: string) {
   // ---------------------------------------------------------------------------
   // Global Stats
   // ---------------------------------------------------------------------------
   const { offlineRetry } = get(networkService);
   /** Fetch global leaderboard statistics (total patriots, ceremonies, etc.) */
   const getGlobalStats = abortable(async (): Promise<GlobalStats | null> => {
-    const { data, error } = await supabase.rpc("get_global_stats");
-
-    if (error) {
-      console.error("Get global stats failed:", error.message);
-      return null;
-    }
+    const data = await api.rpc<GlobalStats[]>("get_global_stats");
 
     return data?.[0] ?? null;
   }).use(logging("userService.getGlobalStats"));
@@ -120,20 +111,17 @@ export function userService(
     async (_, payload: SyncPayload): Promise<SyncResult> => {
       const { ceremonyDate } = payload;
 
-      const { data, error } = await supabase.rpc("sync_stats", {
+      const data = await api.rpc<SyncResult>("sync_stats", {
         p_ceremony_date: ceremonyDate,
         p_device_os: Platform.OS,
         p_app_version: Constants.expoConfig?.version ?? "unknown",
       });
 
-      if (error) {
-        throw error;
-      }
-
-      return data as SyncResult;
+      return data;
     }
   )
-    .use(offlineRetry())
+    .use(retry(3)) // Retry up to 3 times for transient errors
+    .use(offlineRetry()) // Then wait for network if still failing
     .use(logging("userService.syncStats"));
 
   // ---------------------------------------------------------------------------
@@ -152,15 +140,14 @@ export function userService(
         longest_streak: number;
       }>
     > => {
-      const { data, error } = await supabase
-        .from("patriots")
-        .select("verified_completed, longest_streak")
-        .order("verified_completed", { ascending: false })
-        .limit(limit);
-
-      if (error) {
-        throw error;
-      }
+      const data = await api.exec<
+        Array<{ verified_completed: number; longest_streak: number }>
+      >(({ from }) =>
+        from("patriots")
+          .select("verified_completed, longest_streak")
+          .order("verified_completed", { ascending: false })
+          .limit(limit)
+      );
 
       // Add rank numbers
       return (data ?? []).map((p, index) => ({
@@ -175,13 +162,9 @@ export function userService(
 
   /** Get current user's ranking and percentile (uses cached userId) */
   const getRanking = abortable(async (): Promise<RankingData | null> => {
-    const { data, error } = await supabase.rpc("get_ranking", {
+    const data = await api.rpc<RankingData[]>("get_ranking", {
       user_id: userId,
     });
-
-    if (error) {
-      throw error;
-    }
 
     return data?.[0] ?? null;
   }).use(logging("userService.getRanking"));

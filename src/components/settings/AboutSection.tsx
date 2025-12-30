@@ -11,6 +11,7 @@ import {
   decorativeOrb,
 } from "../../design";
 import { SectionHeader } from "./SectionHeader";
+import { InfoIcon } from "../Icons";
 
 interface AboutSectionProps {
   t: (key: string, params?: Record<string, unknown>) => string;
@@ -19,7 +20,10 @@ interface AboutSectionProps {
 export const AboutSection: React.FC<AboutSectionProps> = ({ t }) => {
   return (
     <View style={[layout.container, { marginBottom: spacing[10] }]}>
-      <SectionHeader icon="ℹ️" title={t("about")} />
+      <SectionHeader
+        icon={<InfoIcon size={20} color={palette.gold[500]} />}
+        title={t("about")}
+      />
 
       <View
         // @ts-ignore - glassEffect contains web-only props

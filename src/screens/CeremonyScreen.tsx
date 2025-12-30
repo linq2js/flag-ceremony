@@ -10,12 +10,16 @@ import {
 } from "react-native";
 import { showAlert } from "../utils/alert";
 import { useRouter, useNavigation, useFocusEffect } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Audio } from "expo-av";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useSharedValue, withTiming, Easing } from "react-native-reanimated";
 import { Button } from "../components/Button";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { BaDinhSquare } from "../components/BaDinhSquare";
+import { layout } from "../design";
 import {
   CountdownView,
   PlayingView,
@@ -52,15 +56,38 @@ export const CeremonyScreen: React.FC = () => {
   );
 
   const isActiveRef = useRef(false);
-  const soundRef = useRef<Audio.Sound | null>(null);
 
   const [ceremonyState, setCeremonyState] = useState<CeremonyState>("ready");
   const [countdownNumber, setCountdownNumber] = useState(3);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [duration, setDuration] = useState(0);
   const startTimeRef = useRef<number>(0);
 
   const flagProgress = useSharedValue(0);
+  const insets = useSafeAreaInsets();
+
+  // Audio player hook - loads the audio file
+  const player = useAudioPlayer(
+    require("../../assets/audio/flag-ceremony.mp3")
+  );
+  const audioStatus = useAudioPlayerStatus(player);
+
+  // Completion sound player
+  const completionPlayer = useAudioPlayer(
+    require("../../assets/audio/ceremony-complete.mp3")
+  );
+
+  // Countdown beep player
+  const countdownPlayer = useAudioPlayer(
+    require("../../assets/audio/countdown-beep.mp3")
+  );
+
+  // Play beep on countdown number change
+  useEffect(() => {
+    if (ceremonyState === "countdown" && countdownNumber > 0) {
+      countdownPlayer.seekTo(0);
+      countdownPlayer.play();
+    }
+  }, [countdownNumber, ceremonyState, countdownPlayer]);
 
   useEffect(() => {
     const isActive =
@@ -69,37 +96,26 @@ export const CeremonyScreen: React.FC = () => {
     setCeremonyActive(isActive);
   }, [ceremonyState, setCeremonyActive]);
 
-  useEffect(() => {
-    soundRef.current = sound;
-  }, [sound]);
-
   useFocusEffect(
     useCallback(() => {
       setCeremonyState("ready");
       setCountdownNumber(3);
       setDuration(0);
-      setSound(null);
       startTimeRef.current = 0;
       flagProgress.value = 0;
+      player.pause();
+      player.seekTo(0);
 
       return () => {
-        if (soundRef.current) {
-          soundRef.current.stopAsync().then(() => {
-            soundRef.current?.unloadAsync();
-          });
-        }
+        player.pause();
       };
-    }, [flagProgress])
+    }, [flagProgress, player])
   );
 
   const showExitConfirmation = useCallback(
     (onConfirm: () => void) => {
-      const handleExit = async () => {
-        if (sound) {
-          await sound.stopAsync();
-          await sound.unloadAsync();
-          setSound(null);
-        }
+      const handleExit = () => {
+        player.pause();
         if (startTimeRef.current > 0) {
           const partialDuration = Math.floor(
             (Date.now() - startTimeRef.current) / 1000
@@ -118,7 +134,7 @@ export const CeremonyScreen: React.FC = () => {
         },
       ]);
     },
-    [t, sound, addCeremonyLog]
+    [t, player, addCeremonyLog]
   );
 
   useEffect(() => {
@@ -144,12 +160,6 @@ export const CeremonyScreen: React.FC = () => {
     return unsubscribe;
   }, [navigation, showExitConfirmation]);
 
-  useEffect(() => {
-    return () => {
-      if (sound) sound.unloadAsync();
-    };
-  }, [sound]);
-
   const completeCeremony = useCallback(() => {
     const ceremonyDuration = Math.floor(
       (Date.now() - startTimeRef.current) / 1000
@@ -157,47 +167,36 @@ export const CeremonyScreen: React.FC = () => {
     setDuration(ceremonyDuration);
     addCeremonyLog(ceremonyDuration, true);
     setCeremonyState("completed");
-  }, [addCeremonyLog]);
 
-  const onPlaybackStatusUpdate = useCallback(
-    (status: any) => {
-      if (status.didJustFinish) {
-        flagProgress.value = withTiming(1, { duration: 500 });
-        completeCeremony();
-      }
-    },
-    [completeCeremony, flagProgress]
-  );
+    // Play completion sound
+    completionPlayer.seekTo(0);
+    completionPlayer.play();
+  }, [addCeremonyLog, completionPlayer]);
 
-  const startPlaying = useCallback(async () => {
+  // Handle audio completion
+  useEffect(() => {
+    if (audioStatus.didJustFinish && ceremonyState === "playing") {
+      flagProgress.value = withTiming(1, { duration: 500 });
+      completeCeremony();
+    }
+  }, [audioStatus.didJustFinish, ceremonyState, flagProgress, completeCeremony]);
+
+  const startPlaying = useCallback(() => {
     setCeremonyState("playing");
     startTimeRef.current = Date.now();
     flagProgress.value = 0;
 
-    try {
-      const { sound: audioSound, status } = await Audio.Sound.createAsync(
-        require("../../assets/audio/flag-ceremony.mp3"),
-        { shouldPlay: true },
-        onPlaybackStatusUpdate
-      );
-      setSound(audioSound);
+    // Reset and play audio
+    player.seekTo(0);
+    player.play();
 
-      if (status.isLoaded && status.durationMillis) {
-        flagProgress.value = withTiming(1, {
-          duration: status.durationMillis,
-          easing: Easing.linear,
-        });
-      }
-    } catch (error) {
-      console.log("Audio file not found, simulating ceremony...");
-      const simulatedDuration = 30000;
-      flagProgress.value = withTiming(1, {
-        duration: simulatedDuration,
-        easing: Easing.linear,
-      });
-      setTimeout(() => completeCeremony(), simulatedDuration);
-    }
-  }, [flagProgress, onPlaybackStatusUpdate, completeCeremony]);
+    // Animate flag based on audio duration (or fallback)
+    const audioDuration = player.duration > 0 ? player.duration * 1000 : 30000;
+    flagProgress.value = withTiming(1, {
+      duration: audioDuration,
+      easing: Easing.linear,
+    });
+  }, [flagProgress, player]);
 
   const startCountdown = useCallback(() => {
     setCeremonyState("countdown");
@@ -264,14 +263,15 @@ export const CeremonyScreen: React.FC = () => {
       <SafeAreaView
         testID="ceremony-screen"
         accessibilityLabel="ceremony-screen"
-        style={{ flex: 1 }}
+        style={layout.screenContent}
+        edges={["top"]}
       >
         {ceremonyState === "ready" && (
           <ScrollView
             testID="ceremony-ready-view"
             accessibilityLabel="ceremony-ready-view"
-            style={{ flex: 1 }}
-            contentContainerStyle={{ paddingBottom: 40 }}
+            style={layout.screenContent}
+            contentContainerStyle={layout.scrollContent}
             showsVerticalScrollIndicator={false}
           >
             <View
@@ -572,18 +572,14 @@ export const CeremonyScreen: React.FC = () => {
             />
             {__DEV__ && (
               <TouchableOpacity
-                onPress={async () => {
-                  if (sound) {
-                    await sound.stopAsync();
-                    await sound.unloadAsync();
-                    setSound(null);
-                  }
+                onPress={() => {
+                  player.pause();
                   flagProgress.value = withTiming(1, { duration: 300 });
                   completeCeremony();
                 }}
                 style={{
                   position: "absolute",
-                  top: 16,
+                  top: insets.top + 16,
                   right: 16,
                   backgroundColor: "rgba(239, 68, 68, 0.9)",
                   paddingHorizontal: 16,

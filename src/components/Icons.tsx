@@ -406,3 +406,305 @@ export const ArrowRightIcon: React.FC<IconProps> = ({
     />
   </Svg>
 );
+
+// Lightning/bolt icon - for quick actions
+export const LightningIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fbbf24",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
+      fill={color}
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Star icon - for ratings/achievements
+export const StarIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fbbf24",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+      fill={color}
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Share icon - for sharing app
+export const ShareIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M4 12V20C4 20.55 4.45 21 5 21H19C19.55 21 20 20.55 20 20V12"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M16 6L12 2L8 6"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M12 2V15"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+    />
+  </Svg>
+);
+
+// Download icon - for calendar export
+export const DownloadIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M21 15V19C21 19.55 20.55 20 20 20H4C3.45 20 3 19.55 3 19V15"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M7 10L12 15L17 10"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M12 15V3"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+    />
+  </Svg>
+);
+
+// Trophy icon - for achievements/longest streak
+export const TrophyIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fbbf24",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M6 9H4C3.45 9 3 8.55 3 8V5C3 4.45 3.45 4 4 4H6"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M18 9H20C20.55 9 21 8.55 21 8V5C21 4.45 20.55 4 20 4H18"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M6 4H18V12C18 15.31 15.31 18 12 18C8.69 18 6 15.31 6 12V4Z"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M12 18V21M8 21H16"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Globe icon - for language selection
+export const GlobeIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Circle cx={12} cy={12} r={10} stroke={color} strokeWidth={2} />
+    <Path
+      d="M2 12H22"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+    />
+    <Path
+      d="M12 2C14.5 4.5 16 8 16 12C16 16 14.5 19.5 12 22C9.5 19.5 8 16 8 12C8 8 9.5 4.5 12 2Z"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Info icon - for about section
+export const InfoIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Circle cx={12} cy={12} r={10} stroke={color} strokeWidth={2} />
+    <Path
+      d="M12 16V12"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+    />
+    <Circle cx={12} cy={8} r={1} fill={color} />
+  </Svg>
+);
+
+// Crown icon - for top achievements
+export const CrownIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fbbf24",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M2 17L5 8L9 12L12 4L15 12L19 8L22 17H2Z"
+      fill={color}
+      fillOpacity={0.2}
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M2 17H22V20C22 20.55 21.55 21 21 21H3C2.45 21 2 20.55 2 20V17Z"
+      fill={color}
+      fillOpacity={0.3}
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Medal icon - for achievements
+export const MedalIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fbbf24",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Circle
+      cx={12}
+      cy={14}
+      r={6}
+      fill={color}
+      fillOpacity={0.2}
+      stroke={color}
+      strokeWidth={2}
+    />
+    <Path
+      d="M9 2L12 8L15 2"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M12 8V10"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+    />
+  </Svg>
+);
+
+// Camera icon - for taking photos
+export const CameraIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M23 19C23 19.55 22.55 20 22 20H2C1.45 20 1 19.55 1 19V8C1 7.45 1.45 7 2 7H6L8 4H16L18 7H22C22.55 7 23 7.45 23 8V19Z"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Circle cx={12} cy={13} r={4} stroke={color} strokeWidth={2} />
+  </Svg>
+);
+
+// Gallery/image icon - for choosing photos
+export const GalleryIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Rect
+      x={3}
+      y={3}
+      width={18}
+      height={18}
+      rx={2}
+      stroke={color}
+      strokeWidth={2}
+    />
+    <Circle cx={8.5} cy={8.5} r={1.5} fill={color} />
+    <Path
+      d="M21 15L16 10L5 21"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Close/X icon - for dismissing
+export const CloseIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M18 6L6 18M6 6L18 18"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Back arrow icon - for navigation
+export const BackIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = "#fff",
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M19 12H5M5 12L12 19M5 12L12 5"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);

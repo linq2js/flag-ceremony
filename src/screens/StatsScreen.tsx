@@ -1,6 +1,13 @@
 import React, { useMemo } from "react";
-import { View, Text, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { useStore, mixins } from "storion/react";
 import {
   tMixin,
@@ -16,7 +23,7 @@ import {
 } from "../stores";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { getMonthName } from "../utils/history";
-import { textStyles, spacing, layout } from "../design";
+import { textStyles, spacing, layout, palette } from "../design";
 import {
   RankingCard,
   StatsGrid,
@@ -25,8 +32,19 @@ import {
   AchievementsSection,
 } from "../components/stats";
 import { rankingMixin } from "@/stores/mixins";
+import {
+  PlayIcon,
+  FireIcon,
+  StrengthIcon,
+  TrophyIcon,
+  StarIcon,
+  CrownIcon,
+  ShareIcon,
+} from "../components/Icons";
 
 export const StatsScreen: React.FC = () => {
+  const router = useRouter();
+
   const {
     t,
     language,
@@ -65,32 +83,32 @@ export const StatsScreen: React.FC = () => {
   const achievements = useMemo(
     () => [
       {
-        icon: "🌅",
+        icon: <PlayIcon size={20} color={palette.gold[500]} />,
         name: t("first_ceremony"),
         unlocked: completedCeremonies >= 1,
       },
       {
-        icon: "🔥",
+        icon: <FireIcon size={20} color={palette.gold[500]} />,
         name: t("seven_day_streak"),
         unlocked: longestStreak >= 7,
       },
       {
-        icon: "💪",
+        icon: <StrengthIcon size={20} color={palette.gold[500]} />,
         name: t("thirty_day_streak"),
         unlocked: longestStreak >= 30,
       },
       {
-        icon: "🏆",
+        icon: <TrophyIcon size={20} color={palette.gold[500]} />,
         name: t("hundred_ceremonies"),
         unlocked: completedCeremonies >= 100,
       },
       {
-        icon: "⭐",
+        icon: <StarIcon size={20} color={palette.gold[500]} />,
         name: t("year_streak"),
         unlocked: longestStreak >= 365,
       },
       {
-        icon: "👑",
+        icon: <CrownIcon size={20} color={palette.gold[500]} />,
         name: t("top_one_percent"),
         unlocked: ranking ? ranking.percentile >= 99 : false,
       },
@@ -112,17 +130,20 @@ export const StatsScreen: React.FC = () => {
           showsVerticalScrollIndicator={false}
         >
           {/* Header */}
-          <View
-            style={{
-              paddingHorizontal: spacing[9],
-              paddingTop: spacing[9],
-              paddingBottom: spacing[10],
-            }}
-          >
-            <Text style={textStyles.label}>{t("your_progress")}</Text>
-            <Text style={[textStyles.screenTitle, { marginTop: spacing[2] }]}>
-              {t("statistics")}
-            </Text>
+          <View style={styles.header}>
+            <View>
+              <Text style={textStyles.label}>{t("your_progress")}</Text>
+              <Text style={[textStyles.screenTitle, { marginTop: spacing[2] }]}>
+                {t("statistics")}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.shareButton}
+              onPress={() => router.push("/share-badge")}
+            >
+              <ShareIcon size={20} color={palette.gold[500]} />
+              <Text style={styles.shareButtonText}>{t("share_stats")}</Text>
+            </TouchableOpacity>
           </View>
 
           {ranking && <RankingCard t={t as any} ranking={ranking} />}
@@ -151,3 +172,30 @@ export const StatsScreen: React.FC = () => {
     </ScreenBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    paddingHorizontal: spacing[9],
+    paddingTop: spacing[9],
+    paddingBottom: spacing[10],
+  },
+  shareButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing[2],
+    backgroundColor: palette.gold[100],
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[3],
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: palette.gold[200],
+  },
+  shareButtonText: {
+    color: palette.gold[500],
+    fontWeight: "600",
+    fontSize: 12,
+  },
+});

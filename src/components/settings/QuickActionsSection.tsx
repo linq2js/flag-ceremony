@@ -12,6 +12,12 @@ import {
   iconContainer,
 } from "../../design";
 import { SectionHeader } from "./SectionHeader";
+import {
+  LightningIcon,
+  ShareIcon,
+  StarIcon,
+  ArrowRightIcon,
+} from "../Icons";
 
 interface QuickActionsSectionProps {
   t: (key: string, params?: Record<string, unknown>) => string;
@@ -26,7 +32,7 @@ export const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
     subtitle,
     isLast = false,
   }: {
-    icon: string;
+    icon: React.ReactNode;
     title: string;
     subtitle: string;
     isLast?: boolean;
@@ -50,7 +56,7 @@ export const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
           },
         ]}
       >
-        <Text style={{ fontSize: 24 }}>{icon}</Text>
+        {icon}
       </View>
       <View style={{ flex: 1 }}>
         <Text style={textStyles.inputLabel}>{title}</Text>
@@ -58,25 +64,28 @@ export const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
           {subtitle}
         </Text>
       </View>
-      <Text style={{ fontSize: 20, color: palette.white[25] }}>→</Text>
+      <ArrowRightIcon size={20} color={palette.white[25]} />
     </TouchableOpacity>
   );
 
   return (
     <View style={layout.container}>
-      <SectionHeader icon="⚡" title={t("quick_actions")} />
+      <SectionHeader
+        icon={<LightningIcon size={20} color={palette.gold[500]} />}
+        title={t("quick_actions")}
+      />
 
       <View
         // @ts-ignore - glassEffect contains web-only props
         style={[cardStyles.list, glassEffect]}
       >
         <QuickActionItem
-          icon="📤"
+          icon={<ShareIcon size={24} color={palette.white[70]} />}
           title={t("share_app")}
           subtitle={t("invite_friends")}
         />
         <QuickActionItem
-          icon="⭐"
+          icon={<StarIcon size={24} color={palette.gold[500]} />}
           title={t("rate_app")}
           subtitle={t("leave_review")}
           isLast

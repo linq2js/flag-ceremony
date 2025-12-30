@@ -6,11 +6,13 @@ import {
   Pressable,
   Platform,
   Animated,
+  ActivityIndicator,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
+import { Suspense } from "react";
 import { StoreProvider, useStore, mixins } from "storion/react";
 import {
   app,
@@ -18,6 +20,7 @@ import {
   ceremonyActiveMixin,
   stopCeremonyAndLogIncompleteMixin,
 } from "../src/stores";
+import { ServiceLoader } from "../src/components/ServiceLoader";
 import { showAlert } from "../src/utils/alert";
 import { VietnamFlagIcon } from "../src/components/VietnamFlag";
 import { HomeIcon, StatsIcon, SettingsIcon } from "../src/components/Icons";
@@ -129,20 +132,27 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
     }
   };
 
-  const tabCount = state.routes.length;
-  const segmentWidth = layoutWidth > 0 ? layoutWidth / tabCount : 0;
+  // Use TAB_CONFIG.length (visible tabs) not state.routes.length (may include hidden routes)
+  const tabCount = TAB_CONFIG.length;
+  const tabBarPadding = 10; // matches paddingHorizontal on tabBar
+  const contentWidth = layoutWidth > 0 ? layoutWidth - tabBarPadding * 2 : 0;
+  const segmentWidth = contentWidth > 0 ? contentWidth / tabCount : 0;
+
+  // Find the visual index based on TAB_CONFIG order, not state.routes order
+  const currentRouteName = state.routes[state.index]?.name;
+  const visualIndex = TAB_CONFIG.findIndex((c) => c.name === currentRouteName);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   require("react").useEffect(() => {
-    if (segmentWidth <= 0) return;
+    if (segmentWidth <= 0 || visualIndex < 0) return;
     Animated.spring(indicatorX, {
-      toValue: segmentWidth * state.index,
+      toValue: segmentWidth * visualIndex,
       useNativeDriver: true,
       damping: 18,
       stiffness: 220,
       mass: 0.7,
     }).start();
-  }, [segmentWidth, state.index, indicatorX]);
+  }, [segmentWidth, visualIndex, indicatorX]);
 
   return (
     <View
@@ -161,6 +171,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
             style={[
               styles.activeIndicator,
               {
+                left: tabBarPadding,
                 width: segmentWidth,
                 transform: [{ translateX: indicatorX }],
               },
@@ -224,6 +235,13 @@ function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#0a0a0a",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 9999,
+  },
   sceneContainer: {
     backgroundColor: "#0a0a0a",
   },
@@ -262,7 +280,6 @@ const styles = StyleSheet.create({
   activeIndicator: {
     position: "absolute",
     top: 0,
-    left: 0,
     height: 4,
     opacity: 0.9,
   },
@@ -294,6 +311,17 @@ export default function RootLayout() {
   return (
     <StoreProvider container={app}>
       <StatusBar style="light" />
+      {/* ServiceLoader blocks initial render until persist tasks complete */}
+      <Suspense
+        fallback={
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={palette.orange[500]} />
+          </View>
+        }
+      >
+        <ServiceLoader />
+      </Suspense>
+      {/* TabsLayout stays outside Suspense so TabBar never unmounts during navigation */}
       <TabsLayout />
     </StoreProvider>
   );

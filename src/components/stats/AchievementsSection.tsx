@@ -12,7 +12,7 @@ import {
 } from "../../design";
 
 interface Achievement {
-  icon: string;
+  icon: React.ReactNode;
   name: string;
   unlocked: boolean;
 }
@@ -50,9 +50,9 @@ export const AchievementsSection: React.FC<AchievementsSectionProps> = ({
                 achievement.unlocked ? badge.unlocked : badge.locked,
               ]}
             >
-              <Text style={{ fontSize: 20, marginRight: spacing[3] }}>
+              <View style={{ marginRight: spacing[3], opacity: achievement.unlocked ? 1 : 0.5 }}>
                 {achievement.icon}
-              </Text>
+              </View>
               <Text
                 style={{
                   fontSize: 13,
