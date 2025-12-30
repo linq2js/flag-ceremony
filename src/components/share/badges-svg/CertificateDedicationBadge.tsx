@@ -56,8 +56,19 @@ export const CertificateDedicationBadge: React.FC<SVGBadgeProps> = ({
       <Line x1="130" y1="60" x2="230" y2="60" stroke="#b8860b" strokeWidth="2" />
 
       {/* Name */}
-      <Text x="180" y="95" textAnchor="middle" fill="#3d2817" fontSize="20" fontWeight="700" fontStyle="italic" fontFamily={FONT_FAMILY}>
-        {displayName || t("dedicated_patriot")}
+      <Text 
+        x="180" 
+        y="95" 
+        textAnchor="middle" 
+        fill="#3d2817" 
+        fontSize="20" 
+        fontWeight="700" 
+        fontStyle="italic" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 20 
+          ? (displayName || t("dedicated_patriot")).substring(0, 20) + "..." 
+          : (displayName || t("dedicated_patriot")))}
       </Text>
 
       {/* Description */}

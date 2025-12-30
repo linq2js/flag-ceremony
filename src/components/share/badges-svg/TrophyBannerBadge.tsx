@@ -69,8 +69,18 @@ export const TrophyBannerBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="150" y="125" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {(displayName || t("dedicated_patriot")).toUpperCase()}
+      <Text 
+        x="150" 
+        y="125" 
+        textAnchor="middle" 
+        fill="#ffffff" 
+        fontSize="14" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 20 
+          ? (displayName || t("dedicated_patriot")).substring(0, 20) + "..." 
+          : (displayName || t("dedicated_patriot"))).toUpperCase()}
       </Text>
 
       {/* Count */}
@@ -93,10 +103,9 @@ export const TrophyBannerBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Footer */}
-      <Text x="125" y="280" fill="rgba(255, 255, 255, 0.5)" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
-        {t("badge_flag_ceremony")}
+      <Text x="150" y="280" textAnchor="middle" fill="rgba(255, 255, 255, 0.5)" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
+        {t("badge_flag_ceremony")} 🇻🇳
       </Text>
-      <Text x="230" y="280" fontSize="12">🇻🇳</Text>
     </Svg>
   );
 };

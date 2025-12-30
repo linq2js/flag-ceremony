@@ -212,7 +212,9 @@ const styles = StyleSheet.create({
   name: {
     color: "#ffffff",
     fontWeight: "700",
+    textAlign: "center",
     lineHeight: 28,
+    paddingHorizontal: 10,
     paddingBottom: 2,
   },
   memberSince: {

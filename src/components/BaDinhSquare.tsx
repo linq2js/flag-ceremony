@@ -20,8 +20,13 @@ export const BaDinhSquare: React.FC<BaDinhSquareProps> = ({
   const flagRed = "#8b2020"; // Flag red (slightly brighter for visibility)
 
   return (
-    <View style={{ opacity }}>
-      <Svg width={width} height={height} viewBox="0 0 400 300">
+    <View style={{ opacity, width, height, overflow: "hidden" }}>
+      <Svg
+        width={width}
+        height={height}
+        viewBox="0 0 400 300"
+        preserveAspectRatio="xMidYMid meet"
+      >
         {/* Background */}
         <Rect x="0" y="0" width="400" height="300" fill={bgColor} />
 

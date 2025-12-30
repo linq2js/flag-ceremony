@@ -72,8 +72,18 @@ export const SimpleRedBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="150" y="185" textAnchor="middle" fill="#ffffff" fontSize="18" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {displayName || t("dedicated_patriot")}
+      <Text 
+        x="150" 
+        y="185" 
+        textAnchor="middle" 
+        fill="#ffffff" 
+        fontSize="18" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 18 
+          ? (displayName || t("dedicated_patriot")).substring(0, 18) + "..." 
+          : (displayName || t("dedicated_patriot")))}
       </Text>
 
       {/* Stars row */}
@@ -83,8 +93,16 @@ export const SimpleRedBadge: React.FC<SVGBadgeProps> = ({
 
       {/* Stats */}
       {stats && (
-        <Text x="150" y="255" textAnchor="middle" fill="rgba(255, 255, 255, 0.8)" fontSize="11" fontWeight="500" fontFamily={FONT_FAMILY}>
-          {t("current_streak")}: {stats.currentStreak} {t("days")} | {t("best_streak")}: {stats.longestStreak} {t("days")}
+        <Text 
+          x="150" 
+          y="255" 
+          textAnchor="middle" 
+          fill="rgba(255, 255, 255, 0.8)" 
+          fontSize="10" 
+          fontWeight="500" 
+          fontFamily={FONT_FAMILY}
+        >
+          🔥 {t("current_streak")}: {stats.currentStreak} ⚡ {t("best_streak")}: {stats.longestStreak}
         </Text>
       )}
     </Svg>

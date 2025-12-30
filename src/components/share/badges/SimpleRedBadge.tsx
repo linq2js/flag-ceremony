@@ -146,7 +146,9 @@ const styles = StyleSheet.create({
   name: {
     color: "#ffffff",
     fontWeight: "700",
+    textAlign: "center",
     lineHeight: 32,
+    paddingHorizontal: 10,
     paddingBottom: 4, // Extra space to prevent bottom clipping
   },
   starsRow: {

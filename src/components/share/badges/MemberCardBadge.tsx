@@ -186,7 +186,9 @@ const styles = StyleSheet.create({
     color: "#fafaf9",
     fontWeight: "700",
     textTransform: "uppercase",
+    textAlign: "center",
     lineHeight: 32,
+    paddingHorizontal: 10,
     paddingBottom: 4,
   },
   memberSince: {

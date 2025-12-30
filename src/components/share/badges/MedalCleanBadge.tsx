@@ -167,7 +167,9 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
     textTransform: "uppercase",
+    textAlign: "center",
     lineHeight: 32,
+    paddingHorizontal: 10,
     paddingBottom: 4,
   },
   countSection: {

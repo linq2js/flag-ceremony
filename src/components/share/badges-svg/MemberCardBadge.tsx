@@ -83,8 +83,18 @@ export const MemberCardBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="68" y="130" textAnchor="middle" fill="#fafaf9" fontSize="12" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {(displayName || t("dedicated_patriot")).toUpperCase()}
+      <Text 
+        x="68" 
+        y="130" 
+        textAnchor="middle" 
+        fill="#fafaf9" 
+        fontSize="12" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 15 
+          ? (displayName || t("dedicated_patriot")).substring(0, 15) + "..." 
+          : (displayName || t("dedicated_patriot"))).toUpperCase()}
       </Text>
 
       {/* Member since */}

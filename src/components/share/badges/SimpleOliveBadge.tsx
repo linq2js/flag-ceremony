@@ -124,22 +124,6 @@ export const SimpleOliveBadge: React.FC<BadgeProps> = ({
             </View>
           </View>
         )}
-
-        {/* Action button */}
-        <View
-          style={[
-            styles.actionButton,
-            {
-              paddingHorizontal: 16 * scale,
-              paddingVertical: 6 * scale,
-              marginTop: 10 * scale,
-            },
-          ]}
-        >
-          <Text style={[styles.actionText, { fontSize: 9 * scale }]}>
-            GO CEREMONY
-          </Text>
-        </View>
       </View>
     </View>
   );
@@ -191,7 +175,9 @@ const styles = StyleSheet.create({
     color: "#fafaf9",
     fontWeight: "700",
     textTransform: "uppercase",
+    textAlign: "center",
     lineHeight: 32,
+    paddingHorizontal: 10,
     paddingBottom: 4,
   },
   description: {
@@ -211,14 +197,5 @@ const styles = StyleSheet.create({
   statText: {
     color: "rgba(250, 250, 249, 0.8)",
     fontWeight: "500",
-  },
-  actionButton: {
-    backgroundColor: "#fbbf24",
-    borderRadius: 4,
-  },
-  actionText: {
-    color: "#1c1917",
-    fontWeight: "700",
-    letterSpacing: 1,
   },
 });

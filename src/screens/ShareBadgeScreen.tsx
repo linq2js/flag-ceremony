@@ -231,7 +231,9 @@ const BadgeEditorContent: React.FC = React.memo(() => {
         <View style={styles.previewSection}>
           {Platform.OS === "web" ? (
             <View
-              ref={svgContainerRef}
+              ref={(ref) => {
+                svgContainerRef.current = ref;
+              }}
               style={{ width: badgeWidth, height: badgeHeight }}
               collapsable={false}
             >

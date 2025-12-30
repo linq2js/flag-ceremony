@@ -81,8 +81,18 @@ export const RankingPatternBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="150" y="135" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {displayName || t("dedicated_patriot")}
+      <Text 
+        x="150" 
+        y="135" 
+        textAnchor="middle" 
+        fill="#ffffff" 
+        fontSize="14" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 20 
+          ? (displayName || t("dedicated_patriot")).substring(0, 20) + "..." 
+          : (displayName || t("dedicated_patriot")))}
       </Text>
 
       {/* Ranking header */}

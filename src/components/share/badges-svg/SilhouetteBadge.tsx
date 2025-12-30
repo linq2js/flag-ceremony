@@ -65,8 +65,18 @@ export const SilhouetteBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="150" y="145" textAnchor="middle" fill="#ffffff" fontSize="16" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {displayName || t("dedicated_patriot")}
+      <Text 
+        x="150" 
+        y="145" 
+        textAnchor="middle" 
+        fill="#ffffff" 
+        fontSize="16" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 18 
+          ? (displayName || t("dedicated_patriot")).substring(0, 18) + "..." 
+          : (displayName || t("dedicated_patriot")))}
       </Text>
 
       {/* Count */}

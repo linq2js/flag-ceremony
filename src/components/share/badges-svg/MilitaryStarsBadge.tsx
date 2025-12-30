@@ -81,8 +81,18 @@ export const MilitaryStarsBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="150" y="145" textAnchor="middle" fill="#fafaf9" fontSize="12" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {(displayName || t("dedicated_patriot")).toUpperCase()}
+      <Text 
+        x="150" 
+        y="145" 
+        textAnchor="middle" 
+        fill="#fafaf9" 
+        fontSize="12" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 22 
+          ? (displayName || t("dedicated_patriot")).substring(0, 22) + "..." 
+          : (displayName || t("dedicated_patriot"))).toUpperCase()}
       </Text>
 
       {/* Description */}
@@ -106,12 +116,6 @@ export const MilitaryStarsBadge: React.FC<SVGBadgeProps> = ({
           )}
         </G>
       )}
-
-      {/* Action button */}
-      <Rect x="115" y="235" width="70" height="22" rx="4" fill="#fbbf24" />
-      <Text x="150" y="250" textAnchor="middle" fill="#1c1917" fontSize="8" fontWeight="700" letterSpacing={1} fontFamily={FONT_FAMILY}>
-        GO CEREMONY
-      </Text>
     </Svg>
   );
 };

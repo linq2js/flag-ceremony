@@ -169,8 +169,10 @@ const styles = StyleSheet.create({
     color: "#1c1917",
     fontWeight: "700",
     textTransform: "uppercase",
+    textAlign: "center",
     lineHeight: 32,
     paddingBottom: 4,
+    paddingHorizontal: 10,
   },
   countSection: {
     alignItems: "center",

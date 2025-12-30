@@ -87,8 +87,18 @@ export const FireStreakBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="150" y="120" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {(displayName || t("dedicated_patriot")).toUpperCase()}
+      <Text 
+        x="150" 
+        y="120" 
+        textAnchor="middle" 
+        fill="#ffffff" 
+        fontSize="14" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 20 
+          ? (displayName || t("dedicated_patriot")).substring(0, 20) + "..." 
+          : (displayName || t("dedicated_patriot"))).toUpperCase()}
       </Text>
 
       {/* Large streak */}
@@ -106,20 +116,19 @@ export const FireStreakBadge: React.FC<SVGBadgeProps> = ({
       {/* Secondary stats */}
       {stats && (
         <G>
-          <Text x="90" y="245" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="500" fontFamily={FONT_FAMILY}>
+          <Text x="100" y="245" textAnchor="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="500" fontFamily={FONT_FAMILY}>
             🔥 {t("current_streak")}: {stats.currentStreak}
           </Text>
-          <Text x="175" y="245" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="500" fontFamily={FONT_FAMILY}>
+          <Text x="200" y="245" textAnchor="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="500" fontFamily={FONT_FAMILY}>
             ⚡ {t("best_streak")}: {stats.longestStreak}
           </Text>
         </G>
       )}
 
       {/* Footer */}
-      <Text x="125" y="280" fill="rgba(255, 255, 255, 0.5)" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
-        {t("badge_flag_ceremony")}
+      <Text x="150" y="280" textAnchor="middle" fill="rgba(255, 255, 255, 0.5)" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
+        {t("badge_flag_ceremony")} 🇻🇳
       </Text>
-      <Text x="230" y="280" fontSize="12">🇻🇳</Text>
     </Svg>
   );
 };

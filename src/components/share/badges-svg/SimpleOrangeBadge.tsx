@@ -66,8 +66,18 @@ export const SimpleOrangeBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Name */}
-      <Text x="150" y="110" textAnchor="middle" fill="#1c1917" fontSize="16" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {(displayName || t("dedicated_patriot")).toUpperCase()}
+      <Text 
+        x="150" 
+        y="110" 
+        textAnchor="middle" 
+        fill="#1c1917" 
+        fontSize="16" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 20 
+          ? (displayName || t("dedicated_patriot")).substring(0, 20) + "..." 
+          : (displayName || t("dedicated_patriot"))).toUpperCase()}
       </Text>
 
       {/* Large count */}
@@ -85,22 +95,19 @@ export const SimpleOrangeBadge: React.FC<SVGBadgeProps> = ({
       {/* Stats row */}
       {stats && (
         <G>
-          <Text x="80" y="245" fontSize="10">🔥</Text>
-          <Text x="92" y="245" fill="#44403c" fontSize="10" fontWeight="500" fontFamily={FONT_FAMILY}>
-            {t("current_streak")}: {stats.currentStreak}
+          <Text x="100" y="245" textAnchor="middle" fill="#44403c" fontSize="10" fontWeight="500" fontFamily={FONT_FAMILY}>
+            🔥 {t("current_streak")}: {stats.currentStreak}
           </Text>
-          <Text x="185" y="245" fontSize="10">⚡</Text>
-          <Text x="197" y="245" fill="#44403c" fontSize="10" fontWeight="500" fontFamily={FONT_FAMILY}>
-            {t("best_streak")}: {stats.longestStreak}
+          <Text x="200" y="245" textAnchor="middle" fill="#44403c" fontSize="10" fontWeight="500" fontFamily={FONT_FAMILY}>
+            ⚡ {t("best_streak")}: {stats.longestStreak}
           </Text>
         </G>
       )}
 
       {/* Footer */}
-      <Text x="125" y="280" fill="#78350f" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
-        {t("badge_flag_ceremony")}
+      <Text x="150" y="280" textAnchor="middle" fill="#78350f" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
+        {t("badge_flag_ceremony")} 🇻🇳
       </Text>
-      <Text x="230" y="280" fontSize="12">🇻🇳</Text>
     </Svg>
   );
 };

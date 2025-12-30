@@ -10,8 +10,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   useWindowDimensions,
+  Platform,
 } from "react-native";
-import { BadgeType, BadgeStats, BADGE_TYPES } from "../../stores/badge";
+import { BadgeType, BadgeStats } from "../../stores/badge";
+import { BADGE_TYPES } from "./badges-svg"; // Use preview dimensions, not export dimensions
 import { palette, spacing, textStyles } from "../../design";
 import { BadgePreview } from "./BadgePreview";
 
@@ -75,10 +77,9 @@ export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
       >
         {badges.map(([type, info]) => {
           const isSelected = type === selected;
-          // Calculate scaled dimensions for the container
-          const scaledWidth = BADGE_BASE_SIZE * SCALE_FACTOR;
-          const scaledHeight =
-            BADGE_BASE_SIZE * (info.height / info.width) * SCALE_FACTOR;
+          // Calculate scaled dimensions for the container - use actual badge dimensions
+          const scaledWidth = info.width * SCALE_FACTOR;
+          const scaledHeight = info.height * SCALE_FACTOR;
 
           return (
             <TouchableOpacity
@@ -98,28 +99,56 @@ export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
                   {
                     width: scaledWidth,
                     height: scaledHeight,
+                    // Explicitly constrain on web to prevent expansion
+                    ...(Platform.OS === "web" && {
+                      maxWidth: scaledWidth,
+                      maxHeight: scaledHeight,
+                      minWidth: scaledWidth,
+                      minHeight: scaledHeight,
+                    }),
                   },
                 ]}
               >
-                {/* Inner container that renders full size then scales down */}
-                {/* transformOrigin ensures scale happens from top-left */}
-                <View
-                  style={{
-                    width: BADGE_BASE_SIZE,
-                    height: BADGE_BASE_SIZE * (info.height / info.width),
-                    transform: [{ scale: SCALE_FACTOR }],
-                    transformOrigin: "top left",
-                  }}
-                >
-                  <BadgePreview
-                    badgeType={type}
-                    photoUri={photoUri}
-                    displayName={displayName}
-                    stats={stats}
-                    t={t}
-                    previewScale={1}
-                  />
-                </View>
+                {/* On web: render at actual scaled size to avoid layout overflow */}
+                {/* On native: use transform for better quality */}
+                {Platform.OS === "web" ? (
+                  <View
+                    style={{
+                      width: scaledWidth,
+                      height: scaledHeight,
+                      maxWidth: scaledWidth,
+                      maxHeight: scaledHeight,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <BadgePreview
+                      badgeType={type}
+                      photoUri={photoUri}
+                      displayName={displayName}
+                      stats={stats}
+                      t={t}
+                      previewScale={SCALE_FACTOR}
+                    />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      width: info.width,
+                      height: info.height,
+                      transform: [{ scale: SCALE_FACTOR }],
+                      transformOrigin: "top left",
+                    }}
+                  >
+                    <BadgePreview
+                      badgeType={type}
+                      photoUri={photoUri}
+                      displayName={displayName}
+                      stats={stats}
+                      t={t}
+                      previewScale={1}
+                    />
+                  </View>
+                )}
               </View>
               <Text
                 style={[
@@ -164,6 +193,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 6,
     marginBottom: spacing[2],
+    // Ensure container doesn't exceed its bounds on web
+    ...(Platform.OS === "web" && {
+      maxWidth: "100%",
+      maxHeight: "100%",
+    }),
   },
   badgeName: {
     ...textStyles.bodySmall,

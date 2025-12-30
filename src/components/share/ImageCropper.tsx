@@ -15,7 +15,7 @@ import {
   PanResponder,
   Modal,
 } from "react-native";
-import * as ImageManipulator from "expo-image-manipulator";
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { palette, spacing, textStyles } from "../../design";
 import {
   CheckIcon,
@@ -31,10 +31,39 @@ import {
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const CROP_SIZE = Math.min(SCREEN_WIDTH * 0.7, 300);
-const MIN_SCALE = 0.5;
-const MAX_SCALE = 4;
+const MIN_SCALE = 0.2;
+const MAX_SCALE = 2.0;
 const PAN_STEP = 10;
 const SLIDER_WIDTH = SCREEN_WIDTH * 0.7;
+
+// Slider value mapping: sliderValue 0 = center (scale 1.0)
+// Middle point: (0.2 + 2.0) / 2 = 1.1, but we use 1.0 as center (natural "no zoom")
+// sliderValue ranges from -0.4 (scale 0.2) to +0.5 (scale 2.0)
+// Using linear mapping: scale = 1.0 + sliderValue * 2.0
+const SLIDER_MIN = -0.4; // Maps to scale 0.2: 0.2 = 1.0 + (-0.4) * 2.0
+const SLIDER_MAX = 0.5;  // Maps to scale 2.0: 2.0 = 1.0 + 0.5 * 2.0
+const SLIDER_CENTER = 0; // Maps to scale 1.0: 1.0 = 1.0 + 0 * 2.0
+
+// Convert slider value to scale with clamping
+// Formula: scale = 1.0 + sliderValue * 2.0
+const sliderToScale = (sliderValue: number): number => {
+  // Clamp slider value first
+  const clampedSlider = Math.max(SLIDER_MIN, Math.min(SLIDER_MAX, sliderValue));
+  // Convert to scale: linear mapping centered at 1.0
+  const scale = 1.0 + clampedSlider * 2.0;
+  // Clamp scale to ensure it's within bounds (extra safety)
+  return Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale));
+};
+
+// Convert scale to slider value
+const scaleToSlider = (scale: number): number => {
+  // Clamp scale first
+  const clampedScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale));
+  // Convert to slider value: sliderValue = (scale - 1.0) / 2.0
+  const sliderValue = (clampedScale - 1.0) / 2.0;
+  // Clamp slider value
+  return Math.max(SLIDER_MIN, Math.min(SLIDER_MAX, sliderValue));
+};
 
 // Simple Slider Component
 const SimpleSlider: React.FC<{
@@ -137,10 +166,13 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
 }) => {
   const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [scale, setScale] = useState(1);
+  const [sliderValue, setSliderValue] = useState(SLIDER_CENTER); // Start at center (0)
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
-  const prevScaleRef = React.useRef(1);
+  const prevSliderValueRef = React.useRef(SLIDER_CENTER);
+  
+  // Convert slider value to scale
+  const scale = sliderToScale(sliderValue);
 
   // Initialize image dimensions and scale
   useEffect(() => {
@@ -148,34 +180,39 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
       imageUri,
       (width, height) => {
         setImageSize({ width, height });
-        // Initialize scale to fit crop area - start smaller to ensure controls are visible
-        const scaleToFit = Math.max(
-          cropSize / width,
-          cropSize / height
-        ) * 0.8; // Start smaller (80%) to ensure all controls are visible
-        setScale(scaleToFit);
-        prevScaleRef.current = scaleToFit;
+        // Always start slider at center (0) = scale 1.0 (middle point)
+        setSliderValue(SLIDER_CENTER);
+        prevSliderValueRef.current = SLIDER_CENTER;
+        setTranslateX(0);
+        setTranslateY(0);
       },
       () => {
         // Fallback if getSize fails
         setImageSize({ width: 400, height: 400 });
+        // Always start slider at center (0) = scale 1.0 (middle point)
+        setSliderValue(SLIDER_CENTER);
+        prevSliderValueRef.current = SLIDER_CENTER;
+        setTranslateX(0);
+        setTranslateY(0);
       }
     );
   }, [imageUri, cropSize]);
 
   // Slider handler - maintain crop point centered when zooming
-  const handleSliderChange = useCallback((newScale: number) => {
-    const oldScale = prevScaleRef.current;
+  const handleSliderChange = useCallback((newSliderValue: number) => {
+    // Clamp slider value to valid range
+    const clampedValue = Math.max(SLIDER_MIN, Math.min(SLIDER_MAX, newSliderValue));
     
-    // Adjust translateX and translateY to keep the same point in image centered
-    // When scale changes, the translate values need to scale proportionally
-    if (oldScale !== 0 && oldScale !== newScale) {
-      setTranslateX((prev) => prev * (newScale / oldScale));
-      setTranslateY((prev) => prev * (newScale / oldScale));
+    // Verify the resulting scale is valid
+    const resultingScale = sliderToScale(clampedValue);
+    if (resultingScale < MIN_SCALE || resultingScale > MAX_SCALE) {
+      console.warn(`Invalid scale value: ${resultingScale}, clamping to [${MIN_SCALE}, ${MAX_SCALE}]`);
     }
     
-    setScale(newScale);
-    prevScaleRef.current = newScale;
+    // Don't adjust translateX/Y - the transform will scale around crop circle center
+    // which keeps the same point centered automatically
+    setSliderValue(clampedValue);
+    prevSliderValueRef.current = clampedValue;
   }, []);
 
   const handleMoveLeft = useCallback(() => {
@@ -196,15 +233,12 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
 
   const handleReset = useCallback(() => {
     if (!imageSize) return;
-    const scaleToFit = Math.max(
-      cropSize / imageSize.width,
-      cropSize / imageSize.height
-    ) * 0.8;
-    setScale(scaleToFit);
+    // Reset to slider center (0) = scale 1.0, centered
+    setSliderValue(SLIDER_CENTER);
     setTranslateX(0);
     setTranslateY(0);
-    prevScaleRef.current = scaleToFit;
-  }, [imageSize, cropSize]);
+    prevSliderValueRef.current = SLIDER_CENTER;
+  }, [imageSize]);
 
   // Calculate crop bounds
   // The crop circle is centered at (cropSize/2, cropSize/2) in preview
@@ -265,22 +299,22 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
         return;
       }
 
-      // Crop the image
-      const result = await ImageManipulator.manipulateAsync(
-        imageUri,
-        [
-          {
-            crop: {
-              originX: Math.round(bounds.originX),
-              originY: Math.round(bounds.originY),
-              width: Math.round(bounds.width),
-              height: Math.round(bounds.height),
-            },
-          },
-          { resize: { width: cropSize * 2 } }, // 2x resolution for quality
-        ],
-        { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG }
-      );
+      // Crop the image using the new ImageManipulator API
+      const context = ImageManipulator.manipulate(imageUri);
+      context
+        .crop({
+          originX: Math.round(bounds.originX),
+          originY: Math.round(bounds.originY),
+          width: Math.round(bounds.width),
+          height: Math.round(bounds.height),
+        })
+        .resize({ width: cropSize * 2 }); // 2x resolution for quality
+      
+      const imageRef = await context.renderAsync();
+      const result = await imageRef.saveAsync({
+        compress: 0.9,
+        format: SaveFormat.JPEG,
+      });
 
       onCrop(result.uri);
     } catch (error) {
@@ -299,31 +333,35 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
     );
   }
 
+  // Use original image dimensions - scaling will be done via transform
   const imageDisplayWidth = imageSize.width;
   const imageDisplayHeight = imageSize.height;
-
-  // Calculate preview image position - center image in circle, then apply transforms
-  const imageDisplayWidthScaled = imageDisplayWidth * scale;
-  const imageDisplayHeightScaled = imageDisplayHeight * scale;
   
   // Circle center
   const circleCenterX = cropSize / 2;
   const circleCenterY = cropSize / 2;
-  
-  // Image center position (centered in circle, then translated)
-  const imageCenterX = circleCenterX + translateX;
-  const imageCenterY = circleCenterY + translateY;
 
-  // Preview image style - use center transform origin for zoom
-  // Position image so its center aligns with circle center, then apply transforms
+  // Preview image style:
+  // 1. left/top: FIXED initial position - center image at crop circle center (when scale = 1.0)
+  //    This NEVER changes - it's the base position
+  // 2. translateX/Y: Panning controls (0,0 = centered, +/- values move image)
+  // 3. scale: Zoom (slider value 0 = scale 1.0, min -0.75 = scale 0.5, max +0.75 = scale 2.0)
+  // 
+  // Since left/top positions the element so its center is at crop circle center,
+  // transformOrigin "center center" will scale around the element's center (which is crop circle center)
   const previewImageStyle = {
-    width: imageDisplayWidthScaled,
-    height: imageDisplayHeightScaled,
-    transformOrigin: "center center", // For web
+    width: imageDisplayWidth,
+    height: imageDisplayHeight,
+    // FIXED initial position: center image at crop circle center (doesn't change with scale!)
+    left: circleCenterX - imageDisplayWidth / 2,
+    top: circleCenterY - imageDisplayHeight / 2,
+    // Transform: scale around center (crop circle center), then apply panning
+    transformOrigin: "center center",
     transform: [
-      { translateX: imageCenterX - imageDisplayWidthScaled / 2 },
-      { translateY: imageCenterY - imageDisplayHeightScaled / 2 },
-    ] as any,
+      { translateX: translateX }, // Panning offset
+      { translateY: translateY },
+      { scale: scale }, // Zoom around center
+    ],
   };
 
   return (
@@ -348,8 +386,8 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                 <Image
                   source={{ uri: imageUri }}
                   style={{
-                    width: imageDisplayWidthScaled,
-                    height: imageDisplayHeightScaled,
+                    width: imageDisplayWidth,
+                    height: imageDisplayHeight,
                   }}
                   resizeMode="cover"
                 />
@@ -364,9 +402,9 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
           <View style={styles.sliderContainer}>
             <ZoomOutIcon size={20} color={palette.white[80]} />
             <SimpleSlider
-              value={scale}
-              min={MIN_SCALE}
-              max={MAX_SCALE}
+              value={sliderValue}
+              min={SLIDER_MIN}
+              max={SLIDER_MAX}
               onValueChange={handleSliderChange}
               style={styles.slider}
             />

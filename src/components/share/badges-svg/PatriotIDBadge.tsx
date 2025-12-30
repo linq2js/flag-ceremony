@@ -86,8 +86,18 @@ export const PatriotIDBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Right section - Info */}
-      <Text x="150" y="60" fill="#ffffff" fontSize="14" fontWeight="700" fontFamily={FONT_FAMILY}>
-        {displayName || t("dedicated_patriot")}
+      <Text 
+        x="150" 
+        y="60" 
+        textAnchor="start"
+        fill="#ffffff" 
+        fontSize="14" 
+        fontWeight="700" 
+        fontFamily={FONT_FAMILY}
+      >
+        {((displayName || t("dedicated_patriot")).length > 20 
+          ? (displayName || t("dedicated_patriot")).substring(0, 20) + "..." 
+          : (displayName || t("dedicated_patriot")))}
       </Text>
 
       {/* Member since */}

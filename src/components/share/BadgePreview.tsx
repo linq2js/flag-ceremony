@@ -4,8 +4,9 @@
  */
 
 import React, { forwardRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import { BadgeType, BadgeStats } from "../../stores/badge";
+import { BADGE_TYPES } from "./badges-svg";
 
 // Simple badges
 import { SimpleRedBadge } from "./badges/SimpleRedBadge";
@@ -66,6 +67,11 @@ export const BadgePreview = forwardRef<View, BadgePreviewProps>(
       scale: previewScale,
     };
 
+    // Get badge dimensions for container sizing (from SVG badge types)
+    const badgeInfo = BADGE_TYPES[badgeType as keyof typeof BADGE_TYPES] || BADGE_TYPES["simple-red"];
+    const containerWidth = badgeInfo.width * previewScale;
+    const containerHeight = badgeInfo.height * previewScale;
+
     const renderBadge = () => {
       switch (badgeType) {
         // Simple badges
@@ -118,7 +124,32 @@ export const BadgePreview = forwardRef<View, BadgePreviewProps>(
     };
 
     return (
-      <View ref={ref} style={styles.container} collapsable={false}>
+      <View
+        ref={(viewRef) => {
+          if (ref) {
+            if (typeof ref === "function") {
+              ref(viewRef);
+            } else {
+              (ref as any).current = viewRef;
+            }
+          }
+        }}
+        style={[
+          styles.container,
+          // On web, explicitly constrain container to scaled dimensions
+          Platform.OS === "web" && previewScale < 1
+            ? {
+                width: containerWidth,
+                height: containerHeight,
+                maxWidth: containerWidth,
+                maxHeight: containerHeight,
+                overflow: "hidden",
+                alignSelf: "flex-start", // Prevent expansion
+              }
+            : {},
+        ]}
+        collapsable={false}
+      >
         {renderBadge()}
       </View>
     );
