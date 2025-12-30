@@ -57,6 +57,80 @@
         bottom: 0;
         overflow: hidden;
       }
+      
+      /* Splash screen - shown while app loads */
+      #splash-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #DC2626;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        transition: opacity 0.3s ease-out;
+      }
+      
+      #splash-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      
+      #splash-screen .splash-icon {
+        width: 120px;
+        height: 120px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      #splash-screen .splash-icon::before {
+        content: "🇻🇳";
+        font-size: 64px;
+        animation: bounce 1.5s ease-in-out infinite;
+      }
+      
+      #splash-screen .splash-loader {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top-color: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scale(0.95);
+        }
+      }
+      
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
     </style>
     <script>
       // Force viewport meta tag immediately and continuously
@@ -208,12 +282,39 @@
     </script>
   </head>
   <body>
+    <!-- Splash screen - shown immediately while app loads -->
+    <div id="splash-screen">
+      <div class="splash-icon"></div>
+      <div class="splash-loader"></div>
+    </div>
+    
     <!-- Use static rendering with Expo Router to support running without JavaScript. -->
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
+    
+    <script>
+      // Hide splash screen when app is loaded
+      // This will be called by the app when it's ready
+      window.hideSplashScreen = function() {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.classList.add('hidden');
+          setTimeout(() => {
+            splash.remove();
+          }, 300);
+        }
+      };
+      
+      // Fallback: hide splash after 5 seconds if app doesn't call hideSplashScreen
+      setTimeout(() => {
+        if (document.getElementById('splash-screen')) {
+          window.hideSplashScreen();
+        }
+      }, 5000);
+    </script>
   </body>
 </html>
 
