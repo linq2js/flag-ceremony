@@ -4,9 +4,10 @@
  * Architecture:
  * - StatsProvider: global stats via mixins useStore
  * - BadgeEditorContent: local state via scoped(badgeStore)
+ * - Uses SVG badges for stable image export on web and native
  */
 
-import React, { useRef, createContext, useContext } from "react";
+import React, { useRef, createContext, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -15,6 +16,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Platform,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -35,10 +38,14 @@ import {
 import { rankingMixin } from "../stores/mixins";
 import { ScreenBackground } from "../components/ScreenBackground";
 import {
-  BadgePreview,
-  PhotoPicker,
-  BadgeTypeSelector,
-} from "../components/share";
+  BadgePreviewSVG,
+  getBadgeDimensions,
+} from "../components/share/BadgePreviewSVG";
+import { PhotoPicker, BadgeTypeSelector } from "../components/share";
+import {
+  svgToPng,
+  downloadDataUri,
+} from "../components/share/badges-svg/utils";
 import { BackIcon, DownloadIcon } from "../components/Icons";
 import {
   textStyles,
@@ -102,39 +109,15 @@ const BadgeEditorContent: React.FC = React.memo(() => {
 
   const router = useRouter();
   const viewShotRef = useRef<ViewShot>(null);
+  const svgContainerRef = useRef<View>(null);
 
   // Component-local badge state via scoped() - auto-disposes on unmount
-  const { badge, setBadgeType, setPhotoUri, setDisplayName, captureAndSave } =
+  const { badge, setBadgeType, setPhotoUri, setDisplayName, setExporting } =
     useStore(({ scoped }) => {
       const [state, actions] = scoped(badgeStore);
       return {
-        // Spread state to track all properties for reactivity
         badge: { ...state },
         ...actions,
-        // stable callback for saving badge
-        async captureAndSave() {
-          if (!viewShotRef.current) return;
-          try {
-            actions.setExporting(true);
-            const { status } = await MediaLibrary.requestPermissionsAsync();
-            if (status !== "granted") {
-              Alert.alert(
-                t("permission_denied"),
-                t("gallery_permission_message")
-              );
-              return;
-            }
-            const uri = await viewShotRef.current.capture?.();
-            if (!uri) throw new Error("Failed to capture badge");
-            await MediaLibrary.saveToLibraryAsync(uri);
-            Alert.alert(t("badge_saved"), t("badge_saved_desc"));
-          } catch (error) {
-            console.error("Save error:", error);
-            Alert.alert("Error", "Failed to save badge");
-          } finally {
-            actions.setExporting(false);
-          }
-        },
       };
     });
 
@@ -147,6 +130,83 @@ const BadgeEditorContent: React.FC = React.memo(() => {
     percentile: ranking.data?.percentile,
     memberSince: memberSince ? new Date(memberSince) : undefined,
   };
+
+  // Get current badge dimensions
+  const { width: originalBadgeWidth, height: originalBadgeHeight } =
+    getBadgeDimensions(badge.badgeType);
+
+  // Calculate scale to fit screen width (accounting for padding)
+  const screenWidth = Dimensions.get("window").width;
+  const horizontalPadding = spacing[6] * 2; // padding on both sides
+  const maxAvailableWidth = screenWidth - horizontalPadding;
+  const scale = Math.min(1, maxAvailableWidth / originalBadgeWidth);
+
+  const badgeWidth = originalBadgeWidth * scale;
+  const badgeHeight = originalBadgeHeight * scale;
+
+  // Capture and save badge
+  const captureAndSave = useCallback(async () => {
+    try {
+      setExporting(true);
+
+      if (Platform.OS === "web") {
+        // Web: Find SVG element and convert to PNG
+        const container = svgContainerRef.current as unknown as HTMLElement;
+        if (!container) {
+          throw new Error("SVG container not found");
+        }
+
+        const svgElement = container.querySelector("svg") as SVGSVGElement;
+        if (!svgElement) {
+          throw new Error("SVG element not found");
+        }
+
+        // Wait for any pending renders
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Use original dimensions for export (full resolution)
+        const pngDataUri = await svgToPng(
+          svgElement,
+          originalBadgeWidth,
+          originalBadgeHeight
+        );
+        if (!pngDataUri) {
+          throw new Error("Failed to convert SVG to PNG");
+        }
+
+        downloadDataUri(pngDataUri, `flag-ceremony-badge-${Date.now()}.png`);
+        Alert.alert(t("badge_saved"), t("badge_saved_desc"));
+      } else {
+        // Native: Use ViewShot
+        if (!viewShotRef.current) {
+          throw new Error("ViewShot ref not found");
+        }
+
+        const uri = await viewShotRef.current.capture?.();
+        if (!uri) throw new Error("Failed to capture badge");
+
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(t("permission_denied"), t("gallery_permission_message"));
+          return;
+        }
+
+        await MediaLibrary.saveToLibraryAsync(uri);
+        Alert.alert(t("badge_saved"), t("badge_saved_desc"));
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+      Alert.alert("Error", "Failed to save badge");
+    } finally {
+      setExporting(false);
+    }
+  }, [
+    badge.badgeType,
+    originalBadgeWidth,
+    originalBadgeHeight,
+    setExporting,
+    t,
+  ]);
 
   return (
     <>
@@ -169,16 +229,37 @@ const BadgeEditorContent: React.FC = React.memo(() => {
       >
         {/* Badge Preview */}
         <View style={styles.previewSection}>
-          <ViewShot ref={viewShotRef} options={{ format: "png", quality: 1 }}>
-            <BadgePreview
-              badgeType={badge.badgeType}
-              photoUri={badge.photoUri}
-              displayName={badge.displayName}
-              stats={stats}
-              t={t as any}
-              previewScale={1}
-            />
-          </ViewShot>
+          {Platform.OS === "web" ? (
+            <View
+              ref={svgContainerRef}
+              style={{ width: badgeWidth, height: badgeHeight }}
+              collapsable={false}
+            >
+              <BadgePreviewSVG
+                badgeType={badge.badgeType}
+                photoUri={badge.photoUri}
+                displayName={badge.displayName}
+                stats={stats}
+                t={t as any}
+                previewScale={scale}
+              />
+            </View>
+          ) : (
+            <ViewShot
+              ref={viewShotRef}
+              options={{ format: "png", quality: 1 }}
+              style={{ width: badgeWidth, height: badgeHeight }}
+            >
+              <BadgePreviewSVG
+                badgeType={badge.badgeType}
+                photoUri={badge.photoUri}
+                displayName={badge.displayName}
+                stats={stats}
+                t={t as any}
+                previewScale={scale}
+              />
+            </ViewShot>
+          )}
         </View>
 
         {/* Photo Picker */}

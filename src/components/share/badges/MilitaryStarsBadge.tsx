@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
     color: "#fafaf9",
     fontWeight: "700",
     textTransform: "uppercase",
+    lineHeight: 32,
+    paddingBottom: 4,
   },
   description: {
     color: "rgba(250, 250, 249, 0.5)",

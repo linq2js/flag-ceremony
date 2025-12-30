@@ -99,7 +99,7 @@ export const SimpleOrangeBadge: React.FC<BadgeProps> = ({
             <Text
               style={[
                 styles.countLabel,
-                { fontSize: 12 * scale, marginTop: -8 * scale },
+                { fontSize: 12 * scale, marginTop: 4 * scale },
               ]}
             >
               {t("ceremonies")}
@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
     color: "#1c1917",
     fontWeight: "700",
     textTransform: "uppercase",
+    lineHeight: 32,
+    paddingBottom: 4,
   },
   countSection: {
     alignItems: "center",

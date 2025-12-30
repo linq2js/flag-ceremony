@@ -203,6 +203,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontStyle: "italic",
     textAlign: "center",
+    lineHeight: 36,
+    paddingBottom: 4,
   },
   description: {
     color: "#5c4033",

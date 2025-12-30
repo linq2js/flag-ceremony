@@ -44,3 +44,6 @@ yarn-error.*
 # Maestro E2E testing
 .maestro/screenshots/
 .maestro/debug/
+
+# Local Netlify folder
+.netlify

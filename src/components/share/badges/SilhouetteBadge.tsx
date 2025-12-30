@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   countLabel: {
     color: "rgba(255, 255, 255, 0.7)",
     fontWeight: "500",
-    marginTop: -4,
+    marginTop: 4,
   },
   statsContainer: {
     flexDirection: "row",

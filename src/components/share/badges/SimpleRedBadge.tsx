@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
   name: {
     color: "#ffffff",
     fontWeight: "700",
+    lineHeight: 32,
+    paddingBottom: 4, // Extra space to prevent bottom clipping
   },
   starsRow: {
     flexDirection: "row",

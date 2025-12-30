@@ -1,12 +1,13 @@
 /**
- * PhotoPicker - Component for selecting or taking a photo
+ * PhotoPicker - Component for selecting or taking a photo with cropping
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { palette, spacing, cardStyles, textStyles } from "../../design";
-import { CameraIcon, GalleryIcon, CloseIcon } from "../Icons";
+import { CameraIcon, GalleryIcon, CloseIcon, EditIcon } from "../Icons";
+import { ImageCropper } from "./ImageCropper";
 
 interface PhotoPickerProps {
   photoUri: string | null;
@@ -19,6 +20,9 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
   onPhotoChange,
   t,
 }) => {
+  const [showCropper, setShowCropper] = useState(false);
+  const [tempImageUri, setTempImageUri] = useState<string | null>(null);
+
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -28,13 +32,13 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
+      allowsEditing: false, // We'll use our custom cropper
+      quality: 1,
     });
 
     if (!result.canceled && result.assets[0]) {
-      onPhotoChange(result.assets[0].uri);
+      setTempImageUri(result.assets[0].uri);
+      setShowCropper(true);
     }
   };
 
@@ -46,20 +50,55 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
+      allowsEditing: false, // We'll use our custom cropper
+      quality: 1,
     });
 
     if (!result.canceled && result.assets[0]) {
-      onPhotoChange(result.assets[0].uri);
+      setTempImageUri(result.assets[0].uri);
+      setShowCropper(true);
     }
   };
 
-  if (photoUri) {
+  const handleCrop = (croppedUri: string) => {
+    onPhotoChange(croppedUri);
+    setShowCropper(false);
+    setTempImageUri(null);
+  };
+
+  const handleCancelCrop = () => {
+    setShowCropper(false);
+    setTempImageUri(null);
+  };
+
+  const handleEditPhoto = () => {
+    if (photoUri) {
+      setTempImageUri(photoUri);
+      setShowCropper(true);
+    }
+  };
+
     return (
+    <>
+      {showCropper && tempImageUri && (
+      <ImageCropper
+        imageUri={tempImageUri}
+        onCrop={handleCrop}
+        onCancel={handleCancelCrop}
+        t={t}
+          visible={showCropper}
+      />
+      )}
+
+      {photoUri ? (
       <View style={styles.previewContainer}>
         <Image source={{ uri: photoUri }} style={styles.preview} />
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={handleEditPhoto}
+        >
+          <EditIcon size={16} color={palette.white.full} />
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.removeButton}
           onPress={() => onPhotoChange(null)}
@@ -67,10 +106,7 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
           <CloseIcon size={16} color={palette.white.full} />
         </TouchableOpacity>
       </View>
-    );
-  }
-
-  return (
+      ) : (
     <View style={styles.container}>
       <TouchableOpacity
         style={[cardStyles.default, styles.button]}
@@ -87,6 +123,8 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
         <Text style={styles.buttonText}>{t("choose_photo")}</Text>
       </TouchableOpacity>
     </View>
+      )}
+    </>
   );
 };
 
@@ -120,6 +158,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: palette.gold[500],
   },
+  editButton: {
+    position: "absolute",
+    top: -4,
+    left: -4,
+    backgroundColor: palette.gold[500],
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   removeButton: {
     position: "absolute",
     top: -4,
@@ -132,4 +181,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-

@@ -212,6 +212,8 @@ const styles = StyleSheet.create({
   name: {
     color: "#ffffff",
     fontWeight: "700",
+    lineHeight: 28,
+    paddingBottom: 2,
   },
   memberSince: {
     color: "rgba(255, 255, 255, 0.6)",

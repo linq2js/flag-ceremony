@@ -94,7 +94,7 @@ export const MedalCleanBadge: React.FC<BadgeProps> = ({
         {/* Large count */}
         {stats && (
           <View style={[styles.countSection, { marginTop: 6 * scale }]}>
-            <Text style={[styles.count, { fontSize: 56 * scale }]}>
+            <Text style={[styles.count, { fontSize: 56 * scale, lineHeight: 64 * scale }]}>
               {stats.completedCeremonies}
             </Text>
             <Text style={[styles.countLabel, { fontSize: 12 * scale }]}>
@@ -167,6 +167,8 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
     textTransform: "uppercase",
+    lineHeight: 32,
+    paddingBottom: 4,
   },
   countSection: {
     alignItems: "center",
@@ -174,12 +176,11 @@ const styles = StyleSheet.create({
   count: {
     color: "#ffffff",
     fontWeight: "800",
-    lineHeight: 62,
   },
   countLabel: {
     color: "rgba(255, 255, 255, 0.7)",
     fontWeight: "500",
-    marginTop: -8,
+    marginTop: 4,
   },
   statsContainer: {
     alignItems: "center",

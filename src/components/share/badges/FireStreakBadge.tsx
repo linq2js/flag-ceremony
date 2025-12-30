@@ -194,6 +194,8 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
     textTransform: "uppercase",
+    lineHeight: 28,
+    paddingBottom: 2,
   },
   streakSection: {
     alignItems: "center",
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
     letterSpacing: 2,
-    marginTop: -8,
+    marginTop: 4,
   },
   statsRow: {
     flexDirection: "row",

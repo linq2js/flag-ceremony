@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Flag Ceremony</title>
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height and prevent scaling */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        touch-action: manipulation;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        min-width: 100vw;
+        min-height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        flex: 1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+      }
+    </style>
+    <script>
+      // Force viewport meta tag immediately and continuously
+      (function() {
+        const CORRECT_VIEWPORT = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover';
+        
+        function setViewport() {
+          // Remove all existing viewport tags first
+          const existingViewports = document.querySelectorAll('meta[name="viewport"]');
+          existingViewports.forEach(vp => vp.remove());
+          
+          // Create new viewport tag
+          const viewport = document.createElement('meta');
+          viewport.setAttribute('name', 'viewport');
+          viewport.setAttribute('content', CORRECT_VIEWPORT);
+          document.getElementsByTagName('head')[0].insertBefore(viewport, document.getElementsByTagName('head')[0].firstChild);
+        }
+        
+        // Set immediately
+        setViewport();
+        
+        // Set on DOM ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setViewport);
+        }
+        
+        // Set multiple times to override Expo
+        setTimeout(setViewport, 0);
+        setTimeout(setViewport, 50);
+        setTimeout(setViewport, 100);
+        setTimeout(setViewport, 200);
+        setTimeout(setViewport, 500);
+        setTimeout(setViewport, 1000);
+        
+        // Continuous check using requestAnimationFrame
+        function checkViewport() {
+          const viewport = document.querySelector('meta[name="viewport"]');
+          if (!viewport || viewport.getAttribute('content') !== CORRECT_VIEWPORT) {
+            setViewport();
+          }
+          requestAnimationFrame(checkViewport);
+        }
+        
+        // Start continuous checking after a delay
+        setTimeout(() => {
+          checkViewport();
+        }, 100);
+      })();
+      
+      // Prevent zoom gestures
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      });
+      document.addEventListener('gesturechange', function (e) {
+        e.preventDefault();
+      });
+      document.addEventListener('gestureend', function (e) {
+        e.preventDefault();
+      });
+      
+      // Prevent double-tap zoom
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function (e) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+          e.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+      
+      // Prevent pinch zoom
+      document.addEventListener('touchmove', function (e) {
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+      
+      // Prevent wheel zoom (Ctrl/Cmd + wheel)
+      document.addEventListener('wheel', function (e) {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+      
+      // Reset viewport on resize to prevent zoom
+      window.addEventListener('resize', function() {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover');
+        }
+      });
+      
+      // Monitor and fix viewport changes aggressively
+      const CORRECT_VIEWPORT_CONTENT = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover';
+      
+      function fixViewport() {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          const content = viewport.getAttribute('content');
+          if (content !== CORRECT_VIEWPORT_CONTENT) {
+            // Remove and recreate to ensure it's correct
+            viewport.remove();
+            const newViewport = document.createElement('meta');
+            newViewport.setAttribute('name', 'viewport');
+            newViewport.setAttribute('content', CORRECT_VIEWPORT_CONTENT);
+            document.getElementsByTagName('head')[0].insertBefore(newViewport, document.getElementsByTagName('head')[0].firstChild);
+          }
+        }
+      }
+      
+      // Monitor head for any viewport changes
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          // Check if viewport was added, removed, or modified
+          if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeName === 'META' && node.getAttribute('name') === 'viewport') {
+                fixViewport();
+              }
+            });
+          }
+          // Check if viewport content was modified
+          if (mutation.type === 'attributes' && mutation.attributeName === 'content') {
+            fixViewport();
+          }
+        });
+      });
+      
+      // Start observing the entire head element
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          observer.observe(document.head, { 
+            childList: true, 
+            subtree: true, 
+            attributes: true, 
+            attributeFilter: ['content'] 
+          });
+          fixViewport();
+        });
+      } else {
+        observer.observe(document.head, { 
+          childList: true, 
+          subtree: true, 
+          attributes: true, 
+          attributeFilter: ['content'] 
+        });
+        fixViewport();
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <!-- The root element for your Expo app. -->
+    <div id="root"></div>
+  </body>
+</html>
+
