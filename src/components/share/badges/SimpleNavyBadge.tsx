@@ -12,9 +12,6 @@ export const SimpleNavyBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -80,7 +77,7 @@ export const SimpleNavyBadge: React.FC<BadgeProps> = ({
         </Text>
 
         {/* Large count */}
-        {showTotal && stats && (
+        {stats && (
           <View style={[styles.countSection, { marginTop: 8 * scale }]}>
             <Text style={[styles.count, { fontSize: 64 * scale }]}>
               {stats.completedCeremonies}
@@ -92,24 +89,22 @@ export const SimpleNavyBadge: React.FC<BadgeProps> = ({
         )}
 
         {/* Stats row */}
-        <View style={[styles.statsRow, { marginTop: 12 * scale }]}>
-          {showCurrentStreak && stats && (
+        {stats && (
+          <View style={[styles.statsRow, { marginTop: 12 * scale }]}>
             <View style={styles.statItem}>
               <Text style={{ fontSize: 10 * scale }}>🔥</Text>
               <Text style={[styles.statText, { fontSize: 10 * scale }]}>
                 {t("current_streak")}: {stats.currentStreak}
               </Text>
             </View>
-          )}
-          {showLongestStreak && stats && (
             <View style={styles.statItem}>
               <Text style={{ fontSize: 10 * scale }}>⚡</Text>
               <Text style={[styles.statText, { fontSize: 10 * scale }]}>
                 {t("best_streak")}: {stats.longestStreak}
               </Text>
             </View>
-          )}
-        </View>
+          </View>
+        )}
 
         {/* Footer */}
         <View style={[styles.footer, { marginTop: "auto" }]}>
@@ -198,4 +193,3 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
 });
-

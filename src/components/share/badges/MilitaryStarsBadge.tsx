@@ -12,10 +12,6 @@ export const MilitaryStarsBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
-  showRanking,
   t,
   scale = 1,
 }) => {
@@ -113,32 +109,30 @@ export const MilitaryStarsBadge: React.FC<BadgeProps> = ({
           </Text>
 
           {/* Stats */}
-          <View style={[styles.statsContainer, { marginTop: 8 * scale }]}>
-            {showCurrentStreak && stats && (
+          {stats && (
+            <View style={[styles.statsContainer, { marginTop: 8 * scale }]}>
               <View style={styles.statRow}>
                 <Text style={{ fontSize: 10 * scale }}>🔥</Text>
                 <Text style={[styles.statText, { fontSize: 9 * scale }]}>
                   {t("current_streak")}: {stats.currentStreak} {t("days")}
                 </Text>
               </View>
-            )}
-            {showLongestStreak && stats && (
               <View style={styles.statRow}>
                 <Text style={{ fontSize: 10 * scale }}>⚡</Text>
                 <Text style={[styles.statText, { fontSize: 9 * scale }]}>
                   {t("longest_streak")}: {stats.longestStreak} {t("days")}
                 </Text>
               </View>
-            )}
-            {showRanking && stats?.percentile && (
-              <View style={styles.statRow}>
-                <Text style={{ fontSize: 10 * scale }}>👑</Text>
-                <Text style={[styles.statText, { fontSize: 9 * scale }]}>
-                  Top {Math.ceil(100 - stats.percentile)}%
-                </Text>
-              </View>
-            )}
-          </View>
+              {stats?.percentile && (
+                <View style={styles.statRow}>
+                  <Text style={{ fontSize: 10 * scale }}>👑</Text>
+                  <Text style={[styles.statText, { fontSize: 9 * scale }]}>
+                    Top {Math.ceil(100 - stats.percentile)}%
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
 
           {/* Action button */}
           <View
@@ -244,4 +238,3 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
-

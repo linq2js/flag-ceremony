@@ -1,5 +1,5 @@
 /**
- * Badge Components Index - 20 unique badge designs
+ * Badge Components Index - 14 unique badge designs
  */
 
 export * from "./types";
@@ -10,32 +10,26 @@ export * from "./SimpleOrangeBadge";
 export * from "./SimpleNavyBadge";
 export * from "./SimpleOliveBadge";
 
-// Medal badges (2)
-export * from "./MedalRibbonBadge";
+// Medal badges (1)
 export * from "./MedalCleanBadge";
 
-// Fire badges (2)
-export * from "./FireRingBadge";
+// Fire badges (1)
 export * from "./FireStreakBadge";
 
 // Special badges (2)
 export * from "./SilhouetteBadge";
 export * from "./TrophyBannerBadge";
 
-// Achievement badges (2)
-export * from "./TierAchievementBadge";
+// Achievement badges (1)
 export * from "./MilitaryStarsBadge";
 
 // ID cards (2)
 export * from "./PatriotIDBadge";
 export * from "./MemberCardBadge";
 
-// Certificates (3)
+// Certificates (2)
 export * from "./CertificateDedicationBadge";
-export * from "./CertificateVNBadge";
 export * from "./CertificateRecognitionBadge";
 
-// Ornate badges (3)
-export * from "./OrnateGoldBadge";
-export * from "./OrnateGreenBadge";
+// Ranking badges (1)
 export * from "./RankingPatternBadge";

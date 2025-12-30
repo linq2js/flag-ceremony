@@ -12,9 +12,6 @@ export const MedalCleanBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -95,7 +92,7 @@ export const MedalCleanBadge: React.FC<BadgeProps> = ({
         </Text>
 
         {/* Large count */}
-        {showTotal && stats && (
+        {stats && (
           <View style={[styles.countSection, { marginTop: 6 * scale }]}>
             <Text style={[styles.count, { fontSize: 56 * scale }]}>
               {stats.completedCeremonies}
@@ -107,18 +104,16 @@ export const MedalCleanBadge: React.FC<BadgeProps> = ({
         )}
 
         {/* Stats */}
-        <View style={[styles.statsContainer, { marginTop: 8 * scale }]}>
-          {showCurrentStreak && stats && (
+        {stats && (
+          <View style={[styles.statsContainer, { marginTop: 8 * scale }]}>
             <Text style={[styles.statText, { fontSize: 9 * scale }]}>
               🔥 {t("current_streak")}: {stats.currentStreak}
             </Text>
-          )}
-          {showLongestStreak && stats && (
             <Text style={[styles.statText, { fontSize: 9 * scale }]}>
               ⚡ {t("best_streak")}: {stats.longestStreak}
             </Text>
-          )}
-        </View>
+          </View>
+        )}
 
         {/* Footer */}
         <View style={[styles.footer, { marginTop: "auto" }]}>
@@ -205,4 +200,3 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
 });
-

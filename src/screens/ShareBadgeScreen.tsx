@@ -6,7 +6,7 @@
  * - BadgeEditorContent: local state via scoped(badgeStore)
  */
 
-import React, { useRef, useCallback, createContext, useContext } from "react";
+import React, { useRef, createContext, useContext } from "react";
 import {
   View,
   Text,
@@ -20,7 +20,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useStore, mixins } from "storion/react";
 import ViewShot from "react-native-view-shot";
-import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
 
 import { badgeStore } from "../stores/badge";
@@ -37,10 +36,8 @@ import {
   BadgePreview,
   PhotoPicker,
   BadgeTypeSelector,
-  ThemeSelector,
-  StatToggle,
 } from "../components/share";
-import { BackIcon, ShareIcon, DownloadIcon } from "../components/Icons";
+import { BackIcon, DownloadIcon } from "../components/Icons";
 import {
   textStyles,
   spacing,
@@ -103,70 +100,39 @@ const BadgeEditorContent: React.FC = React.memo(() => {
   const viewShotRef = useRef<ViewShot>(null);
 
   // Component-local badge state via scoped() - auto-disposes on unmount
-  const {
-    badge,
-    setBadgeType,
-    setTheme,
-    setPhotoUri,
-    setDisplayName,
-    toggleStat,
-    setExporting,
-    captureAndShare,
-    captureAndSave,
-  } = useStore(({ scoped }) => {
-    const [state, actions] = scoped(badgeStore);
-    return {
-      // Spread state to track all properties for reactivity
-      badge: { ...state },
-      ...actions,
-      // stable callbacks
-      async captureAndShare() {
-        if (!viewShotRef.current) return;
-        try {
-          setExporting(true);
-          const uri = await viewShotRef.current.capture?.();
-          if (!uri) throw new Error("Failed to capture badge");
-          const canShare = await Sharing.isAvailableAsync();
-          if (canShare) {
-            await Sharing.shareAsync(uri, {
-              mimeType: "image/png",
-              dialogTitle: t("share_badge"),
-            });
-          } else {
+  const { badge, setBadgeType, setPhotoUri, setDisplayName, captureAndSave } =
+    useStore(({ scoped }) => {
+      const [state, actions] = scoped(badgeStore);
+      return {
+        // Spread state to track all properties for reactivity
+        badge: { ...state },
+        ...actions,
+        // stable callback for saving badge
+        async captureAndSave() {
+          if (!viewShotRef.current) return;
+          try {
+            actions.setExporting(true);
+            const { status } = await MediaLibrary.requestPermissionsAsync();
+            if (status !== "granted") {
+              Alert.alert(
+                t("permission_denied"),
+                t("gallery_permission_message")
+              );
+              return;
+            }
+            const uri = await viewShotRef.current.capture?.();
+            if (!uri) throw new Error("Failed to capture badge");
+            await MediaLibrary.saveToLibraryAsync(uri);
             Alert.alert(t("badge_saved"), t("badge_saved_desc"));
+          } catch (error) {
+            console.error("Save error:", error);
+            Alert.alert("Error", "Failed to save badge");
+          } finally {
+            actions.setExporting(false);
           }
-        } catch (error) {
-          console.error("Share error:", error);
-          Alert.alert("Error", "Failed to share badge");
-        } finally {
-          setExporting(false);
-        }
-      },
-      async captureAndSave() {
-        if (!viewShotRef.current) return;
-        try {
-          setExporting(true);
-          const { status } = await MediaLibrary.requestPermissionsAsync();
-          if (status !== "granted") {
-            Alert.alert(
-              t("permission_denied"),
-              t("gallery_permission_message")
-            );
-            return;
-          }
-          const uri = await viewShotRef.current.capture?.();
-          if (!uri) throw new Error("Failed to capture badge");
-          await MediaLibrary.saveToLibraryAsync(uri);
-          Alert.alert(t("badge_saved"), t("badge_saved_desc"));
-        } catch (error) {
-          console.error("Save error:", error);
-          Alert.alert("Error", "Failed to save badge");
-        } finally {
-          setExporting(false);
-        }
-      },
-    };
-  });
+        },
+      };
+    });
 
   // Build stats object for badge
   const stats = {
@@ -201,15 +167,9 @@ const BadgeEditorContent: React.FC = React.memo(() => {
           <ViewShot ref={viewShotRef} options={{ format: "png", quality: 1 }}>
             <BadgePreview
               badgeType={badge.badgeType}
-              theme={badge.theme}
               photoUri={badge.photoUri}
               displayName={badge.displayName}
               stats={stats}
-              showTotal={badge.showTotal}
-              showCurrentStreak={badge.showCurrentStreak}
-              showLongestStreak={badge.showLongestStreak}
-              showRanking={badge.showRanking}
-              showMemberSince={badge.showMemberSince}
               t={t as any}
               previewScale={1}
             />
@@ -251,53 +211,17 @@ const BadgeEditorContent: React.FC = React.memo(() => {
           />
         </View>
 
-        {/* Theme Selector */}
-        <View style={styles.section}>
-          <ThemeSelector
-            selected={badge.theme}
-            onSelect={setTheme}
-            t={t as any}
-          />
-        </View>
-
-        {/* Stat Toggles */}
-        <View style={styles.section}>
-          <StatToggle
-            showTotal={badge.showTotal}
-            showCurrentStreak={badge.showCurrentStreak}
-            showLongestStreak={badge.showLongestStreak}
-            showRanking={badge.showRanking}
-            showMemberSince={badge.showMemberSince}
-            onToggle={toggleStat}
-            t={t as any}
-            hasRanking={!!ranking.data?.percentile}
-          />
-        </View>
-
-        {/* Action Buttons */}
-        <View style={styles.actionButtons}>
-          <TouchableOpacity
-            style={[buttonStyles.secondary, styles.actionButton]}
-            onPress={captureAndSave}
-            disabled={badge.isExporting}
-          >
-            <DownloadIcon size={20} color={palette.gold[500]} />
-            <Text style={[buttonStyles.secondaryText, styles.buttonText]}>
-              {t("save_to_photos")}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[buttonStyles.primary, styles.actionButton]}
-            onPress={captureAndShare}
-            disabled={badge.isExporting}
-          >
-            <ShareIcon size={20} color={palette.dark.base} />
-            <Text style={[buttonStyles.primaryText, styles.buttonText]}>
-              {t("share_badge_action")}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {/* Save Button */}
+        <TouchableOpacity
+          style={[buttonStyles.primary, styles.saveButton]}
+          onPress={captureAndSave}
+          disabled={badge.isExporting}
+        >
+          <DownloadIcon size={20} color={palette.dark.base} />
+          <Text style={[buttonStyles.primaryText, styles.buttonText]}>
+            {t("save_to_photos")}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </>
   );
@@ -353,17 +277,12 @@ const styles = StyleSheet.create({
     color: palette.white.full,
     fontSize: 16,
   },
-  actionButtons: {
-    flexDirection: "row",
-    gap: spacing[4],
-    marginTop: spacing[4],
-  },
-  actionButton: {
-    flex: 1,
+  saveButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: spacing[3],
+    marginTop: spacing[4],
   },
   buttonText: {
     fontWeight: "600",

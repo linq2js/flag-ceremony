@@ -9,12 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BadgeProps } from "./types";
 
 export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
-  displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
-  showRanking,
   t,
   scale = 1,
 }) => {
@@ -58,7 +53,7 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
           </Text>
 
           {/* Achievement box */}
-          {showTotal && stats && (
+          {stats && (
             <View
               style={[
                 styles.achievementBox,
@@ -80,23 +75,19 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
           )}
 
           {/* Stats row */}
-          {(showCurrentStreak || showLongestStreak) && stats && (
+          {stats && (
             <View style={[styles.statsRow, { marginTop: 8 * scale }]}>
-              {showCurrentStreak && (
-                <Text style={[styles.statText, { fontSize: 8 * scale }]}>
-                  🔥 {t("current_streak")}: {stats.currentStreak} {t("days")}
-                </Text>
-              )}
-              {showLongestStreak && (
-                <Text style={[styles.statText, { fontSize: 8 * scale }]}>
-                  ⚡ {t("longest_streak")}: {stats.longestStreak} {t("days")}
-                </Text>
-              )}
+              <Text style={[styles.statText, { fontSize: 8 * scale }]}>
+                🔥 {t("current_streak")}: {stats.currentStreak} {t("days")}
+              </Text>
+              <Text style={[styles.statText, { fontSize: 8 * scale }]}>
+                ⚡ {t("longest_streak")}: {stats.longestStreak} {t("days")}
+              </Text>
             </View>
           )}
 
           {/* Ranking badge */}
-          {showRanking && stats?.percentile && (
+          {stats?.percentile && (
             <View
               style={[
                 styles.rankingBadge,
@@ -248,4 +239,3 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
 });
-

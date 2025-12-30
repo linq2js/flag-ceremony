@@ -12,8 +12,6 @@ export const SimpleRedBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -97,21 +95,17 @@ export const SimpleRedBadge: React.FC<BadgeProps> = ({
         </View>
 
         {/* Stats */}
-        <View style={[styles.statsContainer, { marginTop: 16 * scale }]}>
-          {showCurrentStreak && stats && (
+        {stats && (
+          <View style={[styles.statsContainer, { marginTop: 16 * scale }]}>
             <Text style={[styles.statText, { fontSize: 11 * scale }]}>
               {t("current_streak")}: {stats.currentStreak} {t("days")}
             </Text>
-          )}
-          {showCurrentStreak && showLongestStreak && (
             <Text style={[styles.divider, { fontSize: 11 * scale }]}> | </Text>
-          )}
-          {showLongestStreak && stats && (
             <Text style={[styles.statText, { fontSize: 11 * scale }]}>
               {t("best_streak")}: {stats.longestStreak} {t("days")}
             </Text>
-          )}
-        </View>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -172,4 +166,3 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.5)",
   },
 });
-

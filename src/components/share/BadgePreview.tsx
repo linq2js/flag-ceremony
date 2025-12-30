@@ -5,7 +5,7 @@
 
 import React, { forwardRef } from "react";
 import { View, StyleSheet } from "react-native";
-import { BadgeType, BadgeTheme, BadgeStats } from "../../stores/badge";
+import { BadgeType, BadgeStats } from "../../stores/badge";
 
 // Simple badges
 import { SimpleRedBadge } from "./badges/SimpleRedBadge";
@@ -14,11 +14,9 @@ import { SimpleNavyBadge } from "./badges/SimpleNavyBadge";
 import { SimpleOliveBadge } from "./badges/SimpleOliveBadge";
 
 // Medal badges
-import { MedalRibbonBadge } from "./badges/MedalRibbonBadge";
 import { MedalCleanBadge } from "./badges/MedalCleanBadge";
 
 // Fire badges
-import { FireRingBadge } from "./badges/FireRingBadge";
 import { FireStreakBadge } from "./badges/FireStreakBadge";
 
 // Special badges
@@ -26,7 +24,6 @@ import { SilhouetteBadge } from "./badges/SilhouetteBadge";
 import { TrophyBannerBadge } from "./badges/TrophyBannerBadge";
 
 // Achievement badges
-import { TierAchievementBadge } from "./badges/TierAchievementBadge";
 import { MilitaryStarsBadge } from "./badges/MilitaryStarsBadge";
 
 // ID cards
@@ -35,25 +32,16 @@ import { MemberCardBadge } from "./badges/MemberCardBadge";
 
 // Certificates
 import { CertificateDedicationBadge } from "./badges/CertificateDedicationBadge";
-import { CertificateVNBadge } from "./badges/CertificateVNBadge";
 import { CertificateRecognitionBadge } from "./badges/CertificateRecognitionBadge";
 
-// Ornate badges
-import { OrnateGoldBadge } from "./badges/OrnateGoldBadge";
-import { OrnateGreenBadge } from "./badges/OrnateGreenBadge";
+// Ranking badges
 import { RankingPatternBadge } from "./badges/RankingPatternBadge";
 
 interface BadgePreviewProps {
   badgeType: BadgeType;
-  theme: BadgeTheme;
   photoUri: string | null;
   displayName: string;
   stats: BadgeStats | null;
-  showTotal: boolean;
-  showCurrentStreak: boolean;
-  showLongestStreak: boolean;
-  showRanking: boolean;
-  showMemberSince: boolean;
   t: (key: string, params?: Record<string, unknown>) => string;
   previewScale?: number;
 }
@@ -62,15 +50,9 @@ export const BadgePreview = forwardRef<View, BadgePreviewProps>(
   (
     {
       badgeType,
-      theme,
       photoUri,
       displayName,
       stats,
-      showTotal,
-      showCurrentStreak,
-      showLongestStreak,
-      showRanking,
-      showMemberSince,
       t,
       previewScale = 1,
     },
@@ -79,13 +61,7 @@ export const BadgePreview = forwardRef<View, BadgePreviewProps>(
     const badgeProps = {
       photoUri,
       displayName,
-      theme,
       stats,
-      showTotal,
-      showCurrentStreak,
-      showLongestStreak,
-      showRanking,
-      showMemberSince,
       t,
       scale: previewScale,
     };
@@ -103,14 +79,10 @@ export const BadgePreview = forwardRef<View, BadgePreviewProps>(
           return <SimpleOliveBadge {...badgeProps} />;
 
         // Medal badges
-        case "medal-ribbon":
-          return <MedalRibbonBadge {...badgeProps} />;
         case "medal-clean":
           return <MedalCleanBadge {...badgeProps} />;
 
         // Fire badges
-        case "fire-ring":
-          return <FireRingBadge {...badgeProps} />;
         case "fire-streak":
           return <FireStreakBadge {...badgeProps} />;
 
@@ -121,8 +93,6 @@ export const BadgePreview = forwardRef<View, BadgePreviewProps>(
           return <TrophyBannerBadge {...badgeProps} />;
 
         // Achievement badges
-        case "tier-achievement":
-          return <TierAchievementBadge {...badgeProps} />;
         case "military-stars":
           return <MilitaryStarsBadge {...badgeProps} />;
 
@@ -135,16 +105,10 @@ export const BadgePreview = forwardRef<View, BadgePreviewProps>(
         // Certificates
         case "certificate-dedication":
           return <CertificateDedicationBadge {...badgeProps} />;
-        case "certificate-vn":
-          return <CertificateVNBadge {...badgeProps} />;
         case "certificate-recognition":
           return <CertificateRecognitionBadge {...badgeProps} />;
 
-        // Ornate badges
-        case "ornate-gold":
-          return <OrnateGoldBadge {...badgeProps} />;
-        case "ornate-green":
-          return <OrnateGreenBadge {...badgeProps} />;
+        // Ranking badges
         case "ranking-pattern":
           return <RankingPatternBadge {...badgeProps} />;
 

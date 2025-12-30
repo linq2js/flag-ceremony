@@ -12,10 +12,6 @@ export const MemberCardBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showCurrentStreak,
-  showLongestStreak,
-  showRanking,
-  showMemberSince,
   t,
   scale = 1,
 }) => {
@@ -94,11 +90,9 @@ export const MemberCardBadge: React.FC<BadgeProps> = ({
             >
               {displayName || t("dedicated_patriot")}
             </Text>
-            {showMemberSince && (
-              <Text style={[styles.memberSince, { fontSize: 8 * scale }]}>
-                Member since: {formatDate(stats?.memberSince)}
-              </Text>
-            )}
+            <Text style={[styles.memberSince, { fontSize: 8 * scale }]}>
+              Member since: {formatDate(stats?.memberSince)}
+            </Text>
 
             {/* Secondary name/handle */}
             <Text style={[styles.handle, { fontSize: 10 * scale }]}>
@@ -107,8 +101,8 @@ export const MemberCardBadge: React.FC<BadgeProps> = ({
           </View>
 
           {/* Right section - Stats */}
-          <View style={styles.rightSection}>
-            {showCurrentStreak && stats && (
+          {stats && (
+            <View style={styles.rightSection}>
               <View style={styles.statRow}>
                 <Text style={{ fontSize: 10 * scale }}>🔥</Text>
                 <Text style={[styles.statLabel, { fontSize: 9 * scale }]}>
@@ -118,8 +112,6 @@ export const MemberCardBadge: React.FC<BadgeProps> = ({
                   {stats.currentStreak} {t("days")}
                 </Text>
               </View>
-            )}
-            {showLongestStreak && stats && (
               <View style={styles.statRow}>
                 <Text style={{ fontSize: 10 * scale }}>⚡</Text>
                 <Text style={[styles.statLabel, { fontSize: 9 * scale }]}>
@@ -129,24 +121,24 @@ export const MemberCardBadge: React.FC<BadgeProps> = ({
                   {stats.longestStreak}
                 </Text>
               </View>
-            )}
-            {showRanking && stats?.percentile && (
-              <View
-                style={[
-                  styles.rankingBadge,
-                  {
-                    paddingHorizontal: 10 * scale,
-                    paddingVertical: 4 * scale,
-                    marginTop: 6 * scale,
-                  },
-                ]}
-              >
-                <Text style={[styles.rankingText, { fontSize: 9 * scale }]}>
-                  Top {Math.ceil(100 - stats.percentile)}%
-                </Text>
-              </View>
-            )}
-          </View>
+              {stats?.percentile && (
+                <View
+                  style={[
+                    styles.rankingBadge,
+                    {
+                      paddingHorizontal: 10 * scale,
+                      paddingVertical: 4 * scale,
+                      marginTop: 6 * scale,
+                    },
+                  ]}
+                >
+                  <Text style={[styles.rankingText, { fontSize: 9 * scale }]}>
+                    Top {Math.ceil(100 - stats.percentile)}%
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -236,4 +228,3 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
-

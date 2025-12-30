@@ -12,8 +12,6 @@ export const RankingPatternBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showTotal,
-  showRanking,
   t,
   scale = 1,
 }) => {
@@ -97,14 +95,12 @@ export const RankingPatternBadge: React.FC<BadgeProps> = ({
         </View>
 
         {/* Top Ranking */}
-        {showRanking && (
-          <View style={[styles.rankingSection, { marginTop: 12 * scale }]}>
-            <Text style={[styles.topText, { fontSize: 14 * scale }]}>Top</Text>
-            <Text style={[styles.rankingValue, { fontSize: 48 * scale }]}>
-              {stats?.percentile ? Math.ceil(100 - stats.percentile) : "XX"}
-            </Text>
-          </View>
-        )}
+        <View style={[styles.rankingSection, { marginTop: 12 * scale }]}>
+          <Text style={[styles.topText, { fontSize: 14 * scale }]}>Top</Text>
+          <Text style={[styles.rankingValue, { fontSize: 48 * scale }]}>
+            {stats?.percentile ? Math.ceil(100 - stats.percentile) : "XX"}
+          </Text>
+        </View>
 
         {/* RANKING label */}
         <View
@@ -130,15 +126,15 @@ export const RankingPatternBadge: React.FC<BadgeProps> = ({
         </View>
 
         {/* Ceremonies count */}
-        {showTotal && stats && (
+        {stats && (
           <Text style={[styles.ceremoniesText, { fontSize: 10 * scale }]}>
-            {stats.completedCeremonies} Toons
+            {stats.completedCeremonies} {t("ceremonies")}
           </Text>
         )}
 
         {/* Footer */}
         <Text style={[styles.footer, { fontSize: 9 * scale }]}>
-          Flag Ceremonies Days
+          FLAG CEREMONY
         </Text>
       </View>
     </View>
@@ -218,4 +214,3 @@ const styles = StyleSheet.create({
     marginTop: "auto",
   },
 });
-

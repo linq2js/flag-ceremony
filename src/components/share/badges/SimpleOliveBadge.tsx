@@ -12,8 +12,6 @@ export const SimpleOliveBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -99,24 +97,22 @@ export const SimpleOliveBadge: React.FC<BadgeProps> = ({
         </Text>
 
         {/* Stats */}
-        <View style={[styles.statsContainer, { marginTop: 10 * scale }]}>
-          {showCurrentStreak && stats && (
+        {stats && (
+          <View style={[styles.statsContainer, { marginTop: 10 * scale }]}>
             <View style={styles.statRow}>
               <Text style={{ fontSize: 10 * scale }}>🔥</Text>
               <Text style={[styles.statText, { fontSize: 10 * scale }]}>
                 {t("current_streak")}: {stats.currentStreak} {t("days")}
               </Text>
             </View>
-          )}
-          {showLongestStreak && stats && (
             <View style={styles.statRow}>
               <Text style={{ fontSize: 10 * scale }}>⚡</Text>
               <Text style={[styles.statText, { fontSize: 10 * scale }]}>
                 {t("longest_streak")}: {stats.longestStreak} {t("days")}
               </Text>
             </View>
-          )}
-        </View>
+          </View>
+        )}
 
         {/* Action button */}
         <View
@@ -217,4 +213,3 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
-

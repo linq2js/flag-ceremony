@@ -12,10 +12,6 @@ export const PatriotIDBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
-  showMemberSince,
   t,
   scale = 1,
 }) => {
@@ -107,15 +103,13 @@ export const PatriotIDBadge: React.FC<BadgeProps> = ({
           </Text>
 
           {/* Member since */}
-          {showMemberSince && (
-            <Text style={[styles.memberSince, { fontSize: 9 * scale }]}>
-              Member since: {formatDate(stats?.memberSince)}
-            </Text>
-          )}
+          <Text style={[styles.memberSince, { fontSize: 9 * scale }]}>
+            Member since: {formatDate(stats?.memberSince)}
+          </Text>
 
           {/* Stats */}
-          <View style={[styles.statsContainer, { marginTop: 8 * scale }]}>
-            {showTotal && stats && (
+          {stats && (
+            <View style={[styles.statsContainer, { marginTop: 8 * scale }]}>
               <View style={styles.statRow}>
                 <Text style={{ fontSize: 12 * scale }}>🏆</Text>
                 <Text style={[styles.statValue, { fontSize: 12 * scale }]}>
@@ -125,8 +119,6 @@ export const PatriotIDBadge: React.FC<BadgeProps> = ({
                   {t("ceremonies").toUpperCase()}
                 </Text>
               </View>
-            )}
-            {showCurrentStreak && stats && (
               <View style={styles.statRow}>
                 <Text style={{ fontSize: 12 * scale }}>🔥</Text>
                 <Text style={[styles.statLabel, { fontSize: 10 * scale }]}>
@@ -136,8 +128,6 @@ export const PatriotIDBadge: React.FC<BadgeProps> = ({
                   {stats.currentStreak} {t("days")}
                 </Text>
               </View>
-            )}
-            {showLongestStreak && stats && (
               <View style={styles.statRow}>
                 <Text style={{ fontSize: 12 * scale }}>⚡</Text>
                 <Text style={[styles.statLabel, { fontSize: 10 * scale }]}>
@@ -147,8 +137,8 @@ export const PatriotIDBadge: React.FC<BadgeProps> = ({
                   {stats.longestStreak} {t("days")}
                 </Text>
               </View>
-            )}
-          </View>
+            </View>
+          )}
         </View>
       </View>
 
@@ -261,4 +251,3 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 });
-

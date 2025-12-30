@@ -13,9 +13,6 @@ export const TrophyBannerBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -91,33 +88,29 @@ export const TrophyBannerBadge: React.FC<BadgeProps> = ({
         </View>
 
         {/* Count */}
-        {showTotal && stats && (
+        {stats && (
           <View style={[styles.countSection, { marginTop: 10 * scale }]}>
             <Text style={[styles.count, { fontSize: 42 * scale }]}>
               {stats.completedCeremonies}
             </Text>
             <Text style={[styles.countLabel, { fontSize: 11 * scale }]}>
-              {t("ceremonie").toUpperCase()}
+              {t("ceremonies").toUpperCase()}
             </Text>
           </View>
         )}
 
         {/* Stats */}
-        <View style={[styles.statsRow, { marginTop: 12 * scale }]}>
-          {showCurrentStreak && stats && (
+        {stats && (
+          <View style={[styles.statsRow, { marginTop: 12 * scale }]}>
             <Text style={[styles.statText, { fontSize: 10 * scale }]}>
-              {stats.currentStreak} {t("rays")}
+              {stats.currentStreak} {t("days")}
             </Text>
-          )}
-          {showCurrentStreak && showLongestStreak && (
             <Text style={[styles.divider, { fontSize: 10 * scale }]}> | </Text>
-          )}
-          {showLongestStreak && stats && (
             <Text style={[styles.statText, { fontSize: 10 * scale }]}>
               {stats.longestStreak}X {t("days")}
             </Text>
-          )}
-        </View>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -193,4 +186,3 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.4)",
   },
 });
-

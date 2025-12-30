@@ -11,9 +11,6 @@ import { BadgeProps } from "./types";
 export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
   displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -90,7 +87,7 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
             </Text>
 
             {/* Achievement box */}
-            {showTotal && stats && (
+            {stats && (
               <View
                 style={[
                   styles.achievementBox,
@@ -111,23 +108,17 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
             )}
 
             {/* Stats */}
-            {(showCurrentStreak || showLongestStreak) && stats && (
+            {stats && (
               <View style={[styles.statsRow, { marginTop: 8 * scale }]}>
-                {showCurrentStreak && (
-                  <Text style={[styles.statText, { fontSize: 8 * scale }]}>
-                    Current streak: {stats.currentStreak} days
-                  </Text>
-                )}
-                {showCurrentStreak && showLongestStreak && (
-                  <Text style={[styles.divider, { fontSize: 8 * scale }]}>
-                    {" "}|{" "}
-                  </Text>
-                )}
-                {showLongestStreak && (
-                  <Text style={[styles.statText, { fontSize: 8 * scale }]}>
-                    Longest streak: {stats.longestStreak} days
-                  </Text>
-                )}
+                <Text style={[styles.statText, { fontSize: 8 * scale }]}>
+                  Current streak: {stats.currentStreak} days
+                </Text>
+                <Text style={[styles.divider, { fontSize: 8 * scale }]}>
+                  {" "}|{" "}
+                </Text>
+                <Text style={[styles.statText, { fontSize: 8 * scale }]}>
+                  Longest streak: {stats.longestStreak} days
+                </Text>
               </View>
             )}
 
@@ -281,4 +272,3 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
-

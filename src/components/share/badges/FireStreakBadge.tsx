@@ -12,8 +12,6 @@ export const FireStreakBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -133,18 +131,16 @@ export const FireStreakBadge: React.FC<BadgeProps> = ({
         </View>
 
         {/* Secondary stats */}
-        <View style={[styles.statsRow, { marginTop: 10 * scale }]}>
-          {showCurrentStreak && stats && (
+        {stats && (
+          <View style={[styles.statsRow, { marginTop: 10 * scale }]}>
             <Text style={[styles.statText, { fontSize: 9 * scale }]}>
               🔥 {t("streak_count")}: {stats.currentStreak}
             </Text>
-          )}
-          {showLongestStreak && stats && (
             <Text style={[styles.statText, { fontSize: 9 * scale }]}>
               ⚡ {t("best_streak")}: {stats.longestStreak}
             </Text>
-          )}
-        </View>
+          </View>
+        )}
 
         {/* Footer */}
         <View style={[styles.footer, { marginTop: "auto" }]}>
@@ -236,4 +232,3 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
 });
-

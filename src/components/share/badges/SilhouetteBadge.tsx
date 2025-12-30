@@ -13,9 +13,6 @@ export const SilhouetteBadge: React.FC<BadgeProps> = ({
   photoUri,
   displayName,
   stats,
-  showTotal,
-  showCurrentStreak,
-  showLongestStreak,
   t,
   scale = 1,
 }) => {
@@ -91,7 +88,7 @@ export const SilhouetteBadge: React.FC<BadgeProps> = ({
         </View>
 
         {/* Count */}
-        {showTotal && stats && (
+        {stats && (
           <View style={[styles.countSection, { marginTop: 10 * scale }]}>
             <Text style={[styles.count, { fontSize: 48 * scale }]}>
               {stats.completedCeremonies}
@@ -103,21 +100,17 @@ export const SilhouetteBadge: React.FC<BadgeProps> = ({
         )}
 
         {/* Stats row */}
-        <View style={[styles.statsContainer, { marginTop: 10 * scale }]}>
-          {showCurrentStreak && stats && (
+        {stats && (
+          <View style={[styles.statsContainer, { marginTop: 10 * scale }]}>
             <Text style={[styles.statText, { fontSize: 10 * scale }]}>
               {t("current_streak")}: {stats.currentStreak} {t("days")}
             </Text>
-          )}
-          {showCurrentStreak && showLongestStreak && (
             <Text style={[styles.divider, { fontSize: 10 * scale }]}> | </Text>
-          )}
-          {showLongestStreak && stats && (
             <Text style={[styles.statText, { fontSize: 10 * scale }]}>
               {t("cool_streak")}: {stats.longestStreak} {t("days")}
             </Text>
-          )}
-        </View>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -183,4 +176,3 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.4)",
   },
 });
-
