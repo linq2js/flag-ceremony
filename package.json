@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build:web": "expo export -p web && npm run copy:public && npm run build:sw",
-    "copy:public": "mkdir -p dist && cp -r public/* dist/ 2>/dev/null || true",
+    "copy:public": "mkdir -p dist && cp public/manifest.json dist/ && cp public/logo*.png dist/ && cp public/sw.js dist/",
     "build:sw": "npx workbox-cli injectManifest workbox-config.js",
     "link:storion": "npm link ../storion/packages/storion",
     "unlink:storion": "npm unlink storion && npm install",
