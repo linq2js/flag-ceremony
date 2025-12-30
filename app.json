@@ -9,7 +9,7 @@
     "newArchEnabled": true,
     "scheme": "flag-ceremony",
     "splash": {
-      "backgroundColor": "#DC2626"
+      "backgroundColor": "#0a0000"
     },
     "ios": {
       "supportsTablet": true,
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#DC2626"
+        "backgroundColor": "#0a0000"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.flagceremony.app"

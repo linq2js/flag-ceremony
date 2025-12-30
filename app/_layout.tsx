@@ -56,7 +56,7 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#DC2626", // Match splash screen background
+    backgroundColor: "#0a0000", // Match splash screen background
     alignItems: "center",
     justifyContent: "center",
     zIndex: 9999,
