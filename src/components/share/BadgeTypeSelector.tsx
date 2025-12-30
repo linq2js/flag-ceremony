@@ -1,99 +1,148 @@
 /**
- * BadgeTypeSelector - Horizontal scroll selector for badge types
+ * BadgeTypeSelector - Grid selector showing badge previews
+ * Uses transform scale for accurate preview rendering
  */
 
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
-import { BadgeType, BADGE_TYPES } from "../../stores/badge";
-import { palette, spacing, cardStyles, textStyles } from "../../design";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
+import { BadgeType, BadgeStats, BADGE_TYPES } from "../../stores/badge";
+import { palette, spacing, textStyles } from "../../design";
+import { BadgePreview } from "./BadgePreview";
 
 interface BadgeTypeSelectorProps {
   selected: BadgeType;
   onSelect: (type: BadgeType) => void;
+  photoUri: string | null;
+  displayName: string;
+  stats: BadgeStats | null;
   t: (key: string) => string;
 }
 
-const BADGE_EMOJIS: Record<BadgeType, string> = {
-  minimalist: "⬜",
-  achievement: "🎖️",
-  streak: "🔥",
-  patriot: "🪪",
-  social: "📱",
-  certificate: "📜",
-};
+// Base badge size used in badge components (renders at 300x300)
+const BADGE_BASE_SIZE = 300;
+// Target thumbnail size for display
+const THUMBNAIL_SIZE = 100;
+// Transform scale factor
+const SCALE_FACTOR = THUMBNAIL_SIZE / BADGE_BASE_SIZE;
 
 export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
   selected,
   onSelect,
+  photoUri,
+  displayName,
+  stats,
   t,
 }) => {
-  const badges = Object.entries(BADGE_TYPES) as [BadgeType, typeof BADGE_TYPES[BadgeType]][];
+  const { width: screenWidth } = useWindowDimensions();
+  const badges = Object.entries(BADGE_TYPES) as [
+    BadgeType,
+    (typeof BADGE_TYPES)[BadgeType]
+  ][];
+
+  // Calculate grid layout - 3 columns with gaps
+  const horizontalPadding = spacing[6] * 2;
+  const gap = spacing[3];
+  const availableWidth = screenWidth - horizontalPadding;
+  const columns = 3;
+  const itemWidth = (availableWidth - gap * (columns - 1)) / columns;
 
   return (
     <View style={styles.container}>
       <Text style={[textStyles.inputLabel, { marginBottom: spacing[4] }]}>
         {t("badge_type")}
       </Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+      <View style={[styles.grid, { gap }]}>
         {badges.map(([type, info]) => {
           const isSelected = type === selected;
+          // Calculate scaled dimensions for the container
+          const scaledWidth = BADGE_BASE_SIZE * SCALE_FACTOR;
+          const scaledHeight =
+            BADGE_BASE_SIZE * (info.height / info.width) * SCALE_FACTOR;
+
           return (
             <TouchableOpacity
               key={type}
               style={[
-                cardStyles.default,
-                styles.badge,
-                isSelected && styles.badgeSelected,
+                styles.gridItem,
+                { width: itemWidth },
+                isSelected && styles.gridItemSelected,
               ]}
               onPress={() => onSelect(type)}
+              activeOpacity={0.7}
             >
-              <Text style={styles.emoji}>{BADGE_EMOJIS[type]}</Text>
+              {/* Container with the final display size */}
+              <View
+                style={[
+                  styles.previewContainer,
+                  {
+                    width: scaledWidth,
+                    height: scaledHeight,
+                  },
+                ]}
+              >
+                {/* Inner container that renders full size then scales down */}
+                <View
+                  style={{
+                    width: BADGE_BASE_SIZE,
+                    height: BADGE_BASE_SIZE * (info.height / info.width),
+                    transform: [{ scale: SCALE_FACTOR }],
+                  }}
+                >
+                  <BadgePreview
+                    badgeType={type}
+                    photoUri={photoUri}
+                    displayName={displayName}
+                    stats={stats}
+                    t={t}
+                    previewScale={1}
+                  />
+                </View>
+              </View>
               <Text
                 style={[
                   styles.badgeName,
                   isSelected && styles.badgeNameSelected,
                 ]}
+                numberOfLines={1}
               >
-                {t(`badge_type_${type}`)}
-              </Text>
-              <Text style={styles.badgeRatio}>
-                {info.aspectRatio === 1
-                  ? "1:1"
-                  : info.aspectRatio > 1
-                  ? "16:10"
-                  : "9:16"}
+                {info.name}
               </Text>
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {},
-  scrollContent: {
-    paddingHorizontal: spacing[1],
-    gap: spacing[3],
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
-  badge: {
+  gridItem: {
     alignItems: "center",
-    paddingVertical: spacing[4],
-    paddingHorizontal: spacing[5],
-    minWidth: 90,
-  },
-  badgeSelected: {
-    borderColor: palette.gold[500],
+    padding: spacing[2],
+    borderRadius: 12,
     borderWidth: 2,
-    backgroundColor: palette.gold[50],
+    borderColor: "transparent",
+    backgroundColor: palette.dark[700],
+    marginBottom: spacing[3],
   },
-  emoji: {
-    fontSize: 24,
+  gridItemSelected: {
+    borderColor: palette.gold[500],
+    backgroundColor: palette.dark[600],
+  },
+  previewContainer: {
+    overflow: "hidden",
+    borderRadius: 6,
     marginBottom: spacing[2],
   },
   badgeName: {
@@ -101,13 +150,9 @@ const styles = StyleSheet.create({
     color: palette.white[60],
     fontWeight: "600",
     textAlign: "center",
+    fontSize: 11,
   },
   badgeNameSelected: {
     color: palette.gold[500],
   },
-  badgeRatio: {
-    ...textStyles.time,
-    marginTop: spacing[1],
-  },
 });
-

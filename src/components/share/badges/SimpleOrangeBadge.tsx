@@ -26,7 +26,16 @@ export const SimpleOrangeBadge: React.FC<BadgeProps> = ({
         end={{ x: 1, y: 1 }}
       />
 
-      <View style={styles.content}>
+      <View
+        style={[
+          styles.content,
+          {
+            paddingTop: 24 * scale,
+            paddingBottom: 16 * scale,
+            paddingHorizontal: 20 * scale,
+          },
+        ]}
+      >
         {/* Photo */}
         <View
           style={[
@@ -79,10 +88,20 @@ export const SimpleOrangeBadge: React.FC<BadgeProps> = ({
         {/* Large count */}
         {stats && (
           <View style={[styles.countSection, { marginTop: 8 * scale }]}>
-            <Text style={[styles.count, { fontSize: 64 * scale }]}>
+            <Text
+              style={[
+                styles.count,
+                { fontSize: 64 * scale, lineHeight: 70 * scale },
+              ]}
+            >
               {stats.completedCeremonies}
             </Text>
-            <Text style={[styles.countLabel, { fontSize: 12 * scale }]}>
+            <Text
+              style={[
+                styles.countLabel,
+                { fontSize: 12 * scale, marginTop: -8 * scale },
+              ]}
+            >
               {t("ceremonies")}
             </Text>
           </View>
@@ -126,9 +145,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 24,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
   },
   photoContainer: {
     backgroundColor: "rgba(0, 0, 0, 0.1)",
@@ -160,12 +176,10 @@ const styles = StyleSheet.create({
   count: {
     color: "#1c1917",
     fontWeight: "800",
-    lineHeight: 70,
   },
   countLabel: {
     color: "#57534e",
     fontWeight: "500",
-    marginTop: -8,
   },
   statsRow: {
     flexDirection: "row",

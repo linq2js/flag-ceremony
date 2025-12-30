@@ -202,15 +202,6 @@ const BadgeEditorContent: React.FC = React.memo(() => {
           </View>
         </View>
 
-        {/* Badge Type Selector */}
-        <View style={styles.section}>
-          <BadgeTypeSelector
-            selected={badge.badgeType}
-            onSelect={setBadgeType}
-            t={t as any}
-          />
-        </View>
-
         {/* Save Button */}
         <TouchableOpacity
           style={[buttonStyles.primary, styles.saveButton]}
@@ -222,6 +213,18 @@ const BadgeEditorContent: React.FC = React.memo(() => {
             {t("save_to_photos")}
           </Text>
         </TouchableOpacity>
+
+        {/* Badge Type Selector */}
+        <View style={styles.section}>
+          <BadgeTypeSelector
+            selected={badge.badgeType}
+            onSelect={setBadgeType}
+            photoUri={badge.photoUri}
+            displayName={badge.displayName}
+            stats={stats}
+            t={t as any}
+          />
+        </View>
       </ScrollView>
     </>
   );

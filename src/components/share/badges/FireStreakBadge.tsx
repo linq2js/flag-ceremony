@@ -110,7 +110,7 @@ export const FireStreakBadge: React.FC<BadgeProps> = ({
 
         {/* Name */}
         <Text
-          style={[styles.name, { fontSize: 14 * scale, marginTop: 6 * scale }]}
+          style={[styles.name, { fontSize: 14 * scale, marginTop: 12 * scale }]}
           numberOfLines={1}
         >
           {displayName || t("dedicated_patriot")}
@@ -134,7 +134,7 @@ export const FireStreakBadge: React.FC<BadgeProps> = ({
         {stats && (
           <View style={[styles.statsRow, { marginTop: 10 * scale }]}>
             <Text style={[styles.statText, { fontSize: 9 * scale }]}>
-              🔥 {t("streak_count")}: {stats.currentStreak}
+              🔥 {t("current_streak")}: {stats.currentStreak}
             </Text>
             <Text style={[styles.statText, { fontSize: 9 * scale }]}>
               ⚡ {t("best_streak")}: {stats.longestStreak}

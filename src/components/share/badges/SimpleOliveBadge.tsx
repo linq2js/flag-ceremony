@@ -26,9 +26,20 @@ export const SimpleOliveBadge: React.FC<BadgeProps> = ({
         end={{ x: 0.5, y: 1 }}
       />
 
-      <View style={styles.content}>
+      <View
+        style={[
+          styles.content,
+          {
+            paddingTop: 16 * scale,
+            paddingBottom: 16 * scale,
+            paddingHorizontal: 20 * scale,
+          },
+        ]}
+      >
         {/* Header with VN FLAG CEREMONY */}
-        <View style={[styles.header, { marginBottom: 8 * scale }]}>
+        <View
+          style={[styles.header, { marginBottom: 8 * scale, paddingBottom: 6 * scale }]}
+        >
           <Text style={[styles.headerText, { fontSize: 10 * scale }]}>
             VN FLAG CEREMONY VN
           </Text>
@@ -142,14 +153,10 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 16,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
   },
   header: {
     borderBottomWidth: 1,
     borderBottomColor: "rgba(251, 191, 36, 0.3)",
-    paddingBottom: 6,
   },
   headerText: {
     color: "#fbbf24",

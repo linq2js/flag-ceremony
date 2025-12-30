@@ -26,7 +26,7 @@ export const SimpleRedBadge: React.FC<BadgeProps> = ({
         end={{ x: 0.5, y: 1 }}
       />
 
-      <View style={styles.content}>
+      <View style={[styles.content, { paddingHorizontal: 20 * scale }]}>
         {/* Photo */}
         <View
           style={[
@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 20,
   },
   photoRing: {
     backgroundColor: "rgba(255, 215, 0, 0.3)",
