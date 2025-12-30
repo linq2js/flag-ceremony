@@ -7,7 +7,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:web": "expo export -p web",
+    "build:web": "expo export -p web && npm run copy:public && npm run build:sw",
+    "copy:public": "mkdir -p dist && cp -r public/* dist/ 2>/dev/null || true",
+    "build:sw": "npx workbox-cli injectManifest workbox-config.js",
     "link:storion": "npm link ../storion/packages/storion",
     "unlink:storion": "npm unlink storion && npm install",
     "e2e": "PATH=$PATH:$HOME/.maestro/bin maestro test .maestro/flows",
@@ -71,7 +73,8 @@
     "@types/react": "~19.1.0",
     "babel-preset-expo": "^54.0.9",
     "concurrently": "^9.2.1",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "workbox-cli": "^7.4.0"
   },
   "private": true,
   "packageManager": "npm@10.9.0"
