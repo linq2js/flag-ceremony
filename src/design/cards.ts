@@ -92,7 +92,7 @@ export const iconContainer = {
   small: {
     width: 32,
     height: 32,
-    borderRadius: radius.sm,
+    borderRadius: 16, // Circular: half of width/height
     alignItems: "center" as const,
     justifyContent: "center" as const,
   } as ViewStyle,
@@ -100,7 +100,7 @@ export const iconContainer = {
   medium: {
     width: 40,
     height: 40,
-    borderRadius: radius.md,
+    borderRadius: 20, // Circular: half of width/height
     alignItems: "center" as const,
     justifyContent: "center" as const,
   } as ViewStyle,
@@ -108,7 +108,7 @@ export const iconContainer = {
   large: {
     width: 48,
     height: 48,
-    borderRadius: radius.xl,
+    borderRadius: 24, // Circular: half of width/height
     alignItems: "center" as const,
     justifyContent: "center" as const,
   } as ViewStyle,
@@ -116,7 +116,7 @@ export const iconContainer = {
   xlarge: {
     width: 56,
     height: 56,
-    borderRadius: radius["2xl"],
+    borderRadius: 28, // Circular: half of width/height
     alignItems: "center" as const,
     justifyContent: "center" as const,
   } as ViewStyle,
@@ -124,7 +124,7 @@ export const iconContainer = {
   featured: {
     width: 76,
     height: 76,
-    borderRadius: radius["4xl"],
+    borderRadius: 38, // Circular: half of width/height
     alignItems: "center" as const,
     justifyContent: "center" as const,
   } as ViewStyle,
@@ -177,9 +177,9 @@ export const statusDot = (color: string): ViewStyle => ({
 // Calendar day cell
 export const calendarDay = {
   cell: {
-    width: 42,
-    height: 42,
-    borderRadius: radius.lg,
+    width: 36,
+    height: 36,
+    borderRadius: 18, // Circular: half of width/height
     alignItems: "center" as const,
     justifyContent: "center" as const,
     borderWidth: 1,

@@ -122,7 +122,7 @@ export const ReminderSection: React.FC<ReminderSectionProps> = ({
           <Text style={[textStyles.inputHint, { marginBottom: spacing[6] }]}>
             {t("repeat_on_days")}
           </Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing[4] }}>
+          <View style={layout.rowBetween}>
             {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => (
               <DayButton
                 key={dayIndex}

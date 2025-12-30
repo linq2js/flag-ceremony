@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type FC } from "react";
 import {
   View,
   Text,
@@ -51,7 +51,7 @@ const FLAG_CEREMONY_AUDIO = require("../../assets/audio/flag-ceremony.mp3");
 const CEREMONY_COMPLETE_AUDIO = require("../../assets/audio/ceremony-complete.mp3");
 const COUNTDOWN_BEEP_AUDIO = require("../../assets/audio/countdown-beep.mp3");
 
-export const CeremonyScreen: React.FC = () => {
+export const CeremonyScreen: FC = () => {
   const router = useRouter();
   const navigation = useNavigation();
   const { t, addCeremonyLog, setCeremonyActive } = useStore(
@@ -84,13 +84,32 @@ export const CeremonyScreen: React.FC = () => {
   const countdownPlayer = useAudioPlayer(COUNTDOWN_BEEP_AUDIO);
 
   // Helper function to safely play audio
+  // Returns a promise that resolves to true if successful, false if failed
   const safePlayAudio = useCallback(
-    (audioPlayer: ReturnType<typeof useAudioPlayer>, name: string) => {
+    async (
+      audioPlayer: ReturnType<typeof useAudioPlayer>,
+      name: string
+    ): Promise<boolean> => {
       try {
         audioPlayer.seekTo(0);
-        audioPlayer.play();
+        const playResult = audioPlayer.play();
+        // Handle promise rejection (audio failed to load/play)
+        if (
+          playResult != null &&
+          typeof playResult === "object" &&
+          "catch" in playResult
+        ) {
+          try {
+            await playResult;
+            return true;
+          } catch (error: unknown) {
+            console.warn(`Failed to play audio ${name}:`, error);
+            return false;
+          }
+        }
+        // play() returned void or undefined - assume success
         return true;
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Failed to play audio ${name}:`, error);
         return false;
       }
@@ -101,7 +120,10 @@ export const CeremonyScreen: React.FC = () => {
   // Play beep on countdown number change
   useEffect(() => {
     if (ceremonyState === "countdown" && countdownNumber > 0) {
-      safePlayAudio(countdownPlayer, "countdown-beep");
+      // Fire and forget - don't wait for promise
+      safePlayAudio(countdownPlayer, "countdown-beep").catch(() => {
+        // Already logged in safePlayAudio
+      });
     }
   }, [countdownNumber, ceremonyState, countdownPlayer, safePlayAudio]);
 
@@ -196,8 +218,10 @@ export const CeremonyScreen: React.FC = () => {
     addCeremonyLog(ceremonyDuration, true);
     setCeremonyState("completed");
 
-    // Play completion sound (gracefully handle errors)
-    safePlayAudio(completionPlayer, "ceremony-complete");
+    // Play completion sound (gracefully handle errors - fire and forget)
+    safePlayAudio(completionPlayer, "ceremony-complete").catch(() => {
+      // Already logged in safePlayAudio
+    });
   }, [addCeremonyLog, completionPlayer, safePlayAudio]);
 
   // Handle audio completion
@@ -216,7 +240,7 @@ export const CeremonyScreen: React.FC = () => {
   // Fallback timer ref for when audio fails
   const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const startPlaying = useCallback(() => {
+  const startPlaying = useCallback(async () => {
     setCeremonyState("playing");
     startTimeRef.current = Date.now();
     flagProgress.value = 0;
@@ -228,13 +252,13 @@ export const CeremonyScreen: React.FC = () => {
     }
 
     // Try to reset and play audio
-    const audioPlayed = safePlayAudio(player, "flag-ceremony");
+    const audioPlayed = await safePlayAudio(player, "flag-ceremony");
 
     // Animate flag based on audio duration (or fallback)
     let audioDuration = 30000; // Default 30 seconds fallback
     if (audioPlayed && player.duration > 0) {
       audioDuration = player.duration * 1000;
-    } else if (!audioPlayed) {
+    } else {
       // If audio failed to play, set up fallback timer to complete ceremony
       console.warn("Audio failed to play, using fallback timer");
       audioDuration = 30000; // 30 seconds fallback
@@ -258,8 +282,6 @@ export const CeremonyScreen: React.FC = () => {
     setTimeout(() => setCountdownNumber(1), 2000);
     setTimeout(() => startPlaying(), 3000);
   }, [startPlaying]);
-
-  const goHome = useCallback(() => router.replace("/"), [router]);
 
   const resetCeremony = useCallback(() => {
     // Clear fallback timer if exists

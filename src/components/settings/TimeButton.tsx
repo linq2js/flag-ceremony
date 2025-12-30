@@ -16,13 +16,15 @@ export const TimeButton: React.FC<TimeButtonProps> = ({
   <TouchableOpacity
     onPress={onPress}
     style={{
-      paddingHorizontal: spacing[6],
-      paddingVertical: spacing[4],
+      width: 44,
+      height: 44,
+      borderRadius: 22, // Circular: half of width/height
       marginRight: spacing[3],
-      borderRadius: radius.md,
       backgroundColor: selected ? palette.gold[500] : palette.white[6],
       borderWidth: 1,
       borderColor: selected ? palette.gold[400] : palette.white[4],
+      alignItems: "center",
+      justifyContent: "center",
     }}
   >
     <Text

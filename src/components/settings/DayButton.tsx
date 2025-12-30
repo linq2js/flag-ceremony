@@ -30,7 +30,7 @@ export const DayButton: React.FC<DayButtonProps> = ({
       ]}
     >
       {selected && (
-        <Text style={{ fontSize: 18, color: palette.dark.base }}>✓</Text>
+        <Text style={{ fontSize: 15, color: palette.dark.base }}>✓</Text>
       )}
     </TouchableOpacity>
   </View>

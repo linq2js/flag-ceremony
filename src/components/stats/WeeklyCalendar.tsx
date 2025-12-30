@@ -74,13 +74,13 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
               </Text>
               <View style={[calendarDay.cell, cellStyle]}>
                 {hasCompletedLog ? (
-                  <Text style={{ fontSize: 18, color: colors.text.primary }}>
+                  <Text style={{ fontSize: 15, color: colors.text.primary }}>
                     ✓
                   </Text>
                 ) : (
                   <Text
                     style={{
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: isToday ? "700" : "500",
                       color: isToday
                         ? palette.gold[500]
