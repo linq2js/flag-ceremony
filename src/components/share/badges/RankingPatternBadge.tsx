@@ -96,7 +96,9 @@ export const RankingPatternBadge: React.FC<BadgeProps> = ({
 
         {/* Top Ranking */}
         <View style={[styles.rankingSection, { marginTop: 12 * scale }]}>
-          <Text style={[styles.topText, { fontSize: 14 * scale }]}>Top</Text>
+          <Text style={[styles.topText, { fontSize: 14 * scale }]}>
+            {t("badge_top")}
+          </Text>
           <Text style={[styles.rankingValue, { fontSize: 48 * scale }]}>
             {stats?.percentile ? Math.ceil(100 - stats.percentile) : "XX"}
           </Text>
@@ -114,7 +116,7 @@ export const RankingPatternBadge: React.FC<BadgeProps> = ({
           ]}
         >
           <Text style={[styles.rankingLabelText, { fontSize: 11 * scale }]}>
-            RANKING
+            {t("badge_ranking")}
           </Text>
         </View>
 
@@ -134,7 +136,7 @@ export const RankingPatternBadge: React.FC<BadgeProps> = ({
 
         {/* Footer */}
         <Text style={[styles.footer, { fontSize: 9 * scale }]}>
-          FLAG CEREMONY
+          {t("badge_flag_ceremony")}
         </Text>
       </View>
     </View>

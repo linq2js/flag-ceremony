@@ -37,7 +37,7 @@ export const TrophyBannerBadge: React.FC<BadgeProps> = ({
           <Path d="M25 3 L275 3 L275 25 L25 25 Z" fill="none" stroke="#fbbf24" strokeWidth="1" />
         </Svg>
         <Text style={[styles.bannerText, { fontSize: 12 * scale }]}>
-          FLAG CEREMONY
+          {t("badge_flag_ceremony")}
         </Text>
       </View>
 

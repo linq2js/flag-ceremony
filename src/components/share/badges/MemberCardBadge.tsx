@@ -133,7 +133,7 @@ export const MemberCardBadge: React.FC<BadgeProps> = ({
                   ]}
                 >
                   <Text style={[styles.rankingText, { fontSize: 9 * scale }]}>
-                    Top {Math.ceil(100 - stats.percentile)}%
+                    {t("badge_top")} {Math.ceil(100 - stats.percentile)}%
                   </Text>
                 </View>
               )}

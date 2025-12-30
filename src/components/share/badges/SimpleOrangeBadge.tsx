@@ -128,7 +128,7 @@ export const SimpleOrangeBadge: React.FC<BadgeProps> = ({
         {/* Footer */}
         <View style={[styles.footer, { marginTop: "auto" }]}>
           <Text style={[styles.footerText, { fontSize: 10 * scale }]}>
-            FLAG CEREMONY
+            {t("badge_flag_ceremony")}
           </Text>
           <Text style={{ fontSize: 12 * scale }}>🇻🇳</Text>
         </View>

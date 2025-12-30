@@ -41,7 +41,7 @@ export const SimpleOliveBadge: React.FC<BadgeProps> = ({
           style={[styles.header, { marginBottom: 8 * scale, paddingBottom: 6 * scale }]}
         >
           <Text style={[styles.headerText, { fontSize: 10 * scale }]}>
-            VN FLAG CEREMONY VN
+            🇻🇳 {t("badge_flag_ceremony")} 🇻🇳
           </Text>
         </View>
 

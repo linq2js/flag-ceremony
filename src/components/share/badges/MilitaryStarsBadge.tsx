@@ -38,7 +38,7 @@ export const MilitaryStarsBadge: React.FC<BadgeProps> = ({
           <View style={[styles.header, { marginBottom: 6 * scale }]}>
             <Text style={{ fontSize: 10 * scale }}>🇻🇳</Text>
             <Text style={[styles.headerText, { fontSize: 9 * scale }]}>
-              FLAG CEREMONY
+              {t("badge_flag_ceremony")}
             </Text>
             <Text style={{ fontSize: 10 * scale }}>🇻🇳</Text>
           </View>
@@ -127,7 +127,7 @@ export const MilitaryStarsBadge: React.FC<BadgeProps> = ({
                 <View style={styles.statRow}>
                   <Text style={{ fontSize: 10 * scale }}>👑</Text>
                   <Text style={[styles.statText, { fontSize: 9 * scale }]}>
-                    Top {Math.ceil(100 - stats.percentile)}%
+                    {t("badge_top")} {Math.ceil(100 - stats.percentile)}%
                   </Text>
                 </View>
               )}

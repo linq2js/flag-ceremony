@@ -36,7 +36,7 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
         <View style={styles.content}>
           {/* Header */}
           <Text style={[styles.header, { fontSize: 12 * scale }]}>
-            CERTIFICATE OF RECOGNITION
+            {t("badge_certificate_of_recognition")}
           </Text>
 
           {/* Decorative line */}
@@ -49,7 +49,7 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
 
           {/* "This certifies that" */}
           <Text style={[styles.certifiesText, { fontSize: 9 * scale }]}>
-            This certifies that
+            {t("badge_this_certifies")}
           </Text>
 
           {/* Achievement box */}
@@ -99,7 +99,7 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
               ]}
             >
               <Text style={[styles.rankingText, { fontSize: 10 * scale }]}>
-                Top {Math.ceil(100 - stats.percentile)}%
+                {t("badge_top")} {Math.ceil(100 - stats.percentile)}%
               </Text>
             </View>
           )}
@@ -109,7 +109,7 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
             {/* Date */}
             <View style={styles.dateSection}>
               <Text style={[styles.dateLabel, { fontSize: 7 * scale }]}>
-                Date
+                {t("badge_date")}
               </Text>
               <View
                 style={[
@@ -122,7 +122,7 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
             {/* Signature */}
             <View style={styles.signatureSection}>
               <Text style={[styles.signatureLabel, { fontSize: 7 * scale }]}>
-                Signature
+                {t("badge_signature")}
               </Text>
               <View
                 style={[
@@ -135,7 +135,7 @@ export const CertificateRecognitionBadge: React.FC<BadgeProps> = ({
 
           {/* Footer */}
           <Text style={[styles.footer, { fontSize: 7 * scale }]}>
-            Flag Ceremony App
+            {t("app_name")}
           </Text>
         </View>
       </View>

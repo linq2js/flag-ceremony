@@ -44,7 +44,7 @@ export const PatriotIDBadge: React.FC<BadgeProps> = ({
       {/* Header */}
       <View style={[styles.header, { height: 28 * scale }]}>
         <Text style={[styles.headerText, { fontSize: 11 * scale }]}>
-          PATRIOT CERTIFICATE
+          {t("badge_patriot_certificate")}
         </Text>
       </View>
 

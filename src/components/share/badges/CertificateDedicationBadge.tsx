@@ -59,7 +59,7 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
           <View style={styles.content}>
             {/* Header */}
             <Text style={[styles.header, { fontSize: 14 * scale }]}>
-              CERTIFICATE OF DEDICATION
+              {t("badge_certificate_of_dedication")}
             </Text>
 
             {/* Decorative line */}
@@ -83,7 +83,7 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
 
             {/* Description */}
             <Text style={[styles.description, { fontSize: 9 * scale }]}>
-              has demonstrated exceptional patriotism.
+              {t("badge_demonstrated_patriotism")}
             </Text>
 
             {/* Achievement box */}
@@ -102,7 +102,7 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
                   {stats.completedCeremonies}
                 </Text>
                 <Text style={[styles.achievementLabel, { fontSize: 9 * scale }]}>
-                  Flag Ceremonies Completed
+                  {t("badge_ceremonies_completed")}
                 </Text>
               </View>
             )}
@@ -111,13 +111,13 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
             {stats && (
               <View style={[styles.statsRow, { marginTop: 8 * scale }]}>
                 <Text style={[styles.statText, { fontSize: 8 * scale }]}>
-                  Current streak: {stats.currentStreak} days
+                  {t("current_streak")}: {stats.currentStreak} {t("days")}
                 </Text>
                 <Text style={[styles.divider, { fontSize: 8 * scale }]}>
                   {" "}|{" "}
                 </Text>
                 <Text style={[styles.statText, { fontSize: 8 * scale }]}>
-                  Longest streak: {stats.longestStreak} days
+                  {t("longest_streak")}: {stats.longestStreak} {t("days")}
                 </Text>
               </View>
             )}
@@ -127,7 +127,7 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
               {/* Date */}
               <View style={styles.dateSection}>
                 <Text style={[styles.dateLabel, { fontSize: 7 * scale }]}>
-                  Date: {formatDate()}
+                  {t("badge_date")}: {formatDate()}
                 </Text>
               </View>
 
@@ -140,7 +140,7 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
                   ]}
                 />
                 <Text style={[styles.signatureLabel, { fontSize: 6 * scale }]}>
-                  Signature
+                  {t("badge_signature")}
                 </Text>
               </View>
 
@@ -161,7 +161,7 @@ export const CertificateDedicationBadge: React.FC<BadgeProps> = ({
 
             {/* Footer */}
             <Text style={[styles.footer, { fontSize: 6 * scale }]}>
-              Flag Ceremony App
+              {t("app_name")}
             </Text>
           </View>
         </View>

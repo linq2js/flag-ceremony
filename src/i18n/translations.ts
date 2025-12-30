@@ -206,6 +206,21 @@ export const translations = {
     permission_denied: "Permission Denied",
     camera_permission_message: "We need camera permission to take photos",
     gallery_permission_message: "We need gallery permission to choose photos",
+
+    // Badge labels (for translated badges)
+    badge_certificate_of_dedication: "CERTIFICATE OF DEDICATION",
+    badge_certificate_of_recognition: "CERTIFICATE OF RECOGNITION",
+    badge_patriot_certificate: "PATRIOT CERTIFICATE",
+    badge_demonstrated_patriotism: "has demonstrated exceptional patriotism.",
+    badge_ceremonies_completed: "Flag Ceremonies Completed",
+    badge_this_certifies: "This certifies that",
+    badge_date: "Date",
+    badge_signature: "Signature",
+    badge_days_streak: "DAYS STREAK!",
+    badge_ranking: "RANKING",
+    badge_top: "Top",
+    badge_flag_ceremony: "FLAG CEREMONY",
+    cool_streak: "Best Streak",
   },
   vi: {
     // Common
@@ -412,6 +427,21 @@ export const translations = {
     permission_denied: "Từ chối quyền truy cập",
     camera_permission_message: "Chúng tôi cần quyền camera để chụp ảnh",
     gallery_permission_message: "Chúng tôi cần quyền thư viện ảnh để chọn ảnh",
+
+    // Badge labels (for translated badges)
+    badge_certificate_of_dedication: "GIẤY CHỨNG NHẬN",
+    badge_certificate_of_recognition: "GIẤY CÔNG NHẬN",
+    badge_patriot_certificate: "CHỨNG NHẬN YÊU NƯỚC",
+    badge_demonstrated_patriotism: "đã thể hiện lòng yêu nước sâu sắc.",
+    badge_ceremonies_completed: "Lần chào cờ hoàn thành",
+    badge_this_certifies: "Chứng nhận rằng",
+    badge_date: "Ngày",
+    badge_signature: "Chữ ký",
+    badge_days_streak: "NGÀY LIÊN TIẾP!",
+    badge_ranking: "XẾP HẠNG",
+    badge_top: "Top",
+    badge_flag_ceremony: "LỄ CHÀO CỜ",
+    cool_streak: "Chuỗi tốt nhất",
   },
 } as const;
 

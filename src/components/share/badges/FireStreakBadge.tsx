@@ -126,7 +126,7 @@ export const FireStreakBadge: React.FC<BadgeProps> = ({
             <Text style={{ fontSize: 24 * scale }}>🔥</Text>
           </View>
           <Text style={[styles.streakLabel, { fontSize: 13 * scale }]}>
-            {t("days").toUpperCase()} STREAK!
+            {t("badge_days_streak")}
           </Text>
         </View>
 
@@ -145,7 +145,7 @@ export const FireStreakBadge: React.FC<BadgeProps> = ({
         {/* Footer */}
         <View style={[styles.footer, { marginTop: "auto" }]}>
           <Text style={[styles.footerText, { fontSize: 10 * scale }]}>
-            FLAG CEREMONY
+            {t("badge_flag_ceremony")}
           </Text>
           <Text style={{ fontSize: 12 * scale }}>🇻🇳</Text>
         </View>
