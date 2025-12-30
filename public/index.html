@@ -12,12 +12,66 @@
     <link rel="manifest" href="/manifest.json" />
     <!-- Theme color for mobile browsers -->
     <meta name="theme-color" content="#DC2626" />
+    <!-- The `react-native-web` recommended style reset -->
+    <style id="expo-reset">
+      /* These styles make the body full-height and prevent scaling */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        touch-action: manipulation;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        min-width: 100vw;
+        min-height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        flex: 1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-    <!-- Service Worker Registration -->
+    <!-- Service Worker Registration (only in production) -->
     <script>
-      if ("serviceWorker" in navigator) {
+      // Only register service worker in production builds
+      if ("serviceWorker" in navigator && window.location.hostname !== "localhost" && !window.location.hostname.includes("127.0.0.1")) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
             .register("/sw.js")
@@ -31,6 +85,16 @@
               console.error("Service Worker registration failed:", error);
             });
         });
+      } else {
+        // Unregister any existing service workers in development
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => {
+              registration.unregister();
+              console.log("Service Worker unregistered for development");
+            });
+          });
+        }
       }
     </script>
   </body>
