@@ -48,8 +48,8 @@ interface FeedbackPayload {
  * const { submitFeedback } = useStore(mixins({ submitFeedback: submitFeedbackMixin }));
  * await submitFeedback({ category: "bug", message: "...", ... });
  */
-export const submitFeedbackMixin = ({ service }: SelectorContext) => {
-  const { auth } = service(authService);
+export const submitFeedbackMixin = ({ get }: SelectorContext) => {
+  const { auth } = get(authService);
 
   return async (payload: FeedbackPayload) => {
     const user = await auth();
