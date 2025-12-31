@@ -182,7 +182,7 @@ export const FeedbackScreen: React.FC = () => {
             {/* Success Message */}
             {isSubmitted && (
               <View style={styles.successCard}>
-                <CheckIcon size={24} color={palette.emerald[500]} />
+                <CheckIcon size={24} color={palette.green[500]} />
                 <Text style={styles.successText}>
                   {t("feedback_success_message")}
                 </Text>
@@ -374,11 +374,11 @@ const styles = StyleSheet.create({
     padding: spacing[4],
     marginBottom: spacing[6],
     borderWidth: 1,
-    borderColor: palette.emerald[500],
+    borderColor: palette.green[500],
   },
   successText: {
     ...textStyles.body,
-    color: palette.emerald[500],
+    color: palette.green[500],
     fontWeight: "600",
   },
   offlineCard: {
