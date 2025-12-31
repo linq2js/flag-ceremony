@@ -150,8 +150,11 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
 
   return (
     <View
-      style={[styles.tabBarShell, { bottom: insets.bottom + 12 }]}
-      pointerEvents="box-none"
+      style={[
+        styles.tabBarShell,
+        { bottom: insets.bottom + 12 },
+        { pointerEvents: "box-none" },
+      ]}
     >
       <BlurView
         tint="dark"
@@ -293,4 +296,3 @@ const styles = StyleSheet.create({
     color: palette.orange[500],
   },
 });
-

@@ -28,7 +28,7 @@ export const OfflineBanner: React.FC = () => {
   React.useEffect(() => {
     Animated.spring(slideAnim, {
       toValue: online ? -100 : 0,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web", // Native driver not supported on web
       tension: 100,
       friction: 12,
     }).start();
@@ -43,9 +43,9 @@ export const OfflineBanner: React.FC = () => {
         {
           paddingTop: insets.top + spacing[2],
           transform: [{ translateY: slideAnim }],
+          pointerEvents: online ? "none" : "auto",
         },
       ]}
-      pointerEvents={online ? "none" : "auto"}
     >
       <View style={styles.content}>
         <View style={styles.iconContainer}>
@@ -114,4 +114,3 @@ const styles = StyleSheet.create({
     lineHeight: 14,
   },
 });
-
