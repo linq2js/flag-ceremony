@@ -14,6 +14,7 @@ export const translations = {
     tab_home: "Home",
     tab_ceremony: "Ceremony",
     tab_stats: "Stats",
+    tab_feedback: "Feedback",
     tab_settings: "Settings",
 
     // Home Screen
@@ -216,6 +217,24 @@ export const translations = {
     camera_permission_message: "We need camera permission to take photos",
     gallery_permission_message: "We need gallery permission to choose photos",
 
+    // Feedback Screen
+    feedback_title: "Feedback",
+    feedback_subtitle: "Help us improve",
+    feedback_category_label: "What's this about?",
+    feedback_category_bug: "Bug Report",
+    feedback_category_feature: "Feature Request",
+    feedback_category_question: "Question",
+    feedback_category_other: "Other",
+    feedback_message_label: "Your message",
+    feedback_placeholder: "Tell us what's on your mind...",
+    feedback_min_length: "Please write at least {count} characters",
+    feedback_submit: "Send Feedback",
+    feedback_success_message: "Thank you for your feedback!",
+    feedback_error_title: "Couldn't Send",
+    feedback_error_message: "Please try again later.",
+    feedback_offline_message: "You need to be online to send feedback.",
+    ok: "OK",
+
     // Badge labels (for translated badges)
     badge_certificate_of_dedication: "CERTIFICATE OF DEDICATION",
     badge_certificate_of_recognition: "CERTIFICATE OF RECOGNITION",
@@ -244,6 +263,7 @@ export const translations = {
     tab_home: "Trang chủ",
     tab_ceremony: "Chào cờ",
     tab_stats: "Thống kê",
+    tab_feedback: "Góp ý",
     tab_settings: "Cài đặt",
 
     // Home Screen
@@ -445,6 +465,24 @@ export const translations = {
     permission_denied: "Từ chối quyền truy cập",
     camera_permission_message: "Chúng tôi cần quyền camera để chụp ảnh",
     gallery_permission_message: "Chúng tôi cần quyền thư viện ảnh để chọn ảnh",
+
+    // Feedback Screen
+    feedback_title: "Góp ý",
+    feedback_subtitle: "Giúp chúng tôi cải thiện",
+    feedback_category_label: "Nội dung góp ý?",
+    feedback_category_bug: "Báo lỗi",
+    feedback_category_feature: "Đề xuất tính năng",
+    feedback_category_question: "Câu hỏi",
+    feedback_category_other: "Khác",
+    feedback_message_label: "Nội dung",
+    feedback_placeholder: "Chia sẻ với chúng tôi...",
+    feedback_min_length: "Vui lòng nhập ít nhất {count} ký tự",
+    feedback_submit: "Gửi góp ý",
+    feedback_success_message: "Cảm ơn góp ý của bạn!",
+    feedback_error_title: "Không thể gửi",
+    feedback_error_message: "Vui lòng thử lại sau.",
+    feedback_offline_message: "Bạn cần kết nối mạng để gửi góp ý.",
+    ok: "OK",
 
     // Badge labels (for translated badges)
     badge_certificate_of_dedication: "GIẤY CHỨNG NHẬN",

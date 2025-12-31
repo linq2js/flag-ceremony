@@ -18,7 +18,7 @@ import {
 } from "../../src/stores";
 import { showAlert } from "../../src/utils/alert";
 import { VietnamFlagIcon } from "../../src/components/VietnamFlag";
-import { HomeIcon, StatsIcon, SettingsIcon } from "../../src/components/Icons";
+import { HomeIcon, StatsIcon, SettingsIcon, FeedbackIcon } from "../../src/components/Icons";
 import { palette } from "../../src/design/colors";
 
 // Type for custom tab bar props
@@ -40,6 +40,11 @@ const TAB_CONFIG = [
     labelKey: "tab_ceremony" as const,
   },
   { name: "stats", icon: "stats" as const, labelKey: "tab_stats" as const },
+  {
+    name: "feedback",
+    icon: "feedback" as const,
+    labelKey: "tab_feedback" as const,
+  },
   {
     name: "settings",
     icon: "settings" as const,
@@ -97,6 +102,12 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
         return (
           <View style={styles.iconBox}>
             <SettingsIcon size={iconSize} color={color} />
+          </View>
+        );
+      case "feedback":
+        return (
+          <View style={styles.iconBox}>
+            <FeedbackIcon size={iconSize} color={color} />
           </View>
         );
       default:
@@ -226,6 +237,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="index" />
       <Tabs.Screen name="ceremony" />
       <Tabs.Screen name="stats" />
+      <Tabs.Screen name="feedback" />
       <Tabs.Screen name="settings" />
     </Tabs>
   );
