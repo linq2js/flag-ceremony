@@ -29,49 +29,49 @@ export const SimpleOrangeBadge: React.FC<SVGBadgeProps> = ({
   return (
     <Svg width={width} height={height} viewBox="0 0 300 300">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="orangeBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#fef3c7" />
           <Stop offset="0.5" stopColor="#fcd34d" />
           <Stop offset="1" stopColor="#f59e0b" />
         </LinearGradient>
-        <ClipPath id="photoClip">
-          <Circle cx="150" cy="56" r="29" />
+        <ClipPath id="orangePhotoClip">
+          <Circle cx="150" cy="70" r="50" />
         </ClipPath>
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#orangeBgGradient)" />
 
-      {/* Photo container */}
-      <Circle cx="150" cy="56" r="32" fill="rgba(0, 0, 0, 0.1)" stroke="rgba(0, 0, 0, 0.2)" strokeWidth="2" />
+      {/* Photo container - 70% larger */}
+      <Circle cx="150" cy="70" r="54" fill="rgba(0, 0, 0, 0.1)" stroke="rgba(0, 0, 0, 0.2)" strokeWidth="2" />
 
       {/* Photo or initial */}
       {photoDataUri ? (
         <Image
-          x="121"
-          y="27"
-          width="58"
-          height="58"
+          x="100"
+          y="20"
+          width="100"
+          height="100"
           href={photoDataUri}
-          clipPath="url(#photoClip)"
+          clipPath="url(#orangePhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (
         <G>
-          <Circle cx="150" cy="56" r="29" fill="rgba(0, 0, 0, 0.15)" />
-          <Text x="150" y="64" textAnchor="middle" fill="#78350f" fontSize="24" fontWeight="700" fontFamily={FONT_FAMILY}>
+          <Circle cx="150" cy="70" r="50" fill="rgba(0, 0, 0, 0.15)" />
+          <Text x="150" y="82" textAnchor="middle" fill="#78350f" fontSize="40" fontWeight="700" fontFamily={FONT_FAMILY}>
             {initial}
           </Text>
         </G>
       )}
 
-      {/* Name */}
+      {/* Name - 50% larger font */}
       <Text 
         x="150" 
-        y="110" 
+        y="150" 
         textAnchor="middle" 
         fill="#1c1917" 
-        fontSize="16" 
+        fontSize="24" 
         fontWeight="700" 
         fontFamily={FONT_FAMILY}
       >
@@ -83,29 +83,24 @@ export const SimpleOrangeBadge: React.FC<SVGBadgeProps> = ({
       {/* Large count */}
       {stats && (
         <G>
-          <Text x="150" y="185" textAnchor="middle" fill="#1c1917" fontSize="64" fontWeight="800" fontFamily={FONT_FAMILY}>
+          <Text x="150" y="210" textAnchor="middle" fill="#1c1917" fontSize="64" fontWeight="800" fontFamily={FONT_FAMILY}>
             {stats.completedCeremonies}
           </Text>
-          <Text x="150" y="210" textAnchor="middle" fill="#57534e" fontSize="12" fontWeight="500" fontFamily={FONT_FAMILY}>
+          <Text x="150" y="232" textAnchor="middle" fill="#57534e" fontSize="18" fontWeight="500" fontFamily={FONT_FAMILY}>
             {t("ceremonies")}
           </Text>
         </G>
       )}
 
-      {/* Stats row */}
+      {/* Stats row - 50% larger font */}
       {stats && (
-        <G>
-          <Text x="100" y="245" textAnchor="middle" fill="#44403c" fontSize="10" fontWeight="500" fontFamily={FONT_FAMILY}>
-            🔥 {t("current_streak")}: {stats.currentStreak}
-          </Text>
-          <Text x="200" y="245" textAnchor="middle" fill="#44403c" fontSize="10" fontWeight="500" fontFamily={FONT_FAMILY}>
-            ⚡ {t("best_streak")}: {stats.longestStreak}
-          </Text>
-        </G>
+        <Text x="150" y="262" textAnchor="middle" fill="#44403c" fontSize="15" fontWeight="500" fontFamily={FONT_FAMILY}>
+          🔥 {t("current_streak")}: {stats.currentStreak}  ⚡ {t("best_streak")}: {stats.longestStreak}
+        </Text>
       )}
 
-      {/* Footer */}
-      <Text x="150" y="280" textAnchor="middle" fill="#78350f" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
+      {/* Footer - 50% larger font */}
+      <Text x="150" y="288" textAnchor="middle" fill="#78350f" fontSize="15" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
         {t("badge_flag_ceremony")} 🇻🇳
       </Text>
     </Svg>

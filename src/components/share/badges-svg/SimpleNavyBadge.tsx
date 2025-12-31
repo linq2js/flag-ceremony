@@ -29,18 +29,18 @@ export const SimpleNavyBadge: React.FC<SVGBadgeProps> = ({
   return (
     <Svg width={width} height={height} viewBox="0 0 300 300">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="navyBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#1e3a5f" />
           <Stop offset="0.5" stopColor="#0f172a" />
           <Stop offset="1" stopColor="#020617" />
         </LinearGradient>
-        <ClipPath id="photoClip">
+        <ClipPath id="navyPhotoClip">
           <Circle cx="150" cy="56" r="29" />
         </ClipPath>
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#navyBgGradient)" />
 
       {/* Photo container */}
       <Circle cx="150" cy="56" r="32" fill="rgba(255, 255, 255, 0.1)" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="2" />
@@ -53,7 +53,7 @@ export const SimpleNavyBadge: React.FC<SVGBadgeProps> = ({
           width="58"
           height="58"
           href={photoDataUri}
-          clipPath="url(#photoClip)"
+          clipPath="url(#navyPhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (

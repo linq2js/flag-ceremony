@@ -38,8 +38,23 @@ export interface BadgeStats {
   longestStreak: number;
   /** User ranking percentile (if available) */
   percentile?: number;
+  /** User's position on leaderboard (1 = first place) */
+  rank?: number;
   /** Member since date */
   memberSince?: Date;
+}
+
+// =============================================================================
+// CROP SETTINGS TYPE
+// =============================================================================
+
+export interface CropSettings {
+  /** Slider value for zoom (0 = 1x scale) */
+  sliderValue: number;
+  /** Pan X offset */
+  translateX: number;
+  /** Pan Y offset */
+  translateY: number;
 }
 
 // =============================================================================
@@ -55,8 +70,12 @@ export const badgeStore = store({
   state: {
     /** Selected badge type */
     badgeType: "simple-red" as BadgeType,
-    /** User's photo URI (from camera or gallery) */
+    /** Original uploaded image URI (before cropping) */
+    originalPhotoUri: null as string | null,
+    /** Cropped photo URI (displayed in badge) */
     photoUri: null as string | null,
+    /** Crop settings to persist between edits */
+    cropSettings: null as CropSettings | null,
     /** User's display name */
     displayName: "",
     /** Whether badge is being exported */
@@ -67,8 +86,26 @@ export const badgeStore = store({
       setBadgeType: (type: BadgeType) => {
         state.badgeType = type;
       },
-      setPhotoUri: (uri: string | null) => {
-        state.photoUri = uri;
+      /** Set both original and cropped photo URIs with crop settings */
+      setPhoto: (
+        originalUri: string | null,
+        croppedUri: string | null,
+        cropSettings: CropSettings | null
+      ) => {
+        state.originalPhotoUri = originalUri;
+        state.photoUri = croppedUri;
+        state.cropSettings = cropSettings;
+      },
+      /** Update only the cropped URI and settings (for re-editing) */
+      updateCrop: (croppedUri: string, cropSettings: CropSettings) => {
+        state.photoUri = croppedUri;
+        state.cropSettings = cropSettings;
+      },
+      /** Clear all photo data */
+      clearPhoto: () => {
+        state.originalPhotoUri = null;
+        state.photoUri = null;
+        state.cropSettings = null;
       },
       setDisplayName: (name: string) => {
         state.displayName = name;
@@ -78,7 +115,9 @@ export const badgeStore = store({
       },
       reset: () => {
         state.badgeType = "simple-red";
+        state.originalPhotoUri = null;
         state.photoUri = null;
+        state.cropSettings = null;
         state.displayName = "";
         state.isExporting = false;
       },

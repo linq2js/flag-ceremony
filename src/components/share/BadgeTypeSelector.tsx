@@ -1,6 +1,6 @@
 /**
  * BadgeTypeSelector - Grid selector showing badge previews
- * Uses transform scale for accurate preview rendering
+ * Uses CSS transform with flexbox centering for both web and native
  */
 
 import React from "react";
@@ -10,12 +10,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   useWindowDimensions,
-  Platform,
 } from "react-native";
 import { BadgeType, BadgeStats } from "../../stores/badge";
-import { BADGE_TYPES } from "./badges-svg"; // Use preview dimensions, not export dimensions
+import { BADGE_TYPES } from "./badges-svg";
 import { palette, spacing, textStyles } from "../../design";
-import { BadgePreview } from "./BadgePreview";
+import { BadgePreviewSVG } from "./BadgePreviewSVG";
 
 interface BadgeTypeSelectorProps {
   selected: BadgeType;
@@ -61,23 +60,17 @@ export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
   // Wide screen: fixed width items, as many as fit per row
   const itemWidth = isWideScreen
     ? FIXED_ITEM_WIDTH
-    : (availableWidth - gap) / 2; // 2 columns on mobile
+    : (availableWidth - gap) / 2;
 
   return (
     <View style={styles.container}>
       <Text style={[textStyles.inputLabel, { marginBottom: spacing[4] }]}>
         {t("badge_type")}
       </Text>
-      <View
-        style={[
-          styles.grid,
-          { gap },
-          isWideScreen && styles.gridWide,
-        ]}
-      >
+      <View style={[styles.grid, { gap }, isWideScreen && styles.gridWide]}>
         {badges.map(([type, info]) => {
           const isSelected = type === selected;
-          // Calculate scaled dimensions for the container - use actual badge dimensions
+          // Calculate scaled dimensions for the container
           const scaledWidth = info.width * SCALE_FACTOR;
           const scaledHeight = info.height * SCALE_FACTOR;
 
@@ -92,63 +85,34 @@ export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
               onPress={() => onSelect(type)}
               activeOpacity={0.7}
             >
-              {/* Container with the final display size */}
+              {/* Outer container: scaled size + overflow hidden + flexbox center */}
               <View
                 style={[
                   styles.previewContainer,
                   {
                     width: scaledWidth,
                     height: scaledHeight,
-                    // Explicitly constrain on web to prevent expansion
-                    ...(Platform.OS === "web" && {
-                      maxWidth: scaledWidth,
-                      maxHeight: scaledHeight,
-                      minWidth: scaledWidth,
-                      minHeight: scaledHeight,
-                    }),
                   },
                 ]}
               >
-                {/* On web: render at actual scaled size to avoid layout overflow */}
-                {/* On native: use transform for better quality */}
-                {Platform.OS === "web" ? (
-                  <View
-                    style={{
-                      width: scaledWidth,
-                      height: scaledHeight,
-                      maxWidth: scaledWidth,
-                      maxHeight: scaledHeight,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <BadgePreview
-                      badgeType={type}
-                      photoUri={photoUri}
-                      displayName={displayName}
-                      stats={stats}
-                      t={t}
-                      previewScale={SCALE_FACTOR}
-                    />
-                  </View>
-                ) : (
-                  <View
-                    style={{
-                      width: info.width,
-                      height: info.height,
-                      transform: [{ scale: SCALE_FACTOR }],
-                      transformOrigin: "top left",
-                    }}
-                  >
-                    <BadgePreview
-                      badgeType={type}
-                      photoUri={photoUri}
-                      displayName={displayName}
-                      stats={stats}
-                      t={t}
-                      previewScale={1}
-                    />
-                  </View>
-                )}
+                {/* Inner: full size, centered, then scaled */}
+                <View
+                  style={{
+                    width: info.width,
+                    height: info.height,
+                    transform: [{ scale: SCALE_FACTOR }],
+                    // transformOrigin defaults to 'center center'
+                  }}
+                >
+                  <BadgePreviewSVG
+                    badgeType={type}
+                    photoUri={photoUri}
+                    displayName={displayName}
+                    stats={stats}
+                    t={t}
+                    previewScale={1}
+                  />
+                </View>
               </View>
               <Text
                 style={[
@@ -157,7 +121,10 @@ export const BadgeTypeSelector: React.FC<BadgeTypeSelectorProps> = ({
                 ]}
                 numberOfLines={1}
               >
-                {info.name}
+                {type
+                  .split("-")
+                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                  .join(" ")}
               </Text>
             </TouchableOpacity>
           );
@@ -182,22 +149,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 2,
     borderColor: "transparent",
-    backgroundColor: palette.dark[700],
     marginBottom: spacing[3],
   },
   gridItemSelected: {
     borderColor: palette.gold[500],
-    backgroundColor: palette.dark[600],
+    backgroundColor: palette.dark.base,
   },
   previewContainer: {
     overflow: "hidden",
     borderRadius: 6,
     marginBottom: spacing[2],
-    // Ensure container doesn't exceed its bounds on web
-    ...(Platform.OS === "web" && {
-      maxWidth: "100%",
-      maxHeight: "100%",
-    }),
+    // Flexbox centering - inner element scales from center
+    alignItems: "center",
+    justifyContent: "center",
   },
   badgeName: {
     ...textStyles.bodySmall,

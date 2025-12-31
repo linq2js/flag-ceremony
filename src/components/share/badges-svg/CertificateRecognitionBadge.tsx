@@ -33,7 +33,7 @@ export const CertificateRecognitionBadge: React.FC<SVGBadgeProps> = ({
   return (
     <Svg width={width} height={height} viewBox="0 0 360 270">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="certRecBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#fefcf3" />
           <Stop offset="0.5" stopColor="#f5f0e1" />
           <Stop offset="1" stopColor="#ebe4d0" />
@@ -41,7 +41,7 @@ export const CertificateRecognitionBadge: React.FC<SVGBadgeProps> = ({
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="360" height="270" rx="8" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="360" height="270" rx="8" fill="url(#certRecBgGradient)" />
 
       {/* Border */}
       <Rect x="8" y="8" width="344" height="254" rx="4" fill="none" stroke="#c9a227" strokeWidth="2" />
@@ -111,9 +111,9 @@ export const CertificateRecognitionBadge: React.FC<SVGBadgeProps> = ({
       <Circle cx="300" cy="215" r="20" fill="rgba(201, 162, 39, 0.15)" stroke="#c9a227" strokeWidth="2" />
       <Text x="300" y="222" textAnchor="middle" fontSize="16">🎖️</Text>
 
-      {/* Footer */}
-      <Text x="180" y="258" textAnchor="middle" fill="#9b8b7a" fontSize="7" fontWeight="500" fontFamily={FONT_FAMILY}>
-        🇻🇳 {t("badge_flag_ceremony")} 🇻🇳
+      {/* Footer - inside frame, centered */}
+      <Text x="180" y="248" textAnchor="middle" fill="#9b8b7a" fontSize="8" fontWeight="500" fontFamily={FONT_FAMILY}>
+        {t("badge_flag_ceremony")}
       </Text>
     </Svg>
   );

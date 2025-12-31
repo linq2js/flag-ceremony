@@ -33,7 +33,7 @@ export const CertificateDedicationBadge: React.FC<SVGBadgeProps> = ({
   return (
     <Svg width={width} height={height} viewBox="0 0 360 270">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="dedicationBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#f5f0e6" />
           <Stop offset="0.5" stopColor="#ebe4d4" />
           <Stop offset="1" stopColor="#e0d8c8" />
@@ -41,7 +41,7 @@ export const CertificateDedicationBadge: React.FC<SVGBadgeProps> = ({
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="360" height="270" rx="8" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="360" height="270" rx="8" fill="url(#dedicationBgGradient)" />
 
       {/* Ornate border */}
       <Rect x="10" y="10" width="340" height="250" rx="4" fill="none" stroke="#b8860b" strokeWidth="3" />
@@ -76,10 +76,10 @@ export const CertificateDedicationBadge: React.FC<SVGBadgeProps> = ({
         {t("badge_demonstrated_patriotism")}
       </Text>
 
-      {/* Achievement box */}
+      {/* Achievement box - 30% wider */}
       {stats && (
         <G>
-          <Rect x="130" y="130" width="100" height="45" rx="6" fill="rgba(184, 134, 11, 0.15)" stroke="#b8860b" strokeWidth="2" />
+          <Rect x="115" y="130" width="130" height="45" rx="6" fill="rgba(184, 134, 11, 0.15)" stroke="#b8860b" strokeWidth="2" />
           <Text x="180" y="155" textAnchor="middle" fill="#b8860b" fontSize="18" fontWeight="800" fontFamily={FONT_FAMILY}>
             {stats.completedCeremonies}
           </Text>

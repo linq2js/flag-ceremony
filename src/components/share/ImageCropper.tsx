@@ -147,13 +147,21 @@ const SimpleSlider: React.FC<{
   );
 };
 
+export interface CropSettings {
+  sliderValue: number;
+  translateX: number;
+  translateY: number;
+}
+
 interface ImageCropperProps {
   imageUri: string;
-  onCrop: (croppedUri: string) => void;
+  onCrop: (croppedUri: string, cropSettings: CropSettings) => void;
   onCancel: () => void;
   cropSize?: number;
   t: (key: string) => string;
   visible: boolean;
+  /** Initial crop settings to restore (for re-editing) */
+  initialSettings?: CropSettings | null;
 }
 
 export const ImageCropper: React.FC<ImageCropperProps> = ({
@@ -163,40 +171,51 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
   cropSize = CROP_SIZE,
   t,
   visible,
+  initialSettings,
 }) => {
   const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [sliderValue, setSliderValue] = useState(SLIDER_CENTER); // Start at center (0)
-  const [translateX, setTranslateX] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
-  const prevSliderValueRef = React.useRef(SLIDER_CENTER);
+  const [sliderValue, setSliderValue] = useState(
+    initialSettings?.sliderValue ?? SLIDER_CENTER
+  );
+  const [translateX, setTranslateX] = useState(initialSettings?.translateX ?? 0);
+  const [translateY, setTranslateY] = useState(initialSettings?.translateY ?? 0);
+  const prevSliderValueRef = React.useRef(
+    initialSettings?.sliderValue ?? SLIDER_CENTER
+  );
+  const hasInitializedRef = useRef(false);
   
   // Convert slider value to scale
   const scale = sliderToScale(sliderValue);
 
-  // Initialize image dimensions and scale
+  // Initialize image dimensions - only reset settings if no initialSettings provided
   useEffect(() => {
     Image.getSize(
       imageUri,
       (width, height) => {
         setImageSize({ width, height });
-        // Always start slider at center (0) = scale 1.0 (middle point)
-        setSliderValue(SLIDER_CENTER);
-        prevSliderValueRef.current = SLIDER_CENTER;
-        setTranslateX(0);
-        setTranslateY(0);
+        // Only reset to defaults if no initial settings AND we haven't initialized yet
+        if (!initialSettings && !hasInitializedRef.current) {
+          setSliderValue(SLIDER_CENTER);
+          prevSliderValueRef.current = SLIDER_CENTER;
+          setTranslateX(0);
+          setTranslateY(0);
+        }
+        hasInitializedRef.current = true;
       },
       () => {
         // Fallback if getSize fails
         setImageSize({ width: 400, height: 400 });
-        // Always start slider at center (0) = scale 1.0 (middle point)
-        setSliderValue(SLIDER_CENTER);
-        prevSliderValueRef.current = SLIDER_CENTER;
-        setTranslateX(0);
-        setTranslateY(0);
+        if (!initialSettings && !hasInitializedRef.current) {
+          setSliderValue(SLIDER_CENTER);
+          prevSliderValueRef.current = SLIDER_CENTER;
+          setTranslateX(0);
+          setTranslateY(0);
+        }
+        hasInitializedRef.current = true;
       }
     );
-  }, [imageUri, cropSize]);
+  }, [imageUri, cropSize, initialSettings]);
 
   // Slider handler - maintain crop point centered when zooming
   const handleSliderChange = useCallback((newSliderValue: number) => {
@@ -316,12 +335,18 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
         format: SaveFormat.JPEG,
       });
 
-      onCrop(result.uri);
+      // Return crop settings along with the cropped URI
+      const cropSettings: CropSettings = {
+        sliderValue,
+        translateX,
+        translateY,
+      };
+      onCrop(result.uri, cropSettings);
     } catch (error) {
       console.error("Crop error:", error);
       setIsProcessing(false);
     }
-  }, [imageUri, imageSize, getCropBounds, cropSize, onCrop, isProcessing]);
+  }, [imageUri, imageSize, getCropBounds, cropSize, onCrop, isProcessing, sliderValue, translateX, translateY]);
 
   if (!imageSize) {
     return (

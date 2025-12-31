@@ -90,7 +90,9 @@ export const SimpleRedBadge: React.FC<BadgeProps> = ({
         {/* Stars row */}
         <View style={[styles.starsRow, { marginTop: 8 * scale }]}>
           <Text style={{ fontSize: 16 * scale }}>⭐</Text>
-          <Text style={{ fontSize: 12 * scale }}>🇻🇳</Text>
+          <Text style={{ fontSize: 16 * scale }}>⭐</Text>
+          <Text style={{ fontSize: 16 * scale }}>⭐</Text>
+          <Text style={{ fontSize: 16 * scale }}>⭐</Text>
           <Text style={{ fontSize: 16 * scale }}>⭐</Text>
         </View>
 

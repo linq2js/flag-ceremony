@@ -43,18 +43,18 @@ export const FireStreakBadge: React.FC<SVGBadgeProps> = ({
   return (
     <Svg width={width} height={height} viewBox="0 0 300 300">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="fireBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#7f1d1d" />
           <Stop offset="0.5" stopColor="#5c1515" />
           <Stop offset="1" stopColor="#450a0a" />
         </LinearGradient>
-        <ClipPath id="photoClip">
+        <ClipPath id="firePhotoClip">
           <Circle cx="150" cy="60" r="26" />
         </ClipPath>
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#fireBgGradient)" />
 
       {/* Fire emojis around photo */}
       {firePositions.map((pos, i) => (
@@ -74,7 +74,7 @@ export const FireStreakBadge: React.FC<SVGBadgeProps> = ({
           width="52"
           height="52"
           href={photoDataUri}
-          clipPath="url(#photoClip)"
+          clipPath="url(#firePhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (

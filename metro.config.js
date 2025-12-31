@@ -5,30 +5,49 @@ const fs = require("fs");
 
 const config = getDefaultConfig(__dirname);
 
-// Path to local storion package
-const storionPath = path.resolve(__dirname, "../storion/packages/storion");
-const storionExists = fs.existsSync(storionPath);
+// Local storion development: use dist/ from monorepo if available
+const localStorion = path.resolve(__dirname, "../storion/packages/storion");
 
-// Only configure local storion if it exists (for local development)
-if (storionExists) {
-  // Watch the storion package for changes
-  config.watchFolders = [storionPath];
+if (fs.existsSync(localStorion)) {
+  const distPath = path.resolve(localStorion, "dist");
 
-  // Resolve storion from the local path
+  // Watch dist folder for changes (run `pnpm build:watch` in storion)
+  config.watchFolders = [distPath];
+
+  // Resolve storion's dependencies (e.g., immer) from its node_modules
   config.resolver.nodeModulesPaths = [
     path.resolve(__dirname, "node_modules"),
-    path.resolve(storionPath, "node_modules"),
+    path.resolve(localStorion, "node_modules"),
   ];
 
-  // Map storion imports to local package
-  config.resolver.extraNodeModules = {
-    storion: storionPath,
+  // Map storion subpaths to dist files
+  const storionModules = {
+    storion: "storion.js",
+    "storion/react": "react/index.js",
+    "storion/async": "async/index.js",
+    "storion/persist": "persist/index.js",
+    "storion/network": "network/index.js",
+    "storion/devtools": "devtools/index.js",
+    "storion/devtools-panel": "devtools-panel/index.js",
   };
 
-  // Ensure symlinks are followed
-  config.resolver.unstable_enableSymlinks = true;
+  const defaultResolver = config.resolver.resolveRequest;
+  // @ts-ignore - resolveRequest is mutable at runtime despite readonly type
+  config.resolver.resolveRequest = (context, moduleName, platform) => {
+    // Resolve storion imports to local dist
+    if (storionModules[moduleName]) {
+      return {
+        filePath: path.resolve(distPath, storionModules[moduleName]),
+        type: "sourceFile",
+      };
+    }
+    // Default resolver for everything else
+    return defaultResolver
+      ? defaultResolver(context, moduleName, platform)
+      : context.resolveRequest(context, moduleName, platform);
+  };
 }
-// If storion doesn't exist locally, it will be resolved from node_modules
-// (from npm package or file: dependency that was installed)
+// Otherwise: storion resolves from node_modules (npm package)
 
+// @ts-ignore - Metro config type incompatibility with withNativeWind
 module.exports = withNativeWind(config, { input: "./global.css" });

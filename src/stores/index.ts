@@ -5,9 +5,8 @@ export { app } from "./container";
 export { settingsStore } from "./settings";
 export { ceremonyStore } from "./ceremony";
 export { i18nStore } from "./i18n";
-export { badgeStore } from "./badge";
-export type { BadgeType, BadgeTheme, BadgeStats } from "./badge";
-export { BADGE_THEMES, BADGE_TYPES } from "./badge";
+export { badgeStore, BADGE_TYPES } from "./badge";
+export type { BadgeType, BadgeStats, CropSettings } from "./badge";
 
 // Services
 export { calendarService } from "./services";

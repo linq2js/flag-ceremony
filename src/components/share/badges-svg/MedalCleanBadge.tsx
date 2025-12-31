@@ -29,18 +29,18 @@ export const MedalCleanBadge: React.FC<SVGBadgeProps> = ({
   return (
     <Svg width={width} height={height} viewBox="0 0 300 300">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="medalBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#7f1d1d" />
           <Stop offset="0.5" stopColor="#5c1515" />
           <Stop offset="1" stopColor="#450a0a" />
         </LinearGradient>
-        <ClipPath id="photoClip">
+        <ClipPath id="medalPhotoClip">
           <Circle cx="150" cy="85" r="29" />
         </ClipPath>
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#medalBgGradient)" />
 
       {/* Medal icon */}
       <Circle cx="150" cy="35" r="20" fill="rgba(251, 191, 36, 0.2)" />
@@ -57,7 +57,7 @@ export const MedalCleanBadge: React.FC<SVGBadgeProps> = ({
           width="58"
           height="58"
           href={photoDataUri}
-          clipPath="url(#photoClip)"
+          clipPath="url(#medalPhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (
@@ -99,10 +99,9 @@ export const MedalCleanBadge: React.FC<SVGBadgeProps> = ({
       )}
 
       {/* Footer */}
-      <Text x="125" y="290" fill="rgba(255, 255, 255, 0.5)" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
-        {t("badge_flag_ceremony")}
+      <Text x="150" y="290" textAnchor="middle" fill="rgba(255, 255, 255, 0.5)" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
+        {t("badge_flag_ceremony")} 🇻🇳
       </Text>
-      <Text x="230" y="290" fontSize="12">🇻🇳</Text>
     </Svg>
   );
 };

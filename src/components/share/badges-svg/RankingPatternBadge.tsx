@@ -25,24 +25,25 @@ export const RankingPatternBadge: React.FC<SVGBadgeProps> = ({
   height = 300,
 }) => {
   const initial = (displayName || "A").charAt(0).toUpperCase();
+  const rank = stats?.rank;
   const percentile = stats?.percentile ?? 50;
-  const topPercent = Math.ceil(100 - percentile);
+  const topPercent = Math.max(1, Math.ceil(100 - percentile)); // Min 1% to avoid "Top 0%"
 
   return (
     <Svg width={width} height={height} viewBox="0 0 300 300">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="rankingBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#1e1e2e" />
           <Stop offset="0.5" stopColor="#181825" />
           <Stop offset="1" stopColor="#11111b" />
         </LinearGradient>
-        <ClipPath id="photoClip">
+        <ClipPath id="rankingPhotoClip">
           <Circle cx="150" cy="75" r="30" />
         </ClipPath>
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#rankingBgGradient)" />
 
       {/* Decorative pattern - diagonal lines */}
       {[...Array(10)].map((_, i) => (
@@ -68,7 +69,7 @@ export const RankingPatternBadge: React.FC<SVGBadgeProps> = ({
           width="60"
           height="60"
           href={photoDataUri}
-          clipPath="url(#photoClip)"
+          clipPath="url(#rankingPhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (
@@ -96,22 +97,35 @@ export const RankingPatternBadge: React.FC<SVGBadgeProps> = ({
       </Text>
 
       {/* Ranking header */}
-      <Text x="150" y="160" textAnchor="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="10" fontWeight="600" letterSpacing={2} fontFamily={FONT_FAMILY}>
+      <Text x="150" y="155" textAnchor="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="10" fontWeight="600" letterSpacing={2} fontFamily={FONT_FAMILY}>
         {t("badge_ranking")}
       </Text>
 
-      {/* Large ranking */}
-      <Text x="150" y="215" textAnchor="middle" fill="#facc15" fontSize="48" fontWeight="900" fontFamily={FONT_FAMILY}>
-        {t("badge_top")} {topPercent}%
-      </Text>
+      {/* Large ranking - show rank # if available */}
+      {rank ? (
+        <Text x="150" y="205" textAnchor="middle" fill="#facc15" fontSize="56" fontWeight="900" fontFamily={FONT_FAMILY}>
+          #{rank}
+        </Text>
+      ) : (
+        <Text x="150" y="205" textAnchor="middle" fill="#facc15" fontSize="48" fontWeight="900" fontFamily={FONT_FAMILY}>
+          {t("badge_top")} {topPercent}%
+        </Text>
+      )}
+
+      {/* Percentile subtitle */}
+      {rank && (
+        <Text x="150" y="225" textAnchor="middle" fill="rgba(255, 255, 255, 0.5)" fontSize="12" fontFamily={FONT_FAMILY}>
+          {t("badge_top")} {topPercent}%
+        </Text>
+      )}
 
       {/* Stats */}
       {stats && (
         <G>
-          <Text x="100" y="255" textAnchor="middle" fill="rgba(255, 255, 255, 0.7)" fontSize="10" fontFamily={FONT_FAMILY}>
-            🔥 {stats.currentStreak} {t("days")}
+          <Text x="100" y="260" textAnchor="middle" fill="rgba(255, 255, 255, 0.7)" fontSize="10" fontFamily={FONT_FAMILY}>
+            🔥 {stats.currentStreak}
           </Text>
-          <Text x="200" y="255" textAnchor="middle" fill="rgba(255, 255, 255, 0.7)" fontSize="10" fontFamily={FONT_FAMILY}>
+          <Text x="200" y="260" textAnchor="middle" fill="rgba(255, 255, 255, 0.7)" fontSize="10" fontFamily={FONT_FAMILY}>
             🏆 {stats.completedCeremonies}
           </Text>
         </G>

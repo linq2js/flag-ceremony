@@ -27,34 +27,34 @@ export const PatriotIDBadge: React.FC<SVGBadgeProps> = ({
   const initial = (displayName || "A").charAt(0).toUpperCase();
 
   const formatDate = (date?: Date) => {
-    if (!date) return "XXXX";
+    if (!date) return t("badge_new_member") || "New Member";
     return new Date(date).getFullYear().toString();
   };
 
   return (
     <Svg width={width} height={height} viewBox="0 0 340 212">
       <Defs>
-        <LinearGradient id="leftPanel" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="patriotLeftPanel" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#3d2d2d" />
           <Stop offset="0.5" stopColor="#2d1f1f" />
           <Stop offset="1" stopColor="#1d1515" />
         </LinearGradient>
-        <LinearGradient id="rightPanel" x1="0.4" y1="0" x2="1" y2="1">
+        <LinearGradient id="patriotRightPanel" x1="0.4" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#5c4040" />
           <Stop offset="0.5" stopColor="#4d3535" />
           <Stop offset="1" stopColor="#3d2a2a" />
         </LinearGradient>
-        <ClipPath id="photoClip">
+        <ClipPath id="patriotPhotoClip">
           <Rect x="36" y="52" width="64" height="76" rx="4" />
         </ClipPath>
       </Defs>
 
       {/* Right panel (background) */}
-      <Rect x="0" y="0" width="340" height="212" rx="12" fill="url(#rightPanel)" />
+      <Rect x="0" y="0" width="340" height="212" rx="12" fill="url(#patriotRightPanel)" />
 
       {/* Left dark panel */}
-      <Rect x="0" y="0" width="130" height="212" rx="12" fill="url(#leftPanel)" />
-      <Rect x="12" y="0" width="118" height="212" fill="url(#leftPanel)" />
+      <Rect x="0" y="0" width="130" height="212" rx="12" fill="url(#patriotLeftPanel)" />
+      <Rect x="12" y="0" width="118" height="212" fill="url(#patriotLeftPanel)" />
 
       {/* Header */}
       <Text x="170" y="20" textAnchor="middle" fill="#fbbf24" fontSize="11" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
@@ -73,7 +73,7 @@ export const PatriotIDBadge: React.FC<SVGBadgeProps> = ({
           width="64"
           height="76"
           href={photoDataUri}
-          clipPath="url(#photoClip)"
+          clipPath="url(#patriotPhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (
@@ -121,7 +121,7 @@ export const PatriotIDBadge: React.FC<SVGBadgeProps> = ({
             {t("current_streak")}:
           </Text>
           <Text x="245" y="125" fill="#ffffff" fontSize="10" fontWeight="700" fontFamily={FONT_FAMILY}>
-            {stats.currentStreak} {t("days")}
+            {stats.currentStreak}
           </Text>
 
           <Text x="150" y="145" fontSize="12">⚡</Text>
@@ -129,7 +129,7 @@ export const PatriotIDBadge: React.FC<SVGBadgeProps> = ({
             {t("longest_streak")}:
           </Text>
           <Text x="245" y="145" fill="#ffffff" fontSize="10" fontWeight="700" fontFamily={FONT_FAMILY}>
-            {stats.longestStreak} {t("days")}
+            {stats.longestStreak}
           </Text>
         </G>
       )}

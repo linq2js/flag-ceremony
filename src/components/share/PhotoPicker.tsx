@@ -1,5 +1,8 @@
 /**
  * PhotoPicker - Component for selecting or taking a photo with cropping
+ *
+ * Persists original image and crop settings so users can re-edit with same state.
+ * Only clears everything when "Remove Photo" is pressed.
  */
 
 import React, { useState } from "react";
@@ -14,21 +17,42 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { palette, spacing, cardStyles, textStyles } from "../../design";
 import { CameraIcon, GalleryIcon, CloseIcon, EditIcon } from "../Icons";
-import { ImageCropper } from "./ImageCropper";
+import { ImageCropper, CropSettings } from "./ImageCropper";
 
 interface PhotoPickerProps {
+  /** Cropped photo URI (displayed in badge) */
   photoUri: string | null;
-  onPhotoChange: (uri: string | null) => void;
+  /** Original uploaded image URI (before cropping) */
+  originalPhotoUri: string | null;
+  /** Persisted crop settings */
+  cropSettings: CropSettings | null;
+  /** Called when a new photo is selected and cropped */
+  onPhotoSet: (
+    originalUri: string,
+    croppedUri: string,
+    cropSettings: CropSettings
+  ) => void;
+  /** Called when existing photo is re-cropped */
+  onPhotoUpdate: (croppedUri: string, cropSettings: CropSettings) => void;
+  /** Called when photo is removed */
+  onPhotoClear: () => void;
   t: (key: string) => string;
 }
 
 export const PhotoPicker: React.FC<PhotoPickerProps> = ({
   photoUri,
-  onPhotoChange,
+  originalPhotoUri,
+  cropSettings,
+  onPhotoSet,
+  onPhotoUpdate,
+  onPhotoClear,
   t,
 }) => {
   const [showCropper, setShowCropper] = useState(false);
+  // tempImageUri is only used for NEW image selections (not for editing)
   const [tempImageUri, setTempImageUri] = useState<string | null>(null);
+  // Track if we're editing existing photo vs uploading new one
+  const [isEditing, setIsEditing] = useState(false);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -44,8 +68,9 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
     });
 
     if (!result.canceled && result.assets[0]) {
-      // Use custom cropper for all platforms
+      // New image - reset editing state
       setTempImageUri(result.assets[0].uri);
+      setIsEditing(false);
       setShowCropper(true);
     }
   };
@@ -63,39 +88,56 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
     });
 
     if (!result.canceled && result.assets[0]) {
-      // Use custom cropper for all platforms
+      // New image - reset editing state
       setTempImageUri(result.assets[0].uri);
+      setIsEditing(false);
       setShowCropper(true);
     }
   };
 
-  const handleCrop = (croppedUri: string) => {
-    onPhotoChange(croppedUri);
+  const handleCrop = (croppedUri: string, newCropSettings: CropSettings) => {
+    if (isEditing && originalPhotoUri) {
+      // Re-editing existing photo - just update crop
+      onPhotoUpdate(croppedUri, newCropSettings);
+    } else if (tempImageUri) {
+      // New photo - set both original and cropped
+      onPhotoSet(tempImageUri, croppedUri, newCropSettings);
+    }
     setShowCropper(false);
     setTempImageUri(null);
+    setIsEditing(false);
   };
 
   const handleCancelCrop = () => {
     setShowCropper(false);
     setTempImageUri(null);
+    setIsEditing(false);
   };
 
   const handleEditPhoto = () => {
-    if (photoUri) {
-      setTempImageUri(photoUri);
+    // Edit existing photo - use original image with persisted crop settings
+    if (originalPhotoUri) {
+      setIsEditing(true);
+      setTempImageUri(null); // Don't use temp, we'll use originalPhotoUri
       setShowCropper(true);
     }
   };
 
+  // Determine which image URI to use for cropper
+  const cropperImageUri = isEditing ? originalPhotoUri : tempImageUri;
+  // Only pass initial settings when editing existing photo
+  const initialCropSettings = isEditing ? cropSettings : null;
+
   return (
     <>
-      {showCropper && tempImageUri && (
+      {showCropper && cropperImageUri && (
         <ImageCropper
-          imageUri={tempImageUri}
+          imageUri={cropperImageUri}
           onCrop={handleCrop}
           onCancel={handleCancelCrop}
           t={t}
           visible={showCropper}
+          initialSettings={initialCropSettings}
         />
       )}
 
@@ -116,7 +158,7 @@ export const PhotoPicker: React.FC<PhotoPickerProps> = ({
               styles.actionButton,
               styles.removeButton,
             ]}
-            onPress={() => onPhotoChange(null)}
+            onPress={onPhotoClear}
           >
             <CloseIcon size={20} color={palette.white.full} />
             <Text style={[styles.buttonText, styles.removeButtonText]}>

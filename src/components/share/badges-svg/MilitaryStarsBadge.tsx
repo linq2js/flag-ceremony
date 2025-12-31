@@ -29,18 +29,18 @@ export const MilitaryStarsBadge: React.FC<SVGBadgeProps> = ({
   return (
     <Svg width={width} height={height} viewBox="0 0 300 300">
       <Defs>
-        <LinearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+        <LinearGradient id="militaryBgGradient" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#3d3d29" />
           <Stop offset="0.5" stopColor="#2d2d1f" />
           <Stop offset="1" stopColor="#1d1d15" />
         </LinearGradient>
-        <ClipPath id="photoClip">
+        <ClipPath id="militaryPhotoClip">
           <Circle cx="150" cy="95" r="27" />
         </ClipPath>
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="300" height="300" rx="16" fill="url(#bgGradient)" />
+      <Rect x="0" y="0" width="300" height="300" rx="16" fill="url(#militaryBgGradient)" />
 
       {/* Decorative border */}
       <Rect x="8" y="8" width="284" height="284" rx="12" fill="none" stroke="#fbbf24" strokeWidth="2" />
@@ -68,7 +68,7 @@ export const MilitaryStarsBadge: React.FC<SVGBadgeProps> = ({
           width="54"
           height="54"
           href={photoDataUri}
-          clipPath="url(#photoClip)"
+          clipPath="url(#militaryPhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (

@@ -57,15 +57,7 @@ const BADGE_COMPONENTS: Record<string, React.FC<SVGBadgeProps>> = {
 
 export const BadgePreviewSVG = forwardRef<Svg, BadgePreviewSVGProps>(
   (
-    {
-      badgeType,
-      photoUri,
-      displayName,
-      stats,
-      t,
-      previewScale = 1,
-      onSvgRef,
-    },
+    { badgeType, photoUri, displayName, stats, t, previewScale = 1, onSvgRef },
     ref
   ) => {
     const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
@@ -86,7 +78,9 @@ export const BadgePreviewSVG = forwardRef<Svg, BadgePreviewSVGProps>(
     }, [photoUri]);
 
     // Get badge dimensions
-    const badgeInfo = BADGE_TYPES[badgeType as keyof typeof BADGE_TYPES] || BADGE_TYPES["simple-red"];
+    const badgeInfo =
+      BADGE_TYPES[badgeType as keyof typeof BADGE_TYPES] ||
+      BADGE_TYPES["simple-red"];
     const width = badgeInfo.width * previewScale;
     const height = badgeInfo.height * previewScale;
 
@@ -120,8 +114,12 @@ const styles = StyleSheet.create({
 /**
  * Get badge dimensions for a given type
  */
-export function getBadgeDimensions(badgeType: BadgeType): { width: number; height: number } {
-  const info = BADGE_TYPES[badgeType as keyof typeof BADGE_TYPES] || BADGE_TYPES["simple-red"];
+export function getBadgeDimensions(badgeType: BadgeType): {
+  width: number;
+  height: number;
+} {
+  const info =
+    BADGE_TYPES[badgeType as keyof typeof BADGE_TYPES] ||
+    BADGE_TYPES["simple-red"];
   return { width: info.width, height: info.height };
 }
-

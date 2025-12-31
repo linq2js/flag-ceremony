@@ -2,12 +2,12 @@
  * ShareBadgeScreen - Create and export shareable stats badges
  *
  * Architecture:
- * - StatsProvider: global stats via mixins useStore
- * - BadgeEditorContent: local state via scoped(badgeStore)
+ * - Global stats via mixins (t, streaks, ceremonies, ranking)
+ * - Local badge state via scoped(badgeStore) - auto-disposes on unmount
  * - Uses SVG badges for stable image export on web and native
  */
 
-import React, { useRef, createContext, useContext, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -57,46 +57,11 @@ import {
 } from "../design";
 
 // =============================================================================
-// ISOLATED COMPONENT 1: Stats from global stores (mixins)
-// =============================================================================
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const StatsContext = createContext<any>(null);
-
-const StatsProvider: React.FC<{ children: React.ReactNode }> = React.memo(
-  ({ children }) => {
-    const stats = useStore(
-      mixins({
-        t: tMixin,
-        currentStreak: currentStreakMixin,
-        longestStreak: longestStreakMixin,
-        totalCeremonies: totalCeremoniesMixin,
-        completedCeremonies: completedCeremoniesMixin,
-        memberSince: memberSinceMixin,
-        ranking: rankingMixin,
-      })
-    );
-
-    return (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      <StatsContext.Provider value={stats as any}>
-        {children}
-      </StatsContext.Provider>
-    );
-  }
-);
-
-const useStats = () => {
-  const ctx = useContext(StatsContext);
-  if (!ctx) throw new Error("useStats must be inside StatsProvider");
-  return ctx;
-};
-
-// =============================================================================
-// ISOLATED COMPONENT 2: Badge editor with local state
+// BADGE EDITOR CONTENT
 // =============================================================================
 
 const BadgeEditorContent: React.FC = React.memo(() => {
+  // Global stats via mixins
   const {
     t,
     currentStreak,
@@ -105,21 +70,38 @@ const BadgeEditorContent: React.FC = React.memo(() => {
     completedCeremonies,
     memberSince,
     ranking,
-  } = useStats();
+  } = useStore(
+    mixins({
+      t: tMixin,
+      currentStreak: currentStreakMixin,
+      longestStreak: longestStreakMixin,
+      totalCeremonies: totalCeremoniesMixin,
+      completedCeremonies: completedCeremoniesMixin,
+      memberSince: memberSinceMixin,
+      ranking: rankingMixin,
+    })
+  );
 
   const router = useRouter();
   const viewShotRef = useRef<ViewShot>(null);
   const svgContainerRef = useRef<View>(null);
 
   // Component-local badge state via scoped() - auto-disposes on unmount
-  const { badge, setBadgeType, setPhotoUri, setDisplayName, setExporting } =
-    useStore(({ scoped }) => {
-      const [state, actions] = scoped(badgeStore);
-      return {
-        badge: { ...state },
-        ...actions,
-      };
-    });
+  const {
+    badge,
+    setBadgeType,
+    setPhoto,
+    updateCrop,
+    clearPhoto,
+    setDisplayName,
+    setExporting,
+  } = useStore(({ scoped }) => {
+    const [state, actions] = scoped(badgeStore);
+    return {
+      badge: { ...state },
+      ...actions,
+    };
+  });
 
   // Build stats object for badge
   const stats = {
@@ -128,6 +110,7 @@ const BadgeEditorContent: React.FC = React.memo(() => {
     currentStreak,
     longestStreak,
     percentile: ranking.data?.percentile,
+    rank: ranking.data?.rank,
     memberSince: memberSince ? new Date(memberSince) : undefined,
   };
 
@@ -268,7 +251,11 @@ const BadgeEditorContent: React.FC = React.memo(() => {
         <View style={styles.section}>
           <PhotoPicker
             photoUri={badge.photoUri}
-            onPhotoChange={setPhotoUri}
+            originalPhotoUri={badge.originalPhotoUri}
+            cropSettings={badge.cropSettings}
+            onPhotoSet={setPhoto}
+            onPhotoUpdate={updateCrop}
+            onPhotoClear={clearPhoto}
             t={t as any}
           />
         </View>
@@ -319,16 +306,14 @@ const BadgeEditorContent: React.FC = React.memo(() => {
 });
 
 // =============================================================================
-// MAIN SCREEN: Composes isolated components
+// MAIN SCREEN
 // =============================================================================
 
 export const ShareBadgeScreen: React.FC = React.memo(() => {
   return (
     <ScreenBackground>
       <SafeAreaView style={layout.screenContent} edges={["top"]}>
-        <StatsProvider>
-          <BadgeEditorContent />
-        </StatsProvider>
+        <BadgeEditorContent />
       </SafeAreaView>
     </ScreenBackground>
   );
