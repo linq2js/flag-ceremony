@@ -55,50 +55,44 @@ interface ValidationResult {
   hint?: string;
 }
 
+/**
+ * Clean nickname: trim and collapse consecutive spaces
+ */
+const cleanNickname = (value: string): string => {
+  return value
+    .trim() // Remove leading/trailing spaces
+    .replace(/\s{2,}/g, " "); // Collapse consecutive spaces to single space
+};
+
 const validateNickname = (
   value: string,
   t: (key: string, params?: Record<string, any>) => string
 ): ValidationResult => {
-  const trimmed = value.trim();
+  // Validation works on the cleaned value
+  const cleaned = cleanNickname(value);
 
   // Empty check
-  if (!trimmed) {
+  if (!cleaned) {
     return { isValid: false, hint: t("nickname_hint") };
   }
 
   // Length check
-  if (trimmed.length < MIN_LENGTH) {
+  if (cleaned.length < MIN_LENGTH) {
     return {
       isValid: false,
       error: t("nickname_too_short", { min: MIN_LENGTH }),
     };
   }
 
-  if (trimmed.length > MAX_LENGTH) {
+  if (cleaned.length > MAX_LENGTH) {
     return {
       isValid: false,
       error: t("nickname_too_long", { max: MAX_LENGTH }),
     };
   }
 
-  // Whitespace check
-  if (value !== trimmed) {
-    return {
-      isValid: false,
-      error: t("nickname_no_whitespace"),
-    };
-  }
-
-  // Consecutive spaces check
-  if (/\s{2,}/.test(value)) {
-    return {
-      isValid: false,
-      error: t("nickname_no_consecutive_spaces"),
-    };
-  }
-
   // Character validation (letters, numbers, spaces, hyphens, underscores)
-  if (!/^[a-zA-Z0-9\s\-_\u00C0-\u024F\u1E00-\u1EFF]+$/.test(value)) {
+  if (!/^[a-zA-Z0-9\s\-_\u00C0-\u024F\u1E00-\u1EFF]+$/.test(cleaned)) {
     return {
       isValid: false,
       error: t("nickname_invalid_chars"),
@@ -106,7 +100,7 @@ const validateNickname = (
   }
 
   // Blocked words check
-  const lowerValue = value.toLowerCase();
+  const lowerValue = cleaned.toLowerCase();
   for (const word of BLOCKED_WORDS) {
     if (lowerValue.includes(word)) {
       return {
@@ -167,23 +161,25 @@ export const NicknameModal: React.FC<NicknameModalProps> = ({
     if (!hasInteracted) setHasInteracted(true);
   }, [hasInteracted]);
 
+  // Get cleaned value for display and saving
+  const cleanedValue = useMemo(() => cleanNickname(value), [value]);
+
   const handleSave = useCallback(() => {
     if (!validation.isValid) return;
 
-    const trimmed = value.trim();
-    updateNickname(trimmed);
+    updateNickname(cleanedValue);
     Keyboard.dismiss();
-    onSave?.(trimmed);
+    onSave?.(cleanedValue);
 
     if (onClose) {
       onClose();
     }
-  }, [validation.isValid, value, updateNickname, onSave, onClose]);
+  }, [validation.isValid, cleanedValue, updateNickname, onSave, onClose]);
 
   // Determine what message to show
   const showError = hasInteracted && validation.error;
   const showHint = !hasInteracted || (!validation.error && validation.hint);
-  const showValid = hasInteracted && validation.isValid && value.trim().length >= MIN_LENGTH;
+  const showValid = hasInteracted && validation.isValid && cleanedValue.length >= MIN_LENGTH;
 
   return (
     <Modal
@@ -239,7 +235,7 @@ export const NicknameModal: React.FC<NicknameModalProps> = ({
 
         {/* Character count */}
         <Text style={styles.charCount}>
-          {value.trim().length}/{MAX_LENGTH}
+          {cleanedValue.length}/{MAX_LENGTH}
         </Text>
 
         {/* Save button */}

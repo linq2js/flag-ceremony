@@ -461,12 +461,7 @@ export const ShareIcon: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Path
-      d="M12 2V15"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-    />
+    <Path d="M12 2V15" stroke={color} strokeWidth={2} strokeLinecap="round" />
   </Svg>
 );
 
@@ -490,12 +485,7 @@ export const DownloadIcon: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Path
-      d="M12 15V3"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-    />
+    <Path d="M12 15V3" stroke={color} strokeWidth={2} strokeLinecap="round" />
   </Svg>
 );
 
@@ -543,12 +533,7 @@ export const GlobeIcon: React.FC<IconProps> = ({
 }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Circle cx={12} cy={12} r={10} stroke={color} strokeWidth={2} />
-    <Path
-      d="M2 12H22"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-    />
+    <Path d="M2 12H22" stroke={color} strokeWidth={2} strokeLinecap="round" />
     <Path
       d="M12 2C14.5 4.5 16 8 16 12C16 16 14.5 19.5 12 22C9.5 19.5 8 16 8 12C8 8 9.5 4.5 12 2Z"
       stroke={color}
@@ -566,12 +551,7 @@ export const InfoIcon: React.FC<IconProps> = ({
 }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Circle cx={12} cy={12} r={10} stroke={color} strokeWidth={2} />
-    <Path
-      d="M12 16V12"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-    />
+    <Path d="M12 16V12" stroke={color} strokeWidth={2} strokeLinecap="round" />
     <Circle cx={12} cy={8} r={1} fill={color} />
   </Svg>
 );
@@ -625,12 +605,7 @@ export const MedalIcon: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Path
-      d="M12 8V10"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-    />
+    <Path d="M12 8V10" stroke={color} strokeWidth={2} strokeLinecap="round" />
   </Svg>
 );
 
