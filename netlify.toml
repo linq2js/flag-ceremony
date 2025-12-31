@@ -2,7 +2,7 @@
 
 [build]
   # Build command - ensure dependencies are installed first
-  command = "npm ci && npm run build:web"
+  command = "npm install && npm run build:web"
   # Output directory (Expo exports to dist/)
   publish = "dist"
 
