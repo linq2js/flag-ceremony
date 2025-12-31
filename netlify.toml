@@ -1,32 +1,63 @@
 # Netlify configuration for Flag Ceremony web app
+#
+# Branch Model:
+#   dev     → Development (latest code)
+#   staging → Release candidate (pre-production testing)
+#   main    → Production
+#
+# URLs:
+#   dev     → dev--vn-flag-ceremony.netlify.app
+#   staging → staging--vn-flag-ceremony.netlify.app
+#   main    → vn-flag-ceremony.netlify.app
+
+# =============================================================================
+# PRODUCTION (main branch)
+# =============================================================================
 
 [build]
-  # Build command - ensure dependencies are installed first
   command = "npm install && npm run build:web"
-  # Output directory (Expo exports to dist/)
   publish = "dist"
 
+[build.environment]
+  VITE_ENV = "production"
+
 # =============================================================================
-# BRANCH CONTEXTS
+# STAGING BRANCH
 # =============================================================================
 
-# Staging branch - same build, can add staging-specific env vars
 [context.staging]
   command = "npm install && npm run build:web"
   [context.staging.environment]
     VITE_ENV = "staging"
 
+# =============================================================================
+# DEV BRANCH
+# =============================================================================
+
+[context.dev]
+  command = "npm install && npm run build:web"
+  [context.dev.environment]
+    VITE_ENV = "development"
+
+# =============================================================================
+# FEATURE BRANCHES & DEPLOY PREVIEWS
+# =============================================================================
+
 # All other branch deploys (feature branches)
 [context.branch-deploy]
   command = "npm install && npm run build:web"
   [context.branch-deploy.environment]
-    VITE_ENV = "preview"
+    VITE_ENV = "development"
 
 # Deploy previews (Pull Requests)
 [context.deploy-preview]
   command = "npm install && npm run build:web"
   [context.deploy-preview.environment]
-    VITE_ENV = "preview"
+    VITE_ENV = "development"
+
+# =============================================================================
+# REDIRECTS & HEADERS
+# =============================================================================
 
 # SPA fallback - redirect all routes to index.html for client-side routing
 [[redirects]]
@@ -70,4 +101,3 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-

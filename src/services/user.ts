@@ -167,9 +167,7 @@ export function userService({ get }: Resolver, api: ApiClient, userId: string) {
     async (_, displayName: string): Promise<{ success: boolean }> => {
       const data = await api.rpc<{ success?: boolean; error?: string }>(
         "update_display_name",
-        {
-          p_display_name: displayName,
-        }
+        { p_display_name: displayName }
       );
 
       if (data?.error) {
