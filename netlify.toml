@@ -6,6 +6,28 @@
   # Output directory (Expo exports to dist/)
   publish = "dist"
 
+# =============================================================================
+# BRANCH CONTEXTS
+# =============================================================================
+
+# Staging branch - same build, can add staging-specific env vars
+[context.staging]
+  command = "npm install && npm run build:web"
+  [context.staging.environment]
+    VITE_ENV = "staging"
+
+# All other branch deploys (feature branches)
+[context.branch-deploy]
+  command = "npm install && npm run build:web"
+  [context.branch-deploy.environment]
+    VITE_ENV = "preview"
+
+# Deploy previews (Pull Requests)
+[context.deploy-preview]
+  command = "npm install && npm run build:web"
+  [context.deploy-preview.environment]
+    VITE_ENV = "preview"
+
 # SPA fallback - redirect all routes to index.html for client-side routing
 [[redirects]]
   from = "/*"
