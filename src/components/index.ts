@@ -9,6 +9,8 @@ export * from "./ScreenBackground";
 export * from "./Icons";
 export * from "./Screen";
 export * from "./OfflineBanner";
+export * from "./Modal";
+export * from "./NicknameModal";
 export * from "./settings";
 export * from "./stats";
 export * from "./share";

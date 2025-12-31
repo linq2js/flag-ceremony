@@ -27,6 +27,8 @@ export {
 export {
   reminderSettingsMixin,
   updateReminderSettingsMixin,
+  nicknameMixin,
+  updateNicknameMixin,
 } from "./mixins";
 
 // Mixins - ceremony

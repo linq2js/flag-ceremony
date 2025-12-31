@@ -235,6 +235,21 @@ export const translations = {
     feedback_offline_message: "You need to be online to send feedback.",
     ok: "OK",
 
+    // Nickname modal
+    nickname_title: "What's your name?",
+    nickname_subtitle: "Choose a nickname to display on the leaderboard",
+    nickname_placeholder: "Enter nickname",
+    nickname_hint: "2-20 characters, letters and numbers only",
+    nickname_too_short: "Must be at least {min} characters",
+    nickname_too_long: "Must be at most {max} characters",
+    nickname_no_whitespace: "Cannot start or end with spaces",
+    nickname_no_consecutive_spaces: "Cannot have consecutive spaces",
+    nickname_invalid_chars: "Only letters, numbers, spaces, hyphens and underscores",
+    nickname_reserved: "This name is reserved",
+    nickname_valid: "Looks good!",
+    nickname_save: "Continue",
+    nickname_skip: "Skip for now",
+
     // Badge labels (for translated badges)
     badge_certificate_of_dedication: "CERTIFICATE OF DEDICATION",
     badge_certificate_of_recognition: "CERTIFICATE OF RECOGNITION",
@@ -483,6 +498,21 @@ export const translations = {
     feedback_error_message: "Vui lòng thử lại sau.",
     feedback_offline_message: "Bạn cần kết nối mạng để gửi góp ý.",
     ok: "OK",
+
+    // Nickname modal
+    nickname_title: "Tên của bạn là gì?",
+    nickname_subtitle: "Chọn biệt danh để hiển thị trên bảng xếp hạng",
+    nickname_placeholder: "Nhập biệt danh",
+    nickname_hint: "2-20 ký tự, chỉ gồm chữ cái và số",
+    nickname_too_short: "Phải có ít nhất {min} ký tự",
+    nickname_too_long: "Tối đa {max} ký tự",
+    nickname_no_whitespace: "Không thể bắt đầu hoặc kết thúc bằng dấu cách",
+    nickname_no_consecutive_spaces: "Không thể có nhiều dấu cách liên tiếp",
+    nickname_invalid_chars: "Chỉ chấp nhận chữ cái, số, dấu cách, gạch ngang và gạch dưới",
+    nickname_reserved: "Tên này đã được đặt trước",
+    nickname_valid: "Tuyệt vời!",
+    nickname_save: "Tiếp tục",
+    nickname_skip: "Bỏ qua",
 
     // Badge labels (for translated badges)
     badge_certificate_of_dedication: "GIẤY CHỨNG NHẬN",

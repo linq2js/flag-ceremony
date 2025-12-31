@@ -65,7 +65,12 @@ export const submitFeedbackMixin = ({ get }: SelectorContext) => {
 export { tMixin, languageMixin, dayNamesMixin, setLanguageMixin } from "./i18n";
 
 // Settings mixins
-export { reminderSettingsMixin, updateReminderSettingsMixin } from "./settings";
+export {
+  reminderSettingsMixin,
+  updateReminderSettingsMixin,
+  nicknameMixin,
+  updateNicknameMixin,
+} from "./settings";
 
 // Ceremony mixins
 export {

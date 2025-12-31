@@ -1,12 +1,61 @@
 import { Stack } from "expo-router";
 import { View, StyleSheet, ActivityIndicator, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Suspense, useEffect } from "react";
-import { StoreProvider } from "storion/react";
-import { app } from "../src/stores";
+import { Suspense, useEffect, useState } from "react";
+import { StoreProvider, useStore, mixins } from "storion/react";
+import { app, nicknameMixin } from "../src/stores";
 import { ServiceLoader } from "../src/components/ServiceLoader";
 import { OfflineBanner } from "../src/components/OfflineBanner";
+import { NicknameModal } from "../src/components/NicknameModal";
 import "../global.css";
+
+/**
+ * Inner layout component that uses stores (must be inside StoreProvider)
+ */
+function AppContent() {
+  const { nickname } = useStore(mixins({ nickname: nicknameMixin }));
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
+
+  // Show nickname modal on first launch if no nickname
+  useEffect(() => {
+    // Delay to ensure stores are loaded
+    const timer = setTimeout(() => {
+      if (!nickname) {
+        setShowNicknameModal(true);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [nickname]);
+
+  return (
+    <View style={styles.container}>
+      {/* Offline banner - shows when network is unavailable */}
+      <OfflineBanner />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: styles.sceneContainer,
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="share-badge"
+          options={{
+            presentation: "fullScreenModal",
+            animation: "slide_from_bottom",
+          }}
+        />
+      </Stack>
+
+      {/* Nickname modal - required on first launch */}
+      <NicknameModal
+        visible={showNicknameModal}
+        required={true}
+        onSave={() => setShowNicknameModal(false)}
+      />
+    </View>
+  );
+}
 
 export default function RootLayout() {
   // Hide splash screen when app is ready (web only)
@@ -35,25 +84,7 @@ export default function RootLayout() {
       >
         <ServiceLoader />
       </Suspense>
-      <View style={styles.container}>
-        {/* Offline banner - shows when network is unavailable */}
-        <OfflineBanner />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: styles.sceneContainer,
-          }}
-        >
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen
-            name="share-badge"
-            options={{
-              presentation: "fullScreenModal",
-              animation: "slide_from_bottom",
-            }}
-          />
-        </Stack>
-      </View>
+      <AppContent />
     </StoreProvider>
   );
 }

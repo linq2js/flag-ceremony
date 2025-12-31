@@ -4,10 +4,12 @@ import type { ReminderSettings } from "./types";
 import { persisted } from "storion/persist";
 
 export interface SettingsState {
+  nickname: string;
   reminderSettings: ReminderSettings;
 }
 
 const initialState: SettingsState = {
+  nickname: "",
   reminderSettings: {
     times: ["07:00"], // Default: one reminder at 7 AM
     days: [1, 2, 3, 4, 5], // Weekdays by default
@@ -27,6 +29,9 @@ export const settingsStore = store({
 
     return {
       updateReminderSettings,
+      updateNickname: (nickname: string) => {
+        state.nickname = nickname;
+      },
     };
   },
   meta: persisted(),
@@ -49,4 +54,14 @@ export const reminderSettingsMixin = ({ get }: SelectorContext) => {
 export const updateReminderSettingsMixin = ({ get }: SelectorContext) => {
   const [, { updateReminderSettings }] = get(settingsStore);
   return updateReminderSettings;
+};
+
+export const nicknameMixin = ({ get }: SelectorContext) => {
+  const [state] = get(settingsStore);
+  return state.nickname;
+};
+
+export const updateNicknameMixin = ({ get }: SelectorContext) => {
+  const [, { updateNickname }] = get(settingsStore);
+  return updateNickname;
 };
