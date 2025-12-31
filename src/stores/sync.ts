@@ -38,15 +38,24 @@ import { effect, meta, store, StoreContext } from "storion";
 import { notPersisted, persisted } from "storion/persist";
 import { settingsStore } from "./settings";
 
+export interface SyncStoreState {
+  /** Pending stats data waiting to be synced to server */
+  pendingStats: SyncPayload[];
+  /** Last synced nickname */
+  lastSyncNickname: null | string;
+  /** Server-verified stats - consumed by ceremonyStore for reconciliation */
+  verifiedStats: null | VerifiedStats;
+}
+
 export const syncStore = store({
   name: "sync",
   state: {
     /** Pending stats data waiting to be synced to server */
-    pendingStats: [] as SyncPayload[],
-    lastSyncNickname: null as null | string,
+    pendingStats: [],
+    lastSyncNickname: null,
     /** Server-verified stats - consumed by ceremonyStore for reconciliation */
-    verifiedStats: null as null | VerifiedStats,
-  },
+    verifiedStats: null,
+  } as SyncStoreState,
   setup({ mixin }) {
     mixin(nicknameSyncMixin);
     return mixin(pendingStatsMixin);
@@ -68,10 +77,7 @@ const pendingStatsMixin = ({
   state,
   get,
   update,
-}: StoreContext<{
-  pendingStats: SyncPayload[];
-  verifiedStats: null | VerifiedStats;
-}>) => {
+}: StoreContext<Pick<SyncStoreState, "pendingStats" | "verifiedStats">>) => {
   const { auth } = get(authService);
 
   // Watches pendingStats and syncs when data is available
@@ -124,7 +130,7 @@ const pendingStatsMixin = ({
 const nicknameSyncMixin = ({
   state,
   get,
-}: StoreContext<{ lastSyncNickname: null | string }>) => {
+}: StoreContext<Pick<SyncStoreState, "lastSyncNickname">>) => {
   const { auth } = get(authService);
   const [settingsState] = get(settingsStore);
 
