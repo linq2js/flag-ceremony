@@ -28,34 +28,16 @@ import {
   store,
   type SelectorContext,
 } from "storion/react";
-import type { CeremonyLog } from "./types";
+import type { CeremonyLog, CeremonyState } from "./types";
 import { notPersisted, persisted } from "storion/persist";
 import { syncStore } from "./sync";
 
-// =============================================================================
-// TYPES
-// =============================================================================
+// Re-export types for convenience
+export type { CeremonyLog, CeremonyState, CeremonyActions } from "./types";
 
-export interface CeremonyState {
-  /** All ceremony logs (completed and incomplete) */
-  logs: CeremonyLog[];
-  /** Current consecutive days streak */
-  currentStreak: number;
-  /** All-time longest streak achieved */
-  longestStreak: number;
-  /** Date string (YYYY-MM-DD) of last completed ceremony */
-  lastCeremonyDate: string | null;
-  /** Total ceremonies started (including incomplete) */
-  totalCeremonies: number;
-  /** Total ceremonies completed successfully */
-  completedCeremonies: number;
-  /** Whether a ceremony is currently in progress */
-  ceremonyActive: boolean;
-  /** Timestamp when current ceremony started (for duration calc on exit) */
-  ceremonyStartTime: number | null;
-  /** Date when user first completed a ceremony (member since) */
-  memberSince: string | null;
-}
+// =============================================================================
+// INITIAL STATE
+// =============================================================================
 
 const initialState: CeremonyState = {
   logs: [],
@@ -395,30 +377,6 @@ export const ceremonyStore = store({
     notPersisted.for(["ceremonyActive", "ceremonyStartTime"])
   ),
 });
-
-// =============================================================================
-// TYPE EXPORTS
-// =============================================================================
-
-/** Type-safe action signatures for ceremonyStore */
-export type CeremonyActions = {
-  // Actions
-  addCeremonyLog: (duration: number, completed?: boolean) => void;
-  setCeremonyActive: (active: boolean) => void;
-  stopCeremonyAndLogIncomplete: () => void;
-  resetStreak: () => void;
-  loadCeremony: () => Promise<void>;
-  // Selectors
-  getMonthlyCount: () => number;
-  getThisWeekCount: () => number;
-  getTodayCeremony: () => CeremonyLog | undefined;
-  getTodayCeremonyCount: () => number;
-  getTodayCompletedCount: () => number;
-  getTodayIncompleteCount: () => number;
-  getRanking: () => { rank: number; percentile: number };
-  getRecentLogs: (limit?: number) => CeremonyLog[];
-  getCompletedCeremonies: () => number;
-};
 
 // =============================================================================
 // MIXINS

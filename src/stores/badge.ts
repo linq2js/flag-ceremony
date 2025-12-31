@@ -4,58 +4,11 @@
  * Uses scoped() for component-local state that auto-disposes on unmount.
  * Manages badge design selection, user photo, and name.
  */
-
 import { store } from "storion/react";
+import type { BadgeType, CropSettings } from "./types";
 
-// =============================================================================
-// TYPES
-// =============================================================================
-
-export type BadgeType =
-  | "simple-red"
-  | "simple-orange"
-  | "simple-navy"
-  | "simple-olive"
-  | "medal-clean"
-  | "fire-streak"
-  | "silhouette"
-  | "trophy-banner"
-  | "military-stars"
-  | "patriot-id"
-  | "member-card"
-  | "certificate-dedication"
-  | "certificate-recognition"
-  | "ranking-pattern";
-
-export interface BadgeStats {
-  /** Total ceremonies completed */
-  totalCeremonies: number;
-  /** Completed ceremonies count */
-  completedCeremonies: number;
-  /** Current streak in days */
-  currentStreak: number;
-  /** Longest streak ever achieved */
-  longestStreak: number;
-  /** User ranking percentile (if available) */
-  percentile?: number;
-  /** User's position on leaderboard (1 = first place) */
-  rank?: number;
-  /** Member since date */
-  memberSince?: Date;
-}
-
-// =============================================================================
-// CROP SETTINGS TYPE
-// =============================================================================
-
-export interface CropSettings {
-  /** Slider value for zoom (0 = 1x scale) */
-  sliderValue: number;
-  /** Pan X offset */
-  translateX: number;
-  /** Pan Y offset */
-  translateY: number;
-}
+// Re-export types for convenience
+export type { BadgeType, BadgeStats, CropSettings } from "./types";
 
 // =============================================================================
 // BADGE STORE

@@ -8,7 +8,7 @@
  *
  * Uses `async.stale()` to keep showing previous ranking while loading new data.
  */
-import { RankingData } from "@/services/user";
+import type { RankingData } from "@/services/types";
 import { authService } from "@/services/auth";
 import { effect, store } from "storion";
 import { trigger, type SelectorContext } from "storion/react";

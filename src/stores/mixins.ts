@@ -10,6 +10,7 @@
 import type { SelectorContext } from "storion/react";
 import { networkStore } from "storion/network";
 import { authService } from "../services/auth";
+import type { FeedbackPayload } from "../services/types";
 
 // =============================================================================
 // NETWORK MIXINS
@@ -32,14 +33,6 @@ export const onlineMixin = ({ get }: SelectorContext): boolean => {
 // =============================================================================
 // FEEDBACK MIXINS
 // =============================================================================
-
-interface FeedbackPayload {
-  category: "bug" | "feature" | "question" | "other";
-  message: string;
-  appVersion: string;
-  buildNumber: string;
-  platform: string;
-}
 
 /**
  * Mixin to get feedback submission function.

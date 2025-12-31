@@ -1,12 +1,16 @@
+/**
+ * Settings Store - User preferences and configuration
+ */
 import { store, type SelectorContext } from "storion/react";
-
-import type { ReminderSettings } from "./types";
+import type { ReminderSettings, SettingsState } from "./types";
 import { persisted } from "storion/persist";
 
-export interface SettingsState {
-  nickname: string;
-  reminderSettings: ReminderSettings;
-}
+// Re-export types for convenience
+export type { ReminderSettings, SettingsState, SettingsActions } from "./types";
+
+// =============================================================================
+// INITIAL STATE
+// =============================================================================
 
 const initialState: SettingsState = {
   nickname: "",
@@ -15,6 +19,10 @@ const initialState: SettingsState = {
     days: [1, 2, 3, 4, 5], // Weekdays by default
   },
 };
+
+// =============================================================================
+// STORE DEFINITION
+// =============================================================================
 
 export const settingsStore = store({
   name: "settings",
@@ -36,11 +44,6 @@ export const settingsStore = store({
   },
   meta: persisted(),
 });
-
-export type SettingsActions = {
-  updateReminderSettings: (settings: Partial<ReminderSettings>) => void;
-  loadSettings: () => Promise<void>;
-};
 
 // =============================================================================
 // MIXINS

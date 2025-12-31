@@ -33,19 +33,18 @@
  * - `nicknameSyncMixin`: Syncs nickname/display_name to server
  */
 import { authService } from "@/services/auth";
-import { SyncPayload, VerifiedStats } from "@/services/user";
+import type { SyncPayload } from "@/services/types";
 import { effect, meta, store, StoreContext } from "storion";
 import { notPersisted, persisted } from "storion/persist";
 import { settingsStore } from "./settings";
+import type { SyncStoreState } from "./types";
 
-export interface SyncStoreState {
-  /** Pending stats data waiting to be synced to server */
-  pendingStats: SyncPayload[];
-  /** Last synced nickname */
-  lastSyncNickname: null | string;
-  /** Server-verified stats - consumed by ceremonyStore for reconciliation */
-  verifiedStats: null | VerifiedStats;
-}
+// Re-export types for convenience
+export type { SyncStoreState } from "./types";
+
+// =============================================================================
+// STORE DEFINITION
+// =============================================================================
 
 export const syncStore = store({
   name: "sync",
