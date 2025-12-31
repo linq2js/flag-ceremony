@@ -35,7 +35,7 @@ export const MilitaryStarsBadge: React.FC<SVGBadgeProps> = ({
           <Stop offset="1" stopColor="#1d1d15" />
         </LinearGradient>
         <ClipPath id="militaryPhotoClip">
-          <Circle cx="150" cy="95" r="27" />
+          <Circle cx="150" cy="100" r="35" />
         </ClipPath>
       </Defs>
 
@@ -45,48 +45,50 @@ export const MilitaryStarsBadge: React.FC<SVGBadgeProps> = ({
       {/* Decorative border */}
       <Rect x="8" y="8" width="284" height="284" rx="12" fill="none" stroke="#fbbf24" strokeWidth="2" />
 
-      {/* Header */}
-      <Text x="115" y="30" fontSize="10">🇻🇳</Text>
-      <Text x="150" y="30" textAnchor="middle" fill="#fbbf24" fontSize="9" fontWeight="700" letterSpacing={1} fontFamily={FONT_FAMILY}>
+      {/* Header - flags on left and right of title */}
+      <Text x="70" y="32" fontSize="12">🇻🇳</Text>
+      <Text x="150" y="32" textAnchor="middle" fill="#fbbf24" fontSize="11" fontWeight="700" letterSpacing={1} fontFamily={FONT_FAMILY}>
         {t("badge_flag_ceremony")}
       </Text>
-      <Text x="183" y="30" fontSize="10">🇻🇳</Text>
+      <Text x="218" y="32" fontSize="12">🇻🇳</Text>
 
-      {/* Stars row */}
-      <Text x="130" y="55" fontSize="14">⭐</Text>
-      <Text x="145" y="55" fontSize="16">⭐</Text>
-      <Text x="162" y="55" fontSize="14">⭐</Text>
+      {/* Stars row - 5 stars */}
+      <Text x="110" y="55" fontSize="14">⭐</Text>
+      <Text x="126" y="55" fontSize="15">⭐</Text>
+      <Text x="143" y="55" fontSize="17">⭐</Text>
+      <Text x="160" y="55" fontSize="15">⭐</Text>
+      <Text x="176" y="55" fontSize="14">⭐</Text>
 
-      {/* Photo container */}
-      <Circle cx="150" cy="95" r="30" fill="rgba(251, 191, 36, 0.2)" stroke="#fbbf24" strokeWidth="2" />
+      {/* Photo container - 30% larger */}
+      <Circle cx="150" cy="100" r="39" fill="rgba(251, 191, 36, 0.2)" stroke="#fbbf24" strokeWidth="2" />
 
       {/* Photo or initial */}
       {photoDataUri ? (
         <Image
-          x="123"
-          y="68"
-          width="54"
-          height="54"
+          x="115"
+          y="65"
+          width="70"
+          height="70"
           href={photoDataUri}
           clipPath="url(#militaryPhotoClip)"
           preserveAspectRatio="xMidYMid slice"
         />
       ) : (
         <G>
-          <Circle cx="150" cy="95" r="27" fill="rgba(251, 191, 36, 0.3)" />
-          <Text x="150" y="103" textAnchor="middle" fill="#fbbf24" fontSize="22" fontWeight="700" fontFamily={FONT_FAMILY}>
+          <Circle cx="150" cy="100" r="35" fill="rgba(251, 191, 36, 0.3)" />
+          <Text x="150" y="110" textAnchor="middle" fill="#fbbf24" fontSize="28" fontWeight="700" fontFamily={FONT_FAMILY}>
             {initial}
           </Text>
         </G>
       )}
 
-      {/* Name */}
+      {/* Name - 20% larger font */}
       <Text 
         x="150" 
-        y="145" 
+        y="160" 
         textAnchor="middle" 
         fill="#fafaf9" 
-        fontSize="12" 
+        fontSize="14" 
         fontWeight="700" 
         fontFamily={FONT_FAMILY}
       >
@@ -95,22 +97,22 @@ export const MilitaryStarsBadge: React.FC<SVGBadgeProps> = ({
           : (displayName || t("dedicated_patriot"))).toUpperCase()}
       </Text>
 
-      {/* Description */}
-      <Text x="150" y="162" textAnchor="middle" fill="rgba(250, 250, 249, 0.5)" fontSize="8" fontStyle="italic" fontFamily={FONT_FAMILY}>
+      {/* Description - 20% larger font */}
+      <Text x="150" y="178" textAnchor="middle" fill="rgba(250, 250, 249, 0.5)" fontSize="10" fontStyle="italic" fontFamily={FONT_FAMILY}>
         This commemorates that
       </Text>
 
-      {/* Stats */}
+      {/* Stats - 20% larger font */}
       {stats && (
         <G>
-          <Text x="150" y="185" textAnchor="middle" fill="rgba(250, 250, 249, 0.8)" fontSize="9" fontFamily={FONT_FAMILY}>
+          <Text x="150" y="202" textAnchor="middle" fill="rgba(250, 250, 249, 0.8)" fontSize="11" fontFamily={FONT_FAMILY}>
             🔥 {t("current_streak")}: {stats.currentStreak} {t("days")}
           </Text>
-          <Text x="150" y="200" textAnchor="middle" fill="rgba(250, 250, 249, 0.8)" fontSize="9" fontFamily={FONT_FAMILY}>
+          <Text x="150" y="220" textAnchor="middle" fill="rgba(250, 250, 249, 0.8)" fontSize="11" fontFamily={FONT_FAMILY}>
             ⚡ {t("longest_streak")}: {stats.longestStreak} {t("days")}
           </Text>
           {stats?.percentile && (
-            <Text x="150" y="215" textAnchor="middle" fill="rgba(250, 250, 249, 0.8)" fontSize="9" fontFamily={FONT_FAMILY}>
+            <Text x="150" y="238" textAnchor="middle" fill="rgba(250, 250, 249, 0.8)" fontSize="11" fontFamily={FONT_FAMILY}>
               👑 {t("badge_top")} {Math.ceil(100 - stats.percentile)}%
             </Text>
           )}
