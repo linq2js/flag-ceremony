@@ -141,7 +141,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
     if (segmentWidth <= 0 || visualIndex < 0) return;
     Animated.spring(indicatorX, {
       toValue: segmentWidth * visualIndex,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web", // Native driver not supported on web
       damping: 18,
       stiffness: 220,
       mass: 0.7,
