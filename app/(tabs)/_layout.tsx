@@ -39,12 +39,12 @@ interface TabBarProps {
 
 const TAB_CONFIG = [
   { name: "index", icon: "home" as const, labelKey: "tab_home" as const },
+  { name: "stats", icon: "stats" as const, labelKey: "tab_stats" as const },
   {
     name: "ceremony",
     icon: "flag" as const,
     labelKey: "tab_ceremony" as const,
   },
-  { name: "stats", icon: "stats" as const, labelKey: "tab_stats" as const },
   {
     name: "feedback",
     icon: "feedback" as const,
@@ -240,8 +240,8 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen name="index" />
-      <Tabs.Screen name="ceremony" />
       <Tabs.Screen name="stats" />
+      <Tabs.Screen name="ceremony" />
       <Tabs.Screen name="feedback" />
       <Tabs.Screen name="settings" />
     </Tabs>
