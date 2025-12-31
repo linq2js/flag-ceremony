@@ -169,5 +169,42 @@ export function userService({ get }: Resolver, api: ApiClient, userId: string) {
     return data?.[0] ?? null;
   }).use(logging("userService.getRanking"));
 
-  return { getRanking, getTopPatriots, getGlobalStats, syncStats };
+  // ---------------------------------------------------------------------------
+  // Feedback
+  // ---------------------------------------------------------------------------
+
+  /** Feedback submission payload */
+  interface FeedbackPayload {
+    category: "bug" | "feature" | "question" | "other";
+    message: string;
+    appVersion: string;
+    buildNumber: string;
+    platform: string;
+  }
+
+  /** Submit user feedback to server */
+  const submitFeedback = abortable(
+    async (_, payload: FeedbackPayload): Promise<{ success: boolean }> => {
+      const data = await api.rpc<{ success?: boolean; error?: string }>(
+        "submit_feedback",
+        {
+          p_category: payload.category,
+          p_message: payload.message,
+          p_app_version: payload.appVersion,
+          p_build_number: payload.buildNumber,
+          p_platform: payload.platform,
+        }
+      );
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      return { success: true };
+    }
+  )
+    .use(retry(2))
+    .use(logging("userService.submitFeedback"));
+
+  return { getRanking, getTopPatriots, getGlobalStats, syncStats, submitFeedback };
 }

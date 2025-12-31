@@ -24,7 +24,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useStore, mixins } from "storion/react";
 import Constants from "expo-constants";
-import { tMixin, onlineMixin } from "../stores";
+import { tMixin, onlineMixin, authMixin } from "../stores";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { SendIcon, CheckIcon } from "../components/Icons";
 import {
@@ -85,10 +85,11 @@ const getAppInfo = () => {
 // =============================================================================
 
 export const FeedbackScreen: React.FC = () => {
-  const { t, online } = useStore(
+  const { t, online, auth } = useStore(
     mixins({
       t: tMixin,
       online: onlineMixin,
+      auth: authMixin,
     })
   );
 
@@ -107,32 +108,17 @@ export const FeedbackScreen: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const feedbackData: FeedbackData = {
+      // Get authenticated userService
+      const user = await auth();
+
+      // Submit via userService.submitFeedback (uses RPC)
+      await user.submitFeedback({
         category,
         message: message.trim(),
         appVersion: appInfo.version,
         buildNumber: appInfo.buildNumber,
         platform: appInfo.platform,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Submit to Supabase via edge function for security
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/submit-feedback`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify(feedbackData),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to submit feedback");
-      }
+      });
 
       setIsSubmitted(true);
       setMessage("");
@@ -142,15 +128,13 @@ export const FeedbackScreen: React.FC = () => {
       setTimeout(() => setIsSubmitted(false), 3000);
     } catch (error) {
       console.error("Feedback submission error:", error);
-      Alert.alert(
-        t("feedback_error_title"),
-        t("feedback_error_message"),
-        [{ text: t("ok") }]
-      );
+      Alert.alert(t("feedback_error_title"), t("feedback_error_message"), [
+        { text: t("ok") },
+      ]);
     } finally {
       setIsSubmitting(false);
     }
-  }, [canSubmit, category, message, appInfo, t]);
+  }, [canSubmit, category, message, appInfo, t, auth]);
 
   const renderCategoryButton = (cat: FeedbackCategory, emoji: string) => {
     const isSelected = category === cat;

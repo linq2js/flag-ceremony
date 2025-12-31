@@ -18,7 +18,12 @@ import {
 } from "../../src/stores";
 import { showAlert } from "../../src/utils/alert";
 import { VietnamFlagIcon } from "../../src/components/VietnamFlag";
-import { HomeIcon, StatsIcon, SettingsIcon, FeedbackIcon } from "../../src/components/Icons";
+import {
+  HomeIcon,
+  StatsIcon,
+  SettingsIcon,
+  FeedbackIcon,
+} from "../../src/components/Icons";
 import { palette } from "../../src/design/colors";
 
 // Type for custom tab bar props

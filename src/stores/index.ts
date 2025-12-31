@@ -13,7 +13,7 @@ export { calendarService } from "./services";
 export type { CalendarSettings, CalendarService } from "./services";
 
 // Mixins - network
-export { onlineMixin } from "./mixins";
+export { onlineMixin, authMixin } from "./mixins";
 
 // Mixins - i18n
 export {

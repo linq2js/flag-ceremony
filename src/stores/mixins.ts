@@ -9,6 +9,7 @@
 
 import type { SelectorContext } from "storion/react";
 import { networkStore } from "storion/network";
+import { authService } from "../services/auth";
 
 // =============================================================================
 // NETWORK MIXINS
@@ -26,6 +27,23 @@ import { networkStore } from "storion/network";
 export const onlineMixin = ({ get }: SelectorContext): boolean => {
   const [state] = get(networkStore);
   return state.online;
+};
+
+// =============================================================================
+// AUTH MIXINS
+// =============================================================================
+
+/**
+ * Mixin to get the auth function for accessing userService.
+ *
+ * @example
+ * const { auth } = useStore(mixins({ auth: authMixin }));
+ * const user = await auth();
+ * await user.submitFeedback(payload);
+ */
+export const authMixin = ({ service }: SelectorContext) => {
+  const { auth } = service(authService);
+  return auth;
 };
 
 // =============================================================================
