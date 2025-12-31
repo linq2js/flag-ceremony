@@ -30,20 +30,31 @@ export const onlineMixin = ({ get }: SelectorContext): boolean => {
 };
 
 // =============================================================================
-// AUTH MIXINS
+// FEEDBACK MIXINS
 // =============================================================================
 
+interface FeedbackPayload {
+  category: "bug" | "feature" | "question" | "other";
+  message: string;
+  appVersion: string;
+  buildNumber: string;
+  platform: string;
+}
+
 /**
- * Mixin to get the auth function for accessing userService.
+ * Mixin to get feedback submission function.
  *
  * @example
- * const { auth } = useStore(mixins({ auth: authMixin }));
- * const user = await auth();
- * await user.submitFeedback(payload);
+ * const { submitFeedback } = useStore(mixins({ submitFeedback: submitFeedbackMixin }));
+ * await submitFeedback({ category: "bug", message: "...", ... });
  */
-export const authMixin = ({ service }: SelectorContext) => {
+export const submitFeedbackMixin = ({ service }: SelectorContext) => {
   const { auth } = service(authService);
-  return auth;
+
+  return async (payload: FeedbackPayload) => {
+    const user = await auth();
+    return user.submitFeedback(payload);
+  };
 };
 
 // =============================================================================

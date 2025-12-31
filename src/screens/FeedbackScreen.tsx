@@ -24,7 +24,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useStore, mixins } from "storion/react";
 import Constants from "expo-constants";
-import { tMixin, onlineMixin, authMixin } from "../stores";
+import { tMixin, onlineMixin, submitFeedbackMixin } from "../stores";
 import { ScreenBackground } from "../components/ScreenBackground";
 import { SendIcon, CheckIcon } from "../components/Icons";
 import {
@@ -85,11 +85,11 @@ const getAppInfo = () => {
 // =============================================================================
 
 export const FeedbackScreen: React.FC = () => {
-  const { t, online, auth } = useStore(
+  const { t, online, submitFeedback } = useStore(
     mixins({
       t: tMixin,
       online: onlineMixin,
-      auth: authMixin,
+      submitFeedback: submitFeedbackMixin,
     })
   );
 
@@ -108,11 +108,8 @@ export const FeedbackScreen: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Get authenticated userService
-      const user = await auth();
-
-      // Submit via userService.submitFeedback (uses RPC)
-      await user.submitFeedback({
+      // Submit via RPC (auth is handled internally)
+      await submitFeedback({
         category,
         message: message.trim(),
         appVersion: appInfo.version,
@@ -134,7 +131,7 @@ export const FeedbackScreen: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [canSubmit, category, message, appInfo, t, auth]);
+  }, [canSubmit, category, message, appInfo, t, submitFeedback]);
 
   const renderCategoryButton = (cat: FeedbackCategory, emoji: string) => {
     const isSelected = category === cat;
