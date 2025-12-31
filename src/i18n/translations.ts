@@ -115,6 +115,10 @@ export const translations = {
     // Settings Screen
     customize: "Customize",
     settings: "Settings",
+    profile: "Profile",
+    nickname_label: "Nickname",
+    nickname_not_set: "Not set",
+    change: "Change",
     daily_reminder: "Daily Reminder",
     add_to_calendar: "Add to Calendar",
     calendar_desc: "Export ceremony reminders to your calendar app",
@@ -380,6 +384,10 @@ export const translations = {
     // Settings Screen
     customize: "Tùy chỉnh",
     settings: "Cài đặt",
+    profile: "Hồ sơ",
+    nickname_label: "Biệt danh",
+    nickname_not_set: "Chưa đặt",
+    change: "Đổi",
     daily_reminder: "Nhắc nhở hàng ngày",
     add_to_calendar: "Thêm vào lịch",
     calendar_desc: "Xuất nhắc nhở lễ chào cờ sang ứng dụng lịch",

@@ -10,11 +10,14 @@ import {
   setLanguageMixin,
   reminderSettingsMixin,
   updateReminderSettingsMixin,
+  nicknameMixin,
   calendarService,
 } from "../stores";
 import { ScreenBackground } from "../components/ScreenBackground";
+import { NicknameModal } from "../components/NicknameModal";
 import { textStyles, spacing, layout } from "../design";
 import {
+  NicknameSection,
   LanguageSection,
   ReminderSection,
   AboutSection,
@@ -29,6 +32,7 @@ export const SettingsScreen: React.FC = () => {
     setLanguage,
     reminderSettings,
     updateReminderSettings,
+    nickname,
     calendar,
   } = useStore((ctx) => ({
     t: tMixin(ctx),
@@ -37,10 +41,12 @@ export const SettingsScreen: React.FC = () => {
     setLanguage: setLanguageMixin(ctx),
     reminderSettings: reminderSettingsMixin(ctx),
     updateReminderSettings: updateReminderSettingsMixin(ctx),
+    nickname: nicknameMixin(ctx),
     calendar: ctx.get(calendarService),
   }));
 
   const [isExporting, setIsExporting] = useState(false);
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
 
   const handleAddTime = useCallback(
     (time: string) => {
@@ -134,6 +140,12 @@ export const SettingsScreen: React.FC = () => {
             </Text>
           </View>
 
+          <NicknameSection
+            t={t as any}
+            nickname={nickname}
+            onChangeNickname={() => setShowNicknameModal(true)}
+          />
+
           <LanguageSection
             t={t as any}
             language={language}
@@ -159,6 +171,13 @@ export const SettingsScreen: React.FC = () => {
 
           <QuickActionsSection t={t as any} />
         </ScrollView>
+
+        {/* Nickname change modal */}
+        <NicknameModal
+          visible={showNicknameModal}
+          onClose={() => setShowNicknameModal(false)}
+          onSave={() => setShowNicknameModal(false)}
+        />
       </SafeAreaView>
     </ScreenBackground>
   );
