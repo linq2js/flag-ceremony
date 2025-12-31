@@ -48,3 +48,4 @@ yarn-error.*
 # Local Netlify folder
 .netlify
 .metro-stubs/
+package-lock.json
