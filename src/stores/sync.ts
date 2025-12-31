@@ -18,17 +18,20 @@ import { authService } from "@/services/auth";
 import { SyncPayload, VerifiedStats } from "@/services/user";
 import { effect, meta, store } from "storion";
 import { notPersisted, persisted } from "storion/persist";
+import { settingsStore } from "./settings";
 
 export const syncStore = store({
   name: "sync",
   state: {
     /** Pending stats data waiting to be synced to server */
     pendingStats: [] as SyncPayload[],
+    lastSyncNickname: null as null | string,
     /** Server-verified stats - consumed by ceremonyStore for reconciliation */
     verifiedStats: null as null | VerifiedStats,
   },
   setup({ state, get, update }) {
     const { auth } = get(authService);
+    const [settingsState] = get(settingsStore);
 
     // ---------------------------------------------------------------------------
     // Background Sync Effect
@@ -60,6 +63,30 @@ export const syncStore = store({
               };
             }
           });
+        });
+    });
+
+    // ---------------------------------------------------------------------------
+    // Nickname Sync Effect
+    // ---------------------------------------------------------------------------
+    // Watches nickname changes and syncs to server when changed
+    effect(({ safe }) => {
+      const nickname = settingsState.nickname;
+
+      // Skip if no nickname or already synced
+      if (!nickname || nickname === state.lastSyncNickname) return;
+
+      // Sync nickname to server
+      safe(auth)
+        .then(({ updateDisplayName }) => safe(updateDisplayName, nickname))
+        .then(() => {
+          update((draft) => {
+            draft.lastSyncNickname = nickname;
+          });
+        })
+        .catch((error) => {
+          // Log but don't block - nickname is stored locally
+          console.warn("Failed to sync nickname:", error);
         });
     });
 

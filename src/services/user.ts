@@ -206,5 +206,37 @@ export function userService({ get }: Resolver, api: ApiClient, userId: string) {
     .use(retry(2))
     .use(logging("userService.submitFeedback"));
 
-  return { getRanking, getTopPatriots, getGlobalStats, syncStats, submitFeedback };
+  // ---------------------------------------------------------------------------
+  // Display Name / Nickname
+  // ---------------------------------------------------------------------------
+
+  /** Update user's display name on the server */
+  const updateDisplayName = abortable(
+    async (_, displayName: string): Promise<{ success: boolean }> => {
+      const data = await api.rpc<{ success?: boolean; error?: string }>(
+        "update_display_name",
+        {
+          p_display_name: displayName,
+        }
+      );
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      return { success: true };
+    }
+  )
+    .use(retry(2))
+    .use(offlineRetry())
+    .use(logging("userService.updateDisplayName"));
+
+  return {
+    getRanking,
+    getTopPatriots,
+    getGlobalStats,
+    syncStats,
+    submitFeedback,
+    updateDisplayName,
+  };
 }

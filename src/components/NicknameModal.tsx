@@ -4,7 +4,7 @@
  * Features:
  * - Required on first launch (no close button)
  * - Validation rules:
- *   - 2-20 characters
+ *   - 6-20 characters
  *   - No leading/trailing whitespace
  *   - No consecutive spaces
  *   - No special characters except hyphen and underscore
@@ -23,20 +23,14 @@ import {
 import { useStore, mixins } from "storion/react";
 import { Modal, modalInputStyles } from "./Modal";
 import { tMixin, nicknameMixin, updateNicknameMixin } from "../stores";
-import {
-  palette,
-  spacing,
-  textStyles,
-  buttonStyles,
-  radius,
-} from "../design";
+import { palette, spacing, textStyles, buttonStyles, radius } from "../design";
 import { CheckIcon } from "./Icons";
 
 // =============================================================================
 // VALIDATION
 // =============================================================================
 
-const MIN_LENGTH = 2;
+const MIN_LENGTH = 6;
 const MAX_LENGTH = 20;
 
 // Basic offensive word filter (can be expanded)
@@ -151,15 +145,15 @@ export const NicknameModal: React.FC<NicknameModalProps> = ({
   const [hasInteracted, setHasInteracted] = useState(false);
 
   // Validate on every change
-  const validation = useMemo(
-    () => validateNickname(value, t),
-    [value, t]
-  );
+  const validation = useMemo(() => validateNickname(value, t), [value, t]);
 
-  const handleChangeText = useCallback((text: string) => {
-    setValue(text);
-    if (!hasInteracted) setHasInteracted(true);
-  }, [hasInteracted]);
+  const handleChangeText = useCallback(
+    (text: string) => {
+      setValue(text);
+      if (!hasInteracted) setHasInteracted(true);
+    },
+    [hasInteracted]
+  );
 
   // Get cleaned value for display and saving
   const cleanedValue = useMemo(() => cleanNickname(value), [value]);
@@ -179,7 +173,8 @@ export const NicknameModal: React.FC<NicknameModalProps> = ({
   // Determine what message to show
   const showError = hasInteracted && validation.error;
   const showHint = !hasInteracted || (!validation.error && validation.hint);
-  const showValid = hasInteracted && validation.isValid && cleanedValue.length >= MIN_LENGTH;
+  const showValid =
+    hasInteracted && validation.isValid && cleanedValue.length >= MIN_LENGTH;
 
   return (
     <Modal
@@ -188,7 +183,6 @@ export const NicknameModal: React.FC<NicknameModalProps> = ({
       showCloseButton={!required}
       closeOnBackdrop={!required}
       title={t("nickname_title")}
-      subtitle={t("nickname_subtitle")}
       testID="nickname-modal"
     >
       <View style={styles.container}>
@@ -229,7 +223,9 @@ export const NicknameModal: React.FC<NicknameModalProps> = ({
         {showValid && (
           <View style={styles.validContainer}>
             <CheckIcon size={14} color={palette.green[500]} />
-            <Text style={modalInputStyles.validText}>{t("nickname_valid")}</Text>
+            <Text style={modalInputStyles.validText}>
+              {t("nickname_valid")}
+            </Text>
           </View>
         )}
 
@@ -305,4 +301,3 @@ const styles = StyleSheet.create({
     color: palette.white[40],
   },
 });
-
