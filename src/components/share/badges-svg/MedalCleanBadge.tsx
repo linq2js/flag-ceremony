@@ -40,14 +40,30 @@ export const MedalCleanBadge: React.FC<SVGBadgeProps> = ({
       </Defs>
 
       {/* Background */}
-      <Rect x="0" y="0" width="300" height="300" rx="20" fill="url(#medalBgGradient)" />
+      <Rect
+        x="0"
+        y="0"
+        width="300"
+        height="300"
+        rx="20"
+        fill="url(#medalBgGradient)"
+      />
 
       {/* Medal icon */}
       <Circle cx="150" cy="35" r="20" fill="rgba(251, 191, 36, 0.2)" />
-      <Text x="150" y="43" textAnchor="middle" fontSize="20">🏅</Text>
+      <Text x="150" y="43" textAnchor="middle" fontSize="20">
+        🏅
+      </Text>
 
       {/* Photo container */}
-      <Circle cx="150" cy="85" r="32" fill="rgba(255, 255, 255, 0.1)" stroke="#fbbf24" strokeWidth="2" />
+      <Circle
+        cx="150"
+        cy="85"
+        r="32"
+        fill="rgba(255, 255, 255, 0.1)"
+        stroke="#fbbf24"
+        strokeWidth="2"
+      />
 
       {/* Photo or initial */}
       {photoDataUri ? (
@@ -63,24 +79,56 @@ export const MedalCleanBadge: React.FC<SVGBadgeProps> = ({
       ) : (
         <G>
           <Circle cx="150" cy="85" r="29" fill="rgba(251, 191, 36, 0.3)" />
-          <Text x="150" y="93" textAnchor="middle" fill="#fbbf24" fontSize="24" fontWeight="700" fontFamily={FONT_FAMILY}>
+          <Text
+            x="150"
+            y="93"
+            textAnchor="middle"
+            fill="#fbbf24"
+            fontSize="24"
+            fontWeight="700"
+            fontFamily={FONT_FAMILY}
+          >
             {initial}
           </Text>
         </G>
       )}
 
       {/* Name */}
-      <Text x="150" y="138" textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="700" fontFamily={FONT_FAMILY}>
+      <Text
+        x="150"
+        y="138"
+        textAnchor="middle"
+        fill="#ffffff"
+        fontSize="14"
+        fontWeight="700"
+        fontFamily={FONT_FAMILY}
+      >
         {(displayName || t("dedicated_patriot")).toUpperCase()}
       </Text>
 
       {/* Large count */}
       {stats && (
         <G>
-          <Text x="150" y="205" textAnchor="middle" fill="#ffffff" fontSize="56" fontWeight="800" fontFamily={FONT_FAMILY}>
+          <Text
+            x="150"
+            y="205"
+            textAnchor="middle"
+            fill="#ffffff"
+            fontSize="56"
+            fontWeight="800"
+            fontFamily={FONT_FAMILY}
+          >
             {stats.completedCeremonies}
           </Text>
-          <Text x="150" y="228" textAnchor="middle" fill="rgba(255, 255, 255, 0.7)" fontSize="12" fontWeight="500" fontFamily={FONT_FAMILY}>
+          <Text
+            x="150"
+            y="228"
+            textAnchor="middle"
+            fill="rgba(255, 255, 255, 0.7)"
+            fontSize="12"
+            fontWeight="500"
+            fontFamily={FONT_FAMILY}
+          >
             {t("ceremonies")}
           </Text>
         </G>
@@ -89,17 +137,42 @@ export const MedalCleanBadge: React.FC<SVGBadgeProps> = ({
       {/* Stats */}
       {stats && (
         <G>
-          <Text x="150" y="252" textAnchor="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="500" fontFamily={FONT_FAMILY}>
+          <Text
+            x="150"
+            y="252"
+            textAnchor="middle"
+            fill="rgba(255, 255, 255, 0.6)"
+            fontSize="9"
+            fontWeight="500"
+            fontFamily={FONT_FAMILY}
+          >
             🔥 {t("current_streak")}: {stats.currentStreak}
           </Text>
-          <Text x="150" y="266" textAnchor="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="500" fontFamily={FONT_FAMILY}>
+          <Text
+            x="150"
+            y="266"
+            textAnchor="middle"
+            fill="rgba(255, 255, 255, 0.6)"
+            fontSize="9"
+            fontWeight="500"
+            fontFamily={FONT_FAMILY}
+          >
             ⚡ {t("best_streak")}: {stats.longestStreak}
           </Text>
         </G>
       )}
 
       {/* Footer */}
-      <Text x="150" y="290" textAnchor="middle" fill="rgba(255, 255, 255, 0.5)" fontSize="10" fontWeight="700" letterSpacing={2} fontFamily={FONT_FAMILY}>
+      <Text
+        x="150"
+        y="290"
+        textAnchor="middle"
+        fill="rgba(255, 255, 255, 0.5)"
+        fontSize="10"
+        fontWeight="700"
+        letterSpacing={2}
+        fontFamily={FONT_FAMILY}
+      >
         {t("badge_flag_ceremony")} 🇻🇳
       </Text>
     </Svg>

@@ -99,6 +99,7 @@ const BadgeEditorContent: React.FC = React.memo(() => {
     const [state, actions] = scoped(badgeStore);
     return {
       badge: { ...state },
+
       ...actions,
     };
   });

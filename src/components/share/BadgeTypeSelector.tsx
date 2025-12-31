@@ -3,7 +3,7 @@
  * Uses CSS transform with flexbox centering for both web and native
  */
 
-import React from "react";
+import React, { useId } from "react";
 import {
   View,
   Text,
