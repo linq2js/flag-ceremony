@@ -56,7 +56,8 @@ export type I18nActions = {
 // =============================================================================
 
 export const tMixin = ({ get }: SelectorContext) => {
-  const [, { t }] = get(i18nStore);
+  // always select language to ensure UI is updated when language changes
+  const [{ language: _ }, { t }] = get(i18nStore);
   return t;
 };
 

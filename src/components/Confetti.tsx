@@ -226,7 +226,7 @@ export const Confetti: React.FC<ConfettiProps> = ({ active }) => {
   );
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}>
       {particles}
       {bursts}
     </View>
