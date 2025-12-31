@@ -12,6 +12,9 @@ export type { BadgeType, BadgeStats, CropSettings } from "./badge";
 export { calendarService } from "./services";
 export type { CalendarSettings, CalendarService } from "./services";
 
+// Mixins - network
+export { onlineMixin } from "./mixins";
+
 // Mixins - i18n
 export {
   tMixin,

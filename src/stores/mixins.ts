@@ -7,6 +7,31 @@
  * For mixins that combine multiple stores, define them directly in this file.
  */
 
+import type { SelectorContext } from "storion/react";
+import { networkStore } from "storion/network";
+
+// =============================================================================
+// NETWORK MIXINS
+// =============================================================================
+
+/**
+ * Mixin to get network online status.
+ *
+ * @example
+ * const { online } = useStore(mixins({ online: onlineMixin }));
+ * if (!online) {
+ *   // Show offline UI
+ * }
+ */
+export const onlineMixin = ({ get }: SelectorContext): boolean => {
+  const [state] = get(networkStore);
+  return state.online;
+};
+
+// =============================================================================
+// RE-EXPORTS
+// =============================================================================
+
 // i18n mixins
 export { tMixin, languageMixin, dayNamesMixin, setLanguageMixin } from "./i18n";
 

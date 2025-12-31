@@ -6,6 +6,10 @@ export const translations = {
     app_name: "Flag Ceremony",
     cancel: "Cancel",
 
+    // Offline Banner
+    offline_title: "You're Offline",
+    offline_message: "Sync stats and ranking are unavailable",
+
     // Tabs
     tab_home: "Home",
     tab_ceremony: "Ceremony",
@@ -231,6 +235,10 @@ export const translations = {
     // Common
     app_name: "Lễ Chào Cờ",
     cancel: "Hủy",
+
+    // Offline Banner
+    offline_title: "Không có kết nối mạng",
+    offline_message: "Đồng bộ thống kê và xếp hạng không khả dụng",
 
     // Tabs
     tab_home: "Trang chủ",

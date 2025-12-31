@@ -5,6 +5,7 @@ import { Suspense, useEffect } from "react";
 import { StoreProvider } from "storion/react";
 import { app } from "../src/stores";
 import { ServiceLoader } from "../src/components/ServiceLoader";
+import { OfflineBanner } from "../src/components/OfflineBanner";
 import "../global.css";
 
 export default function RootLayout() {
@@ -34,26 +35,33 @@ export default function RootLayout() {
       >
         <ServiceLoader />
       </Suspense>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: styles.sceneContainer,
-        }}
-      >
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen
-          name="share-badge"
-          options={{
-            presentation: "fullScreenModal",
-            animation: "slide_from_bottom",
+      <View style={styles.container}>
+        {/* Offline banner - shows when network is unavailable */}
+        <OfflineBanner />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: styles.sceneContainer,
           }}
-        />
-      </Stack>
+        >
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen
+            name="share-badge"
+            options={{
+              presentation: "fullScreenModal",
+              animation: "slide_from_bottom",
+            }}
+          />
+        </Stack>
+      </View>
     </StoreProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "#0a0000", // Match splash screen background

@@ -131,19 +131,21 @@ export const StatsScreen: React.FC = () => {
         >
           {/* Header */}
           <View style={styles.header}>
-            <View>
-              <Text style={textStyles.label}>{t("your_progress")}</Text>
-              <Text style={[textStyles.screenTitle, { marginTop: spacing[2] }]}>
-                {t("statistics")}
-              </Text>
+            {/* Title */}
+            <Text style={textStyles.label}>{t("your_progress")}</Text>
+            <Text style={[textStyles.screenTitle, { marginTop: spacing[2] }]}>
+              {t("statistics")}
+            </Text>
+            {/* Share button row */}
+            <View style={styles.shareRow}>
+              <TouchableOpacity
+                style={styles.shareButton}
+                onPress={() => router.push("/share-badge")}
+              >
+                <ShareIcon size={16} color={palette.gold[500]} />
+                <Text style={styles.shareButtonText}>{t("share_stats")}</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={styles.shareButton}
-              onPress={() => router.push("/share-badge")}
-            >
-              <ShareIcon size={20} color={palette.gold[500]} />
-              <Text style={styles.shareButtonText}>{t("share_stats")}</Text>
-            </TouchableOpacity>
           </View>
 
           {ranking && <RankingCard t={t as any} ranking={ranking} />}
@@ -175,27 +177,29 @@ export const StatsScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
     paddingHorizontal: spacing[9],
-    paddingTop: spacing[9],
+    paddingTop: spacing[6],
     paddingBottom: spacing[10],
+  },
+  shareRow: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginTop: spacing[4],
   },
   shareButton: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing[2],
     backgroundColor: palette.gold[100],
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[3],
-    borderRadius: 20,
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: palette.gold[200],
   },
   shareButtonText: {
     color: palette.gold[500],
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 11,
   },
 });
