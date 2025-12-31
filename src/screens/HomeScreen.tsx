@@ -17,6 +17,7 @@ import {
   getThisWeekCountMixin,
   getTodayCompletedCountMixin,
   getTodayIncompleteCountMixin,
+  nicknameMixin,
 } from "../stores";
 import { VietnamFlag } from "../components/VietnamFlag";
 import { StatsCard } from "../components/StatsCard";
@@ -50,6 +51,7 @@ export const HomeScreen: React.FC = () => {
     getThisWeekCount,
     getTodayCompletedCount,
     getTodayIncompleteCount,
+    nickname,
   } = useStore(
     mixins({
       t: tMixin,
@@ -59,6 +61,7 @@ export const HomeScreen: React.FC = () => {
       getThisWeekCount: getThisWeekCountMixin,
       getTodayCompletedCount: getTodayCompletedCountMixin,
       getTodayIncompleteCount: getTodayIncompleteCountMixin,
+      nickname: nicknameMixin,
     })
   );
 
@@ -76,10 +79,17 @@ export const HomeScreen: React.FC = () => {
 
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return t("good_morning");
-    if (hour < 17) return t("good_afternoon");
-    return t("good_evening");
-  }, [t]);
+    let timeGreeting: string;
+    if (hour < 12) timeGreeting = t("good_morning");
+    else if (hour < 17) timeGreeting = t("good_afternoon");
+    else timeGreeting = t("good_evening");
+
+    // Add nickname if available
+    if (nickname) {
+      return `${timeGreeting}, ${nickname}`;
+    }
+    return timeGreeting;
+  }, [t, nickname]);
 
   const streakMessage = useMemo(() => {
     if (currentStreak === 0) return t("streak_zero");
